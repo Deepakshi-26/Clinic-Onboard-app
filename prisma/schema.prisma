@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  HR
+  EMPLOYEE
+}
+
+enum JobTitle {
+  PHYSIOTHERAPIST
+  OCCUPATIONAL_THERAPIST
+  PHYSIO_ASSISTANT
+  OT_ASSISTANT
+  PHYSIO_TECHNOLOGIST
+  DOCTOR
+  REHAB_ADMIN
+  MEDICAL_ADMIN
+  CNESST_ADMIN
+  SAAQ_ADMIN
+  BC_ADMIN
+  HR
+  MANAGER
+}
+
+enum Location {
+  PARC_EXTENSION
+  MONTREAL_NORD
+  COTE_VERTU
+  LACHINE
+}
+
+enum EmployeeStatus {
+  INVITED
+  ACTIVE
+  COMPLETED
+}
+
+enum GoalType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum EmailKind {
+  INVITE
+  REMINDER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  employee Employee?
+  accounts Account[]
+  sessions Session[]
+}
+
+// Standard Auth.js Prisma-adapter shape. Not exercised by the Credentials+JWT
+// flow today; present so adding an OAuth provider later is config-only.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Employee {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fullName               String
+  title                  JobTitle
+  location               Location
+  startDate              DateTime
+  onboardingDurationDays Int            @default(30)
+  status                 EmployeeStatus @default(INVITED)
+
+  // Free text for milestone 1 — the Invite form's "Assigned Trainer" dropdown is
+  // a hardcoded list, not a Staff/Trainer directory model.
+  trainerName    String?
+  welcomeMessage String?
+
+  // Personal info — the HR "Documents" checklist is computed from these being
+  // non-null, not from a separate documents table.
+  dateOfBirth        DateTime?
+  phone              String?
+  personalEmail      String
+  residentialAddress String?
+  workEmail          String? // set later via a deferred Access & Passwords screen
+
+  // Encrypted at rest — see src/lib/encryption.ts. Ciphertext only, never plaintext.
+  sinNumberEnc        String?
+  healthCardNumberEnc String?
+  permitNumberEnc     String?
+  voidChequeUploaded  Boolean @default(false)
+
+  hrNotes String?
+
+  // Stored percentage for milestone 1; swap for a computed value once a real
+  // training-materials/completion model exists.
+  trainingProgressPct Int       @default(0)
+  completedAt         DateTime?
+
+  goals     Goal[]
+  emailLogs EmailLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Goal {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  type         GoalType
+  title        String
+  description  String?
+  periodNumber Int // day # for DAILY, week # for WEEKLY, day # (e.g. 30) for MONTHLY
+  order        Int       @default(0)
+  done         Boolean   @default(false)
+  doneAt       DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+// Reused for both the Invite "Send Invitation Email" stub and the Dashboard
+// "Send Reminder" stub — gives HR a real audit trail without a real email
+// provider. Never stores secrets (e.g. temp passwords).
+model EmailLog {
+  id         String    @id @default(cuid())
+  kind       EmailKind
+  toEmail    String
+  subject    String
+  body       String
+  employeeId String?
+  employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+}
