@@ -5,6 +5,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { updateEmployeeSensitiveInfo } from "@/lib/repositories/employee";
 
 const UploadSchema = z.object({
   label: z.string().min(1),
@@ -59,6 +60,48 @@ export async function uploadPersonalDocument(
   revalidatePath("/employee/documents");
   revalidatePath("/hr/new-hire-info");
   return null;
+}
+
+const PersonalInfoSchema = z.object({
+  fullName: z.string().min(1),
+  phone: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  residentialAddress: z.string().optional(),
+  sinNumber: z.string().optional(),
+  healthCardNumber: z.string().optional(),
+  permitNumber: z.string().optional(),
+});
+
+export async function updateOwnPersonalInfo(formData: FormData) {
+  const session = await auth();
+  if (session?.user?.role !== "EMPLOYEE") throw new Error("Forbidden");
+
+  const employee = await prisma.employee.findUnique({
+    where: { userId: session.user.id },
+  });
+  if (!employee) throw new Error("No onboarding record found for your account.");
+
+  const parsed = PersonalInfoSchema.parse(Object.fromEntries(formData));
+
+  await prisma.employee.update({
+    where: { id: employee.id },
+    data: {
+      fullName: parsed.fullName,
+      phone: parsed.phone || null,
+      dateOfBirth: parsed.dateOfBirth ? new Date(parsed.dateOfBirth) : null,
+      residentialAddress: parsed.residentialAddress || null,
+    },
+  });
+
+  await updateEmployeeSensitiveInfo(employee.id, {
+    sinNumber: parsed.sinNumber,
+    healthCardNumber: parsed.healthCardNumber,
+    permitNumber: parsed.permitNumber,
+  });
+
+  revalidatePath("/employee/documents");
+  revalidatePath("/hr/new-hire-info");
+  revalidatePath("/hr/employees");
 }
 
 export async function deletePersonalDocument(id: string) {
