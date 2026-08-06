@@ -53,6 +53,11 @@ enum EmailKind {
   REMINDER
 }
 
+enum MessageChannel {
+  HR_EMPLOYEE
+  PEER
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -146,6 +151,9 @@ model Employee {
   assignedDocuments TrainingDocument[]
   accessCredentials AccessCredential[]
   personalDocuments PersonalDocument[]
+  messages          Message[]          @relation("MessageEmployee")
+  peerMessages      Message[]          @relation("MessagePeerEmployee")
+  sentMessages      Message[]          @relation("MessageSender")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -228,6 +236,36 @@ model PersonalDocument {
   fileSize Int
 
   uploadedAt DateTime @default(now())
+}
+
+// Two thread shapes share this table:
+// - HR_EMPLOYEE: employeeId is the employee HR is talking to; peerEmployeeId
+//   is null. HR is a single shared inbox (no per-HR-user threads).
+// - PEER: a thread between two employees onboarding at the same time.
+//   employeeId/peerEmployeeId are normalized (employeeId < peerEmployeeId by
+//   id) so both participants resolve to the same thread regardless of who
+//   started it.
+model Message {
+  id             String         @id @default(cuid())
+  channel        MessageChannel
+  employeeId     String
+  employee       Employee       @relation("MessageEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  peerEmployeeId String?
+  peerEmployee   Employee?      @relation("MessagePeerEmployee", fields: [peerEmployeeId], references: [id], onDelete: Cascade)
+
+  senderRole       UserRole
+  // Which employee actually wrote this message — required to tell the two
+  // participants apart on a PEER thread, where both have senderRole EMPLOYEE.
+  // Null when senderRole is HR (HR is a shared inbox, not tied to one employee).
+  senderEmployeeId String?
+  senderEmployee   Employee? @relation("MessageSender", fields: [senderEmployeeId], references: [id], onDelete: SetNull)
+
+  body String
+
+  createdAt DateTime @default(now())
+
+  @@index([channel, employeeId])
+  @@index([channel, peerEmployeeId])
 }
 
 // Reused for both the Invite "Send Invitation Email" stub and the Dashboard

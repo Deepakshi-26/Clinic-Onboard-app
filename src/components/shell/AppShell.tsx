@@ -15,6 +15,7 @@ const HR_NAV: NavItem[] = [
   { href: "/hr/access", label: "Access & Passwords", icon: "🔐" },
   { href: "/hr/goals", label: "Goals Setup", icon: "🎯" },
   { href: "/hr/invite", label: "Invite New Hire", icon: "✉️" },
+  { href: "/hr/messages", label: "Messages", icon: "💬" },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
@@ -22,6 +23,7 @@ const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee/documents", label: "My Documents", icon: "📋" },
   { href: "/employee/training", label: "Training Materials", icon: "📚" },
   { href: "/employee/access", label: "Access Info", icon: "🔑" },
+  { href: "/employee/messages", label: "Messages", icon: "💬" },
 ];
 
 const TITLES: Record<string, string> = {
@@ -32,10 +34,12 @@ const TITLES: Record<string, string> = {
   "/hr/access": "Access & Passwords",
   "/hr/goals": "Goals Setup",
   "/hr/invite": "Invite New Hire",
+  "/hr/messages": "Messages",
   "/employee": "My Onboarding",
   "/employee/documents": "My Documents",
   "/employee/training": "Training Materials",
   "/employee/access": "Access Info",
+  "/employee/messages": "Messages",
 };
 
 export function AppShell({
