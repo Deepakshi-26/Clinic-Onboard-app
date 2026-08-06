@@ -29,22 +29,22 @@ type DocsCheckEmployee = Pick<
   | "voidChequeUploaded"
 >;
 
-export type DocumentItem = { label: string; done: boolean };
+export type DocumentItem = { labelKey: string; done: boolean };
 
 // The "Documents" checklist is computed from Employee field presence, not a
 // separate documents table — see prisma/schema.prisma's Employee model notes.
 export function computeDocumentItems(employee: DocsCheckEmployee): DocumentItem[] {
   return [
-    { label: "Date of Birth", done: !!employee.dateOfBirth },
-    { label: "Home Address", done: !!employee.residentialAddress },
+    { labelKey: "docs.dateOfBirth", done: !!employee.dateOfBirth },
+    { labelKey: "docs.homeAddress", done: !!employee.residentialAddress },
     {
-      label: "Phone & Email",
+      labelKey: "docs.phoneEmail",
       done: !!employee.phone && !!employee.personalEmail,
     },
-    { label: "Void Cheque", done: employee.voidChequeUploaded },
-    { label: "Health Card", done: !!employee.healthCardNumberEnc },
-    { label: "SIN Number", done: !!employee.sinNumberEnc },
-    { label: "Permit Number", done: !!employee.permitNumberEnc },
+    { labelKey: "docs.voidCheque", done: employee.voidChequeUploaded },
+    { labelKey: "docs.healthCard", done: !!employee.healthCardNumberEnc },
+    { labelKey: "docs.sinNumber", done: !!employee.sinNumberEnc },
+    { labelKey: "docs.permitNumber", done: !!employee.permitNumberEnc },
   ];
 }
 
@@ -71,13 +71,12 @@ export function computeDeadline(startDate: Date, durationDays: number): Date {
   return deadline;
 }
 
-export function computePhaseLabel(startDate: Date): string {
-  const week = Math.floor(computeDaysElapsed(startDate) / 7) + 1;
-  return `Week ${week}`;
+export function computeWeekNumber(startDate: Date): number {
+  return Math.floor(computeDaysElapsed(startDate) / 7) + 1;
 }
 
 export type StepStatus = "done" | "active" | "pending";
-export type Step = { label: string; status: StepStatus };
+export type Step = { labelKey: string; status: StepStatus };
 
 type StepEmployee = DocsCheckEmployee &
   Pick<Employee, "trainingProgressPct" | "status">;
@@ -95,19 +94,19 @@ export function computeOnboardingSteps(
   const complete = employee.status === "COMPLETED";
 
   const doneFlags = [true, personalInfoDone, documentsDone, trainingDone, goalsDone, complete];
-  const labels = [
-    "Account Setup",
-    "Personal Info",
-    "Documents",
-    "Training",
-    "Goals Review",
-    "Complete",
+  const labelKeys = [
+    "steps.accountSetup",
+    "steps.personalInfo",
+    "steps.documents",
+    "steps.training",
+    "steps.goalsReview",
+    "steps.complete",
   ];
 
   const firstNotDone = doneFlags.findIndex((done) => !done);
 
-  return labels.map((label, i) => ({
-    label,
+  return labelKeys.map((labelKey, i) => ({
+    labelKey,
     status:
       firstNotDone === -1 || i < firstNotDone
         ? "done"
@@ -117,8 +116,8 @@ export function computeOnboardingSteps(
   }));
 }
 
-export function formatShortDate(date: Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
+export function formatShortDate(date: Date, locale: "en" | "fr" = "en"): string {
+  return new Date(date).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-US", {
     month: "short",
     day: "numeric",
   });

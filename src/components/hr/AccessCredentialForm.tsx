@@ -2,6 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { updateAccessCredential } from "@/app/hr/access/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type InitialData = {
   employeeId: string;
@@ -23,25 +24,26 @@ const inputClasses =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950";
 
 export function AccessCredentialForm({ data }: { data: InitialData }) {
+  const { t } = useLocale();
   return (
     <form action={updateAccessCredential} className="flex flex-col gap-3.5">
       <input type="hidden" name="employeeId" value={data.employeeId} />
       <input type="hidden" name="location" value={data.location} />
 
-      <Field label="Door Passcode">
+      <Field label={t("access.doorPasscode")}>
         <input name="doorPasscode" defaultValue={data.doorPasscode} className={inputClasses} />
       </Field>
-      <Field label="Building Passcode">
+      <Field label={t("access.buildingPasscode")}>
         <input
           name="buildingPasscode"
           defaultValue={data.buildingPasscode}
           className={inputClasses}
         />
       </Field>
-      <Field label="Wi-Fi Password">
+      <Field label={t("access.wifiPassword")}>
         <input name="wifiPassword" defaultValue={data.wifiPassword} className={inputClasses} />
       </Field>
-      <Field label="Work Email">
+      <Field label={t("home.workEmail")}>
         <input
           type="email"
           name="workEmail"
@@ -49,24 +51,24 @@ export function AccessCredentialForm({ data }: { data: InitialData }) {
           className={inputClasses}
         />
       </Field>
-      <Field label="MEDEXA Password">
+      <Field label={t("access.medexaPassword")}>
         <input
           name="medexaPassword"
           defaultValue={data.medexaPassword}
           className={inputClasses}
         />
       </Field>
-      <Field label="Myle Password">
+      <Field label={t("access.mylePassword")}>
         <input name="mylePassword" defaultValue={data.mylePassword} className={inputClasses} />
       </Field>
-      <Field label="Equipment Box Location">
+      <Field label={t("access.equipmentBoxLocation")}>
         <input
           name="equipmentBoxLocation"
           defaultValue={data.equipmentBoxLocation}
           className={inputClasses}
         />
       </Field>
-      <Field label="Equipment Request Email">
+      <Field label={t("access.equipmentRequestEmail")}>
         <input
           type="email"
           name="equipmentRequestEmail"
@@ -74,7 +76,7 @@ export function AccessCredentialForm({ data }: { data: InitialData }) {
           className={inputClasses}
         />
       </Field>
-      <Field label="Assigned Trainer">
+      <Field label={t("access.assignedTrainer")}>
         <input name="trainerName" defaultValue={data.trainerName} className={inputClasses} />
       </Field>
 
@@ -85,9 +87,9 @@ export function AccessCredentialForm({ data }: { data: InitialData }) {
           defaultChecked={data.parkingEnabled}
           className="h-4 w-4 accent-teal-600"
         />
-        Show parking availability to this employee
+        {t("access.showParking")}
       </label>
-      <Field label="Parking Note (shown in employee's Access Info)">
+      <Field label={t("access.parkingNoteLabel")}>
         <input name="parkingNote" defaultValue={data.parkingNote} className={inputClasses} />
       </Field>
 
@@ -109,13 +111,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { t } = useLocale();
   return (
     <button
       type="submit"
       disabled={pending}
       className="mt-1 w-full rounded-lg bg-teal-600 py-2.5 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-60"
     >
-      {pending ? "Saving..." : "Save & Push to Employee"}
+      {pending ? t("common.saving") : t("access.saveAndPush")}
     </button>
   );
 }

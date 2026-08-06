@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "👋 Hi! I'm your onboarding assistant. What do you need help with?",
-    },
+    { role: "assistant", content: t("chatbot.greeting") },
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -34,15 +32,12 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
       const body = await res.json();
       const reply: string = res.ok
         ? body.reply
-        : body.error ?? "Something went wrong. Please try again.";
+        : (body.error ?? t("chatbot.error"));
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: "⚠️ Connection issue. Please check your internet and try again.",
-        },
+        { role: "assistant", content: t("chatbot.connectionError") },
       ]);
     } finally {
       setSending(false);
@@ -53,7 +48,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        title="Ask the AI Assistant"
+        title={t("chatbot.title")}
         className="fixed bottom-6 right-6 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-xl text-white shadow-lg transition-transform hover:scale-105"
         style={{ height: 52, width: 52 }}
       >
@@ -69,7 +64,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
             <div className="flex-1">
               <div className="text-sm font-semibold">ClinicBoard AI</div>
               <div className="text-[10px] text-white/45">
-                {role === "HR" ? "Full portal access" : "Role-scoped answers"}
+                {role === "HR" ? t("chatbot.fullAccess") : t("chatbot.scopedAccess")}
               </div>
             </div>
             <button
@@ -95,7 +90,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
             ))}
             {sending && (
               <div className="w-fit rounded-2xl rounded-bl-sm bg-slate-100 px-3.5 py-2.5 text-xs text-slate-400 dark:bg-zinc-800">
-                Typing…
+                {t("chatbot.typing")}
               </div>
             )}
           </div>
@@ -105,7 +100,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="Ask about your portal or goals…"
+              placeholder={t("chatbot.placeholder")}
               className="flex-1 rounded-full border border-slate-300 px-3 py-2 text-xs outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950"
             />
             <button

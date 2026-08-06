@@ -1,11 +1,14 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 
 export default async function EmployeeTrainingPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const t = getT(await getServerLocale());
 
   const employee = await prisma.employee.findUnique({
     where: { userId: session.user.id },
@@ -14,7 +17,7 @@ export default async function EmployeeTrainingPage() {
     return (
       <Card>
         <p className="text-sm text-slate-500 dark:text-zinc-400">
-          No onboarding record found for your account yet. Contact HR.
+          {t("common.noRecord")}
         </p>
       </Card>
     );
@@ -33,17 +36,16 @@ export default async function EmployeeTrainingPage() {
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        Training Materials
+        {t("training.heading")}
       </h2>
       <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
-        ✅ You can only see documents your HR has assigned to your role. Use the AI
-        chatbot to ask questions about any material.
+        ✅ {t("training.hint")}
       </div>
 
       {documents.length === 0 ? (
         <Card>
           <p className="text-xs text-slate-500 dark:text-zinc-400">
-            No training materials assigned to you yet.
+            {t("training.noneAssigned")}
           </p>
         </Card>
       ) : (
@@ -66,7 +68,7 @@ export default async function EmployeeTrainingPage() {
                 rel="noopener noreferrer"
                 className="mt-1 rounded-md bg-teal-600 py-1.5 text-center text-xs font-semibold text-white hover:bg-teal-500"
               >
-                Open
+                {t("training.open")}
               </a>
             </div>
           ))}

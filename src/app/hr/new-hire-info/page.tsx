@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getEmployeeSensitiveInfo } from "@/lib/repositories/employee";
 import { computeMissingDocs, formatShortDate } from "@/lib/progress";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
@@ -17,6 +18,8 @@ export default async function NewHireInfoPage({
   searchParams: Promise<{ employeeId?: string }>;
 }) {
   const { employeeId } = await searchParams;
+  const locale = await getServerLocale();
+  const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
     select: { id: true, fullName: true },
@@ -36,7 +39,7 @@ export default async function NewHireInfoPage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        New Hire Personal Information
+        {t("newHire.title")}
       </h2>
 
       <Card>
@@ -47,14 +50,18 @@ export default async function NewHireInfoPage({
             basePath="/hr/new-hire-info"
           />
           {info && missing.length > 0 && (
-            <StatusPill tone="red">{missing.length} Docs Missing</StatusPill>
+            <StatusPill tone="red">
+              {missing.length} {t("newHire.docsMissing")}
+            </StatusPill>
           )}
-          {info && missing.length === 0 && <StatusPill tone="green">All Docs Complete</StatusPill>}
+          {info && missing.length === 0 && (
+            <StatusPill tone="green">{t("newHire.allDocsComplete")}</StatusPill>
+          )}
         </div>
 
         {!info ? (
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            No employees yet — invite a new hire first.
+            {t("newHire.noEmployees")}
           </p>
         ) : (
           <NewHireInfoForm
@@ -77,11 +84,10 @@ export default async function NewHireInfoPage({
       </Card>
 
       {info && (
-        <Card title="📎 Documents Submitted by Employee">
+        <Card title={`📎 ${t("newHire.documentsSubmitted")}`}>
           {personalDocuments.length === 0 ? (
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Nothing uploaded yet — the employee can add documents (like a void
-              cheque or permit photo) from their own portal.
+              {t("newHire.nothingUploadedByEmployee")}
             </p>
           ) : (
             <div className="flex flex-col gap-2">
@@ -96,7 +102,7 @@ export default async function NewHireInfoPage({
                       {doc.label}
                     </div>
                     <div className="text-[10px] text-slate-500 dark:text-zinc-400">
-                      Uploaded {formatShortDate(doc.uploadedAt)}
+                      {t("newHire.uploaded")} {formatShortDate(doc.uploadedAt, locale)}
                     </div>
                   </div>
                   <a
@@ -105,7 +111,7 @@ export default async function NewHireInfoPage({
                     rel="noopener noreferrer"
                     className="rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
                   >
-                    View
+                    {t("newHire.view")}
                   </a>
                 </div>
               ))}

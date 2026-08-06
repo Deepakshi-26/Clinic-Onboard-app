@@ -7,14 +7,16 @@ import {
   computeGoalsProgress,
   computeOnboardingSteps,
 } from "@/lib/progress";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 
-export function EmployeeDetailPanel({
+export async function EmployeeDetailPanel({
   employee,
   goals,
 }: {
   employee: Employee;
   goals: Goal[];
 }) {
+  const t = getT(await getServerLocale());
   const steps = computeOnboardingSteps(employee, goals);
   const documents = computeDocumentItems(employee);
   const daily = computeGoalsProgress(goals.filter((g) => g.type === "DAILY"));
@@ -22,14 +24,14 @@ export function EmployeeDetailPanel({
   const monthly = computeGoalsProgress(goals.filter((g) => g.type === "MONTHLY"));
 
   return (
-    <Card title={`👤 ${employee.fullName} — Onboarding Detail`}>
+    <Card title={`👤 ${employee.fullName} — ${t("employees.onboardingDetail")}`}>
       <StepBar steps={steps} />
       <div className="grid grid-cols-3 gap-6">
         <div>
-          <SectionLabel>Documents</SectionLabel>
+          <SectionLabel>{t("steps.documents")}</SectionLabel>
           <div className="flex flex-col gap-1.5">
             {documents.map((doc) => (
-              <div key={doc.label} className="flex items-center gap-2 text-xs">
+              <div key={doc.labelKey} className="flex items-center gap-2 text-xs">
                 <span
                   className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[9px] ${
                     doc.done
@@ -40,7 +42,7 @@ export function EmployeeDetailPanel({
                   {doc.done && "✓"}
                 </span>
                 <span className={doc.done ? "" : "text-red-600"}>
-                  {doc.label}
+                  {t(doc.labelKey)}
                   {!doc.done && " ⚠️"}
                 </span>
               </div>
@@ -49,18 +51,18 @@ export function EmployeeDetailPanel({
         </div>
 
         <div>
-          <SectionLabel>Training Progress</SectionLabel>
+          <SectionLabel>{t("employees.trainingProgress")}</SectionLabel>
           <div className="text-xs text-slate-600 dark:text-zinc-400">
-            {employee.trainingProgressPct}% complete
+            {employee.trainingProgressPct}% {t("common.complete")}
           </div>
           <ProgressBar pct={employee.trainingProgressPct} className="mt-1.5" />
         </div>
 
         <div>
-          <SectionLabel>Goals</SectionLabel>
-          <GoalStat label="Daily" stat={daily} />
-          <GoalStat label="Weekly" stat={weekly} />
-          <GoalStat label="Monthly" stat={monthly} />
+          <SectionLabel>{t("employees.goals")}</SectionLabel>
+          <GoalStat label={t("goals.daily")} stat={daily} />
+          <GoalStat label={t("goals.weekly")} stat={weekly} />
+          <GoalStat label={t("goals.monthly")} stat={monthly} />
         </div>
       </div>
     </Card>

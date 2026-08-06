@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function EmployeeSelector({
   employees,
@@ -12,6 +13,7 @@ export function EmployeeSelector({
   basePath: string;
 }) {
   const router = useRouter();
+  const { t } = useLocale();
 
   return (
     <select
@@ -20,7 +22,7 @@ export function EmployeeSelector({
       className="rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
     >
       <option value="" disabled>
-        Select an employee...
+        {t("common.selectEmployee")}
       </option>
       {employees.map((employee) => (
         <option key={employee.id} value={employee.id}>

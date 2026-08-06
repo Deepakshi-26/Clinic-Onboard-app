@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getAccessCredential } from "@/lib/repositories/access";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { LocationTabs } from "@/components/ui/LocationTabs";
 import { locationLabel } from "@/lib/labels";
@@ -26,6 +27,9 @@ export default async function EmployeeAccessPage({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
+  const locale = await getServerLocale();
+  const t = getT(locale);
+
   const employee = await prisma.employee.findUnique({
     where: { userId: session.user.id },
   });
@@ -33,7 +37,7 @@ export default async function EmployeeAccessPage({
     return (
       <Card>
         <p className="text-sm text-slate-500 dark:text-zinc-400">
-          No onboarding record found for your account yet. Contact HR.
+          {t("common.noRecord")}
         </p>
       </Card>
     );
@@ -46,39 +50,44 @@ export default async function EmployeeAccessPage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        Access & Login Info
+        {t("access.loginInfo")}
       </h2>
 
       <LocationTabs basePath="/employee/access" activeLocation={selectedLocation} />
 
       <Card
-        title={`🔑 ${locationLabel(selectedLocation)} — Your Access`}
+        title={`🔑 ${locationLabel(selectedLocation, locale)} — ${t("access.yourAccess")}`}
         className="max-w-md"
       >
         {!credential ? (
           <p className="text-xs text-slate-500 dark:text-zinc-400">
-            No access details assigned for this location yet. Contact HR if needed.
+            {t("access.noAccessAssigned")}
           </p>
         ) : (
           <>
-            <Row label="Work Email" value={credential.workEmail} />
-            <Row label="Wi-Fi Password" value={credential.wifiPassword} />
-            <Row label="Door Passcode" value={credential.doorPasscode} />
-            <Row label="Building Passcode" value={credential.buildingPasscode} />
+            <Row label={t("home.workEmail")} value={credential.workEmail} />
+            <Row label={t("access.wifiPassword")} value={credential.wifiPassword} />
+            <Row label={t("access.doorPasscode")} value={credential.doorPasscode} />
+            <Row label={t("access.buildingPasscode")} value={credential.buildingPasscode} />
             <Row
-              label="MEDEXA Password"
+              label={t("access.medexaPassword")}
               value={credential.medexaPassword ? "••••••••" : null}
             />
-            <Row label="Myle Password" value={credential.mylePassword ? "••••••••" : null} />
-            <Row label="Equipment Box" value={credential.equipmentBoxLocation} />
-            <Row label="Equipment Requests" value={credential.equipmentRequestEmail} />
-            <Row label="Trainer" value={credential.trainerName} />
+            <Row
+              label={t("access.mylePassword")}
+              value={credential.mylePassword ? "••••••••" : null}
+            />
+            <Row label={t("access.equipmentBox")} value={credential.equipmentBoxLocation} />
+            <Row
+              label={t("access.equipmentRequests")}
+              value={credential.equipmentRequestEmail}
+            />
+            <Row label={t("access.trainer")} value={credential.trainerName} />
             {credential.parkingEnabled && (
-              <Row label="🅿️ Parking" value={credential.parkingNote} />
+              <Row label={`🅿️ ${t("access.parking")}`} value={credential.parkingNote} />
             )}
             <div className="mt-3 rounded-lg bg-slate-100 p-3 text-[11px] text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
-              🔒 This information is private to you. If anything is incorrect, contact
-              HR.
+              🔒 {t("access.privateNote")}
             </div>
           </>
         )}

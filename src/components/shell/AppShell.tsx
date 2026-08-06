@@ -4,43 +4,45 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "./SignOutButton";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 import { Chatbot } from "@/components/chatbot/Chatbot";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-type NavItem = { href: string; label: string; icon: string };
+type NavItem = { href: string; labelKey: string; icon: string };
 
 const HR_NAV: NavItem[] = [
-  { href: "/hr", label: "Dashboard", icon: "📊" },
-  { href: "/hr/employees", label: "Employees", icon: "👥" },
-  { href: "/hr/new-hire-info", label: "New Hire Info", icon: "📝" },
-  { href: "/hr/documents", label: "Documents & Training", icon: "📁" },
-  { href: "/hr/access", label: "Access & Passwords", icon: "🔐" },
-  { href: "/hr/goals", label: "Goals Setup", icon: "🎯" },
-  { href: "/hr/invite", label: "Invite New Hire", icon: "✉️" },
-  { href: "/hr/messages", label: "Messages", icon: "💬" },
+  { href: "/hr", labelKey: "nav.dashboard", icon: "📊" },
+  { href: "/hr/employees", labelKey: "nav.employees", icon: "👥" },
+  { href: "/hr/new-hire-info", labelKey: "nav.newHireInfo", icon: "📝" },
+  { href: "/hr/documents", labelKey: "nav.documents", icon: "📁" },
+  { href: "/hr/access", labelKey: "nav.access", icon: "🔐" },
+  { href: "/hr/goals", labelKey: "nav.goals", icon: "🎯" },
+  { href: "/hr/invite", labelKey: "nav.invite", icon: "✉️" },
+  { href: "/hr/messages", labelKey: "nav.messages", icon: "💬" },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
-  { href: "/employee", label: "Home", icon: "🏠" },
-  { href: "/employee/documents", label: "My Documents", icon: "📋" },
-  { href: "/employee/training", label: "Training Materials", icon: "📚" },
-  { href: "/employee/access", label: "Access Info", icon: "🔑" },
-  { href: "/employee/messages", label: "Messages", icon: "💬" },
+  { href: "/employee", labelKey: "nav.home", icon: "🏠" },
+  { href: "/employee/documents", labelKey: "nav.myDocuments", icon: "📋" },
+  { href: "/employee/training", labelKey: "nav.training", icon: "📚" },
+  { href: "/employee/access", labelKey: "nav.accessInfo", icon: "🔑" },
+  { href: "/employee/messages", labelKey: "nav.messages", icon: "💬" },
 ];
 
-const TITLES: Record<string, string> = {
-  "/hr": "Dashboard",
-  "/hr/employees": "Employees",
-  "/hr/new-hire-info": "New Hire Info",
-  "/hr/documents": "Documents & Training",
-  "/hr/access": "Access & Passwords",
-  "/hr/goals": "Goals Setup",
-  "/hr/invite": "Invite New Hire",
-  "/hr/messages": "Messages",
-  "/employee": "My Onboarding",
-  "/employee/documents": "My Documents",
-  "/employee/training": "Training Materials",
-  "/employee/access": "Access Info",
-  "/employee/messages": "Messages",
+const TITLE_KEYS: Record<string, string> = {
+  "/hr": "nav.dashboard",
+  "/hr/employees": "nav.employees",
+  "/hr/new-hire-info": "nav.newHireInfo",
+  "/hr/documents": "nav.documents",
+  "/hr/access": "nav.access",
+  "/hr/goals": "nav.goals",
+  "/hr/invite": "nav.invite",
+  "/hr/messages": "nav.messages",
+  "/employee": "shell.myOnboarding",
+  "/employee/documents": "nav.myDocuments",
+  "/employee/training": "nav.training",
+  "/employee/access": "nav.accessInfo",
+  "/employee/messages": "nav.messages",
 };
 
 export function AppShell({
@@ -55,8 +57,9 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { t } = useLocale();
   const nav = role === "HR" ? HR_NAV : EMPLOYEE_NAV;
-  const title = TITLES[pathname] ?? "";
+  const title = TITLE_KEYS[pathname] ? t(TITLE_KEYS[pathname]) : "";
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -91,7 +94,7 @@ export function AppShell({
                 }`}
               >
                 <span className="w-4 text-center text-sm">{item.icon}</span>
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             );
           })}
@@ -107,7 +110,10 @@ export function AppShell({
           <h1 className="text-base font-bold text-slate-900 dark:text-zinc-50">
             {title}
           </h1>
-          <ThemeToggle />
+          <div className="flex items-center gap-2.5">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto bg-slate-50 p-6 dark:bg-zinc-950">
           {children}

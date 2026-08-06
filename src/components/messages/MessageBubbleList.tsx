@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+
 export type BubbleMessage = {
   id: string;
   body: string;
@@ -8,10 +12,11 @@ export type BubbleMessage = {
 };
 
 export function MessageBubbleList({ messages }: { messages: BubbleMessage[] }) {
+  const { t } = useLocale();
   if (messages.length === 0) {
     return (
       <p className="py-6 text-center text-xs text-slate-400 dark:text-zinc-500">
-        No messages yet — say hello!
+        {t("messages.noMessagesYet")}
       </p>
     );
   }

@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { deletePersonalDocument } from "@/app/employee/documents/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function PersonalDocumentTile({
   id,
@@ -14,6 +15,7 @@ export function PersonalDocumentTile({
   fileUrl: string;
   uploadedAt: string;
 }) {
+  const { t } = useLocale();
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -24,7 +26,7 @@ export function PersonalDocumentTile({
           {label}
         </div>
         <div className="text-[10px] text-slate-500 dark:text-zinc-400">
-          Uploaded {uploadedAt}
+          {t("newHire.uploaded")} {uploadedAt}
         </div>
       </div>
       <a
@@ -33,13 +35,13 @@ export function PersonalDocumentTile({
         rel="noopener noreferrer"
         className="flex-shrink-0 text-[11px] font-medium text-teal-600 hover:text-teal-700"
       >
-        View
+        {t("common.view")}
       </a>
       <button
         onClick={() => startTransition(() => deletePersonalDocument(id))}
         disabled={isPending}
         className="flex-shrink-0 text-xs text-red-500 hover:text-red-600 disabled:opacity-50"
-        title="Remove document"
+        title={t("docs.removeDocument")}
       >
         {isPending ? "…" : "✕"}
       </button>

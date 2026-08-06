@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getAccessCredential } from "@/lib/repositories/access";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { LocationTabs } from "@/components/ui/LocationTabs";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
@@ -15,6 +16,7 @@ export default async function AccessPage({
   searchParams: Promise<{ employeeId?: string; location?: string }>;
 }) {
   const { employeeId, location } = await searchParams;
+  const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
     select: { id: true, fullName: true },
@@ -32,7 +34,7 @@ export default async function AccessPage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        Access & Passwords
+        {t("access.heading")}
       </h2>
 
       <div className="max-w-xs">
@@ -46,7 +48,7 @@ export default async function AccessPage({
       {!selectedEmployee ? (
         <Card>
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            No employees yet — invite a new hire first.
+            {t("access.noEmployees")}
           </p>
         </Card>
       ) : (
@@ -57,7 +59,7 @@ export default async function AccessPage({
             extraParams={{ employeeId: selectedId }}
           />
           <div className="grid grid-cols-2 gap-4">
-            <Card title="🔐 Edit Access Details">
+            <Card title={`🔐 ${t("access.editDetails")}`}>
               <AccessCredentialForm
                 key={`${selectedId}-${selectedLocation}`}
                 data={{

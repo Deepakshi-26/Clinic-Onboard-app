@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { LOCATION_LABELS } from "@/lib/labels";
+import { locationLabels } from "@/lib/labels";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function LocationTabs({
   basePath,
@@ -14,6 +15,7 @@ export function LocationTabs({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { locale } = useLocale();
 
   function go(location: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -26,7 +28,7 @@ export function LocationTabs({
 
   return (
     <div className="mb-4 flex flex-wrap gap-1.5">
-      {Object.entries(LOCATION_LABELS).map(([value, label]) => (
+      {Object.entries(locationLabels(locale)).map(([value, label]) => (
         <button
           key={value}
           onClick={() => go(value)}

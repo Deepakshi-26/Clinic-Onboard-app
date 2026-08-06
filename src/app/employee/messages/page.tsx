@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getHrEmployeeThread, getPeerThread } from "@/lib/repositories/messages";
 import { locationLabel, titleLabel } from "@/lib/labels";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { MessageBubbleList } from "@/components/messages/MessageBubbleList";
@@ -18,6 +19,9 @@ export default async function EmployeeMessagesPage({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
+  const locale = await getServerLocale();
+  const t = getT(locale);
+
   const employee = await prisma.employee.findUnique({
     where: { userId: session.user.id },
   });
@@ -25,7 +29,7 @@ export default async function EmployeeMessagesPage({
     return (
       <Card>
         <p className="text-sm text-slate-500 dark:text-zinc-400">
-          No onboarding record found for your account yet. Contact HR.
+          {t("common.noRecord")}
         </p>
       </Card>
     );
@@ -63,22 +67,23 @@ export default async function EmployeeMessagesPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">Messages</h2>
+      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
+        {t("nav.messages")}
+      </h2>
 
       <div className="grid grid-cols-2 gap-4">
-        <Card title="🧑‍💼 Staff Support">
+        <Card title={`🧑‍💼 ${t("messages.staffSupport")}`}>
           <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
-            This goes directly to HR — separate from the AI chatbot. Use it for
-            anything the assistant can&apos;t help with.
+            {t("messages.staffSupportNote")}
           </p>
           <MessageBubbleList messages={hrBubbles} />
           <HrReplyForm />
         </Card>
 
         {cohort.length > 0 && (
-          <Card title="🤝 Onboarding Peers">
+          <Card title={`🤝 ${t("messages.onboardingPeers")}`}>
             <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
-              These people are currently onboarding at the same time as you:
+              {t("messages.onboardingPeersNote")}
             </p>
             <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
               {cohort.map((c) => (
@@ -93,7 +98,7 @@ export default async function EmployeeMessagesPage({
                       {c.fullName}
                     </div>
                     <div className="text-[10px] text-slate-500 dark:text-zinc-400">
-                      {titleLabel(c.title)} · {locationLabel(c.location)}
+                      {titleLabel(c.title, locale)} · {locationLabel(c.location, locale)}
                     </div>
                   </div>
                 </Link>
@@ -111,7 +116,7 @@ export default async function EmployeeMessagesPage({
             )}
 
             <div className="mt-3 rounded-lg bg-slate-100 p-2.5 text-[10px] text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
-              Visible to HR for oversight, same as your other portal messages.
+              {t("messages.visibleToHr")}
             </div>
           </Card>
         )}

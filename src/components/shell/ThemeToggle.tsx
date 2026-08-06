@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+
 function toggleTheme() {
   const next = !document.documentElement.classList.contains("dark");
   document.documentElement.classList.toggle("dark", next);
@@ -7,10 +9,11 @@ function toggleTheme() {
 }
 
 export function ThemeToggle() {
+  const { t } = useLocale();
   return (
     <button
       onClick={toggleTheme}
-      title="Toggle dark / light mode"
+      title={t("shell.toggleTheme")}
       className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-sm text-slate-600 transition-colors hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
     >
       <span className="dark:hidden">🌙</span>

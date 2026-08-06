@@ -1,6 +1,7 @@
 import type { JobTitle, Location } from "@prisma/client";
+import type { Locale } from "./i18n/translations";
 
-export const JOB_TITLE_LABELS: Record<JobTitle, string> = {
+const JOB_TITLE_LABELS_EN: Record<JobTitle, string> = {
   PHYSIOTHERAPIST: "Physiotherapist",
   OCCUPATIONAL_THERAPIST: "Occupational Therapist",
   PHYSIO_ASSISTANT: "Physio Assistant",
@@ -16,19 +17,53 @@ export const JOB_TITLE_LABELS: Record<JobTitle, string> = {
   MANAGER: "Manager",
 };
 
-export const LOCATION_LABELS: Record<Location, string> = {
+const JOB_TITLE_LABELS_FR: Record<JobTitle, string> = {
+  PHYSIOTHERAPIST: "Physiothérapeute",
+  OCCUPATIONAL_THERAPIST: "Ergothérapeute",
+  PHYSIO_ASSISTANT: "Assistant en physiothérapie",
+  OT_ASSISTANT: "Assistant en ergothérapie",
+  PHYSIO_TECHNOLOGIST: "Technologue en physiothérapie",
+  DOCTOR: "Médecin",
+  REHAB_ADMIN: "Admin réadaptation",
+  MEDICAL_ADMIN: "Admin médical",
+  CNESST_ADMIN: "Admin CNESST",
+  SAAQ_ADMIN: "Admin SAAQ",
+  BC_ADMIN: "Admin BC",
+  HR: "RH",
+  MANAGER: "Gestionnaire",
+};
+
+const LOCATION_LABELS_EN: Record<Location, string> = {
   PARC_EXTENSION: "Parc Extension",
   MONTREAL_NORD: "Montréal Nord",
   COTE_VERTU: "Côte-Vertu",
   LACHINE: "Lachine",
 };
 
-export function titleLabel(title: JobTitle): string {
-  return JOB_TITLE_LABELS[title];
+const LOCATION_LABELS_FR: Record<Location, string> = {
+  PARC_EXTENSION: "Parc-Extension",
+  MONTREAL_NORD: "Montréal-Nord",
+  COTE_VERTU: "Côte-Vertu",
+  LACHINE: "Lachine",
+};
+
+export const JOB_TITLE_LABELS = JOB_TITLE_LABELS_EN;
+export const LOCATION_LABELS = LOCATION_LABELS_EN;
+
+export function jobTitleLabels(locale: Locale = "en"): Record<JobTitle, string> {
+  return locale === "fr" ? JOB_TITLE_LABELS_FR : JOB_TITLE_LABELS_EN;
 }
 
-export function locationLabel(location: Location): string {
-  return LOCATION_LABELS[location];
+export function locationLabels(locale: Locale = "en"): Record<Location, string> {
+  return locale === "fr" ? LOCATION_LABELS_FR : LOCATION_LABELS_EN;
+}
+
+export function titleLabel(title: JobTitle, locale: Locale = "en"): string {
+  return jobTitleLabels(locale)[title];
+}
+
+export function locationLabel(location: Location, locale: Locale = "en"): string {
+  return locationLabels(locale)[location];
 }
 
 const AVATAR_COLORS = [

@@ -2,12 +2,41 @@
 
 import { useState, useTransition } from "react";
 import { addGoal, removeGoal } from "@/app/hr/goals/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Goal, GoalType } from "@prisma/client";
 
-const TABS: { type: GoalType; label: string; periodLabel: string; icon: string }[] = [
-  { type: "DAILY", label: "Daily Goals", periodLabel: "Day #", icon: "📅" },
-  { type: "WEEKLY", label: "Weekly Goals", periodLabel: "Week #", icon: "📆" },
-  { type: "MONTHLY", label: "Monthly Goals", periodLabel: "Day #", icon: "🗓" },
+const TABS: {
+  type: GoalType;
+  labelKey: string;
+  periodLabelKey: string;
+  placeholderKey: string;
+  emptyKey: string;
+  icon: string;
+}[] = [
+  {
+    type: "DAILY",
+    labelKey: "goalsSetup.dailyGoals",
+    periodLabelKey: "goalsSetup.day",
+    placeholderKey: "goalsSetup.addDailyPlaceholder",
+    emptyKey: "goalsSetup.noDailyYet",
+    icon: "📅",
+  },
+  {
+    type: "WEEKLY",
+    labelKey: "goalsSetup.weeklyGoals",
+    periodLabelKey: "common.week",
+    placeholderKey: "goalsSetup.addWeeklyPlaceholder",
+    emptyKey: "goalsSetup.noWeeklyYet",
+    icon: "📆",
+  },
+  {
+    type: "MONTHLY",
+    labelKey: "goalsSetup.monthlyGoals",
+    periodLabelKey: "goalsSetup.day",
+    placeholderKey: "goalsSetup.addMonthlyPlaceholder",
+    emptyKey: "goalsSetup.noMonthlyYet",
+    icon: "🗓",
+  },
 ];
 
 const inputClasses =
@@ -20,6 +49,7 @@ export function GoalsSetupPanel({
   employeeId: string;
   goals: Goal[];
 }) {
+  const { t } = useLocale();
   const [activeType, setActiveType] = useState<GoalType>("DAILY");
   const [title, setTitle] = useState("");
   const [periodNumber, setPeriodNumber] = useState("");
@@ -29,7 +59,7 @@ export function GoalsSetupPanel({
     .filter((g) => g.type === activeType)
     .sort((a, b) => a.order - b.order);
 
-  const activeTab = TABS.find((t) => t.type === activeType)!;
+  const activeTab = TABS.find((tab) => tab.type === activeType)!;
 
   function handleAdd() {
     if (!title.trim() || !periodNumber) return;
@@ -58,7 +88,7 @@ export function GoalsSetupPanel({
                 : "text-slate-500 dark:text-zinc-400"
             }`}
           >
-            {tab.icon} {tab.label}
+            {tab.icon} {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -66,7 +96,7 @@ export function GoalsSetupPanel({
       <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
         {activeGoals.length === 0 ? (
           <p className="py-3 text-xs text-slate-500 dark:text-zinc-400">
-            No {activeTab.label.toLowerCase()} yet.
+            {t(activeTab.emptyKey)}
           </p>
         ) : (
           activeGoals.map((goal) => (
@@ -83,7 +113,7 @@ export function GoalsSetupPanel({
                   {goal.title}
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-zinc-400">
-                  {activeTab.periodLabel.replace(" #", "")} {goal.periodNumber}
+                  {t(activeTab.periodLabelKey)} {goal.periodNumber}
                 </div>
               </div>
               <button
@@ -91,7 +121,7 @@ export function GoalsSetupPanel({
                 disabled={isPending}
                 className="text-[11px] text-red-500 hover:text-red-600 disabled:opacity-50"
               >
-                Remove
+                {t("common.remove")}
               </button>
             </div>
           ))
@@ -102,13 +132,13 @@ export function GoalsSetupPanel({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={`Add a new ${activeType.toLowerCase()} goal...`}
+          placeholder={t(activeTab.placeholderKey)}
           className={`${inputClasses} flex-1`}
         />
         <input
           value={periodNumber}
           onChange={(e) => setPeriodNumber(e.target.value)}
-          placeholder={activeTab.periodLabel}
+          placeholder={t(activeTab.periodLabelKey)}
           type="number"
           min={1}
           className={`${inputClasses} w-20`}
@@ -118,7 +148,7 @@ export function GoalsSetupPanel({
           disabled={isPending || !title.trim() || !periodNumber}
           className="rounded-lg bg-teal-600 px-3.5 text-sm font-semibold text-white disabled:opacity-60"
         >
-          + Add
+          {t("goalsSetup.add")}
         </button>
       </div>
     </div>

@@ -2,8 +2,10 @@
 
 import { useRef, useState, useTransition } from "react";
 import { sendMessageToHr } from "@/app/employee/messages/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function HrReplyForm() {
+  const { t } = useLocale();
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -41,7 +43,7 @@ export function HrReplyForm() {
         />
         <button
           onClick={() => fileInputRef.current?.click()}
-          title="Attach a file"
+          title={t("messages.attachFile")}
           className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-slate-300 text-sm text-slate-500 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-400"
         >
           +
@@ -50,7 +52,7 @@ export function HrReplyForm() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
-          placeholder="Type your message…"
+          placeholder={t("messages.typeYourMessage")}
           className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950"
         />
         <button
@@ -58,7 +60,7 @@ export function HrReplyForm() {
           disabled={isPending || (!text.trim() && !file)}
           className="rounded-lg bg-teal-600 px-4 text-xs font-semibold text-white disabled:opacity-60"
         >
-          Send
+          {t("common.send")}
         </button>
       </div>
     </div>

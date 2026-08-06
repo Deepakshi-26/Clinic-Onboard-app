@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getHrEmployeeThread } from "@/lib/repositories/messages";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { MessageBubbleList } from "@/components/messages/MessageBubbleList";
@@ -12,6 +13,7 @@ export default async function HrMessagesPage({
   searchParams: Promise<{ employeeId?: string }>;
 }) {
   const { employeeId } = await searchParams;
+  const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
     select: { id: true, fullName: true, title: true, location: true },
@@ -61,10 +63,12 @@ export default async function HrMessagesPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">Messages</h2>
+      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
+        {t("nav.messages")}
+      </h2>
 
       <div className="grid grid-cols-2 gap-4">
-        <Card title="📥 Conversations">
+        <Card title={`📥 ${t("messages.conversations")}`}>
           <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
             {employees.map((e) => (
               <Link
@@ -85,10 +89,10 @@ export default async function HrMessagesPage({
           </div>
         </Card>
 
-        <Card title={selected ? `💬 ${selected.fullName}` : "💬 Messages"}>
+        <Card title={selected ? `💬 ${selected.fullName}` : `💬 ${t("nav.messages")}`}>
           {!selected ? (
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              No employees yet.
+              {t("documents.noEmployeesYet")}
             </p>
           ) : (
             <>
@@ -99,25 +103,26 @@ export default async function HrMessagesPage({
         </Card>
       </div>
 
-      <Card title="🕵️ Peer Conversations — read-only oversight">
+      <Card title={`🕵️ ${t("messages.peerConversationsTitle")}`}>
         <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
-          New hires who are onboarding at the same time can message each other
-          directly. You can&apos;t reply here, but you can review if needed.
+          {t("messages.peerOversightNote")}
         </p>
         {peerThreads.size === 0 ? (
           <p className="text-xs text-slate-500 dark:text-zinc-400">
-            No peer conversations yet.
+            {t("messages.noPeerConversations")}
           </p>
         ) : (
           <div className="flex flex-col divide-y divide-slate-100 text-xs dark:divide-zinc-800">
-            {Array.from(peerThreads.values()).map((t) => (
-              <div key={`${t.nameA}-${t.nameB}`} className="py-2">
+            {Array.from(peerThreads.values()).map((thread) => (
+              <div key={`${thread.nameA}-${thread.nameB}`} className="py-2">
                 <strong>
-                  {t.nameA} ↔ {t.nameB}
+                  {thread.nameA} ↔ {thread.nameB}
                 </strong>{" "}
-                — {t.count} message{t.count > 1 ? "s" : ""}, last: &quot;
-                {t.lastBody.slice(0, 60)}
-                {t.lastBody.length > 60 ? "…" : ""}&quot;
+                — {thread.count}{" "}
+                {thread.count > 1 ? t("messages.messagePlural") : t("messages.messageSingular")},{" "}
+                {t("messages.last")} &quot;
+                {thread.lastBody.slice(0, 60)}
+                {thread.lastBody.length > 60 ? "…" : ""}&quot;
               </div>
             ))}
           </div>

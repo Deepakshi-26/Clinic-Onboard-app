@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type Role = "HR" | "EMPLOYEE";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [role, setRole] = useState<Role>("HR");
   const [email, setEmail] = useState("hr@clinic.com");
   const [password, setPassword] = useState("");
@@ -31,7 +33,7 @@ export default function LoginPage() {
     setSubmitting(false);
 
     if (result?.error) {
-      setError("Invalid email or password.");
+      setError(t("login.invalidCredentials"));
       return;
     }
     router.push(role === "HR" ? "/hr" : "/employee");
@@ -50,7 +52,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="mb-7 pl-14 text-sm text-slate-500 dark:text-zinc-400">
-          Staff Onboarding Portal
+          {t("login.subtitle")}
         </p>
 
         <div className="mb-6 flex gap-2">
@@ -63,7 +65,7 @@ export default function LoginPage() {
                 : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
             }`}
           >
-            HR / Director
+            {t("login.roleHr")}
           </button>
           <button
             type="button"
@@ -74,14 +76,14 @@ export default function LoginPage() {
                 : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
             }`}
           >
-            New Employee
+            {t("login.roleEmployee")}
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
-              Email Address
+              {t("login.email")}
             </span>
             <input
               type="email"
@@ -93,7 +95,7 @@ export default function LoginPage() {
           </label>
           <label className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
-              Password
+              {t("login.password")}
             </span>
             <input
               type="password"
@@ -111,14 +113,14 @@ export default function LoginPage() {
             disabled={submitting}
             className="mt-1 rounded-lg bg-gradient-to-br from-teal-600 to-teal-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            {submitting ? "Signing in..." : "Sign In"}
+            {submitting ? t("login.signingIn") : t("login.signIn")}
           </button>
         </form>
 
         <p className="mt-4 text-center text-[11px] text-slate-400 dark:text-zinc-500">
-          Demo — HR: hr@clinic.com · Employee: maria.s@example.com
+          {t("login.demoHint")}
           <br />
-          password: changeme123
+          {t("login.demoPassword")}
         </p>
       </div>
     </div>

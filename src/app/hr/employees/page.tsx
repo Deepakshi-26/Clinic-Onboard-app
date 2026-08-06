@@ -7,7 +7,7 @@ import {
   computeGoalsProgress,
   computeMissingDocs,
   computeOverallProgress,
-  computePhaseLabel,
+  computeWeekNumber,
   formatShortDate,
 } from "@/lib/progress";
 import { Card } from "@/components/ui/Card";
@@ -15,6 +15,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeDetailPanel } from "@/components/hr/EmployeeDetailPanel";
 import { SendReminderButton } from "@/components/hr/SendReminderButton";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 
 function isOverdue(startDate: Date, durationDays: number): boolean {
   return computeDaysElapsed(startDate) > durationDays / 2;
@@ -26,6 +27,8 @@ export default async function EmployeesPage({
   searchParams: Promise<{ employeeId?: string }>;
 }) {
   const { employeeId } = await searchParams;
+  const locale = await getServerLocale();
+  const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
     include: { goals: true },
@@ -39,7 +42,7 @@ export default async function EmployeesPage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        All Employees
+        {t("employees.allEmployees")}
       </h2>
 
       <Card>
@@ -47,17 +50,17 @@ export default async function EmployeesPage({
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b-2 border-slate-200 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:text-zinc-400">
-                <Th>Name</Th>
-                <Th>Title</Th>
-                <Th>Location</Th>
-                <Th>Start Date</Th>
-                <Th>Phase</Th>
-                <Th>Overall</Th>
-                <Th>Documents</Th>
-                <Th>Training</Th>
-                <Th>Goals</Th>
-                <Th>Deadline</Th>
-                <Th>Action</Th>
+                <Th>{t("employees.name")}</Th>
+                <Th>{t("employees.title")}</Th>
+                <Th>{t("employees.location")}</Th>
+                <Th>{t("employees.startDate")}</Th>
+                <Th>{t("employees.phase")}</Th>
+                <Th>{t("employees.overall")}</Th>
+                <Th>{t("steps.documents")}</Th>
+                <Th>{t("employees.training")}</Th>
+                <Th>{t("employees.goals")}</Th>
+                <Th>{t("employees.deadline")}</Th>
+                <Th>{t("employees.action")}</Th>
               </tr>
             </thead>
             <tbody>
@@ -82,12 +85,12 @@ export default async function EmployeesPage({
                     <Td>
                       <strong>{employee.fullName}</strong>
                     </Td>
-                    <Td>{titleLabel(employee.title)}</Td>
-                    <Td>{locationLabel(employee.location)}</Td>
-                    <Td>{formatShortDate(employee.startDate)}</Td>
+                    <Td>{titleLabel(employee.title, locale)}</Td>
+                    <Td>{locationLabel(employee.location, locale)}</Td>
+                    <Td>{formatShortDate(employee.startDate, locale)}</Td>
                     <Td>
                       <StatusPill tone="blue">
-                        {computePhaseLabel(employee.startDate)}
+                        {t("common.week")} {computeWeekNumber(employee.startDate)}
                       </StatusPill>
                     </Td>
                     <Td>
@@ -104,10 +107,10 @@ export default async function EmployeesPage({
                     </Td>
                     <Td>
                       {missing.length === 0 ? (
-                        <StatusPill tone="green">All Done</StatusPill>
+                        <StatusPill tone="green">{t("employees.allDone")}</StatusPill>
                       ) : (
                         <StatusPill tone={missing.length > 1 ? "red" : "amber"}>
-                          {missing.length} Missing
+                          {missing.length} {t("employees.missing")}
                         </StatusPill>
                       )}
                     </Td>
@@ -117,7 +120,7 @@ export default async function EmployeesPage({
                     </Td>
                     <Td>
                       <StatusPill tone={missing.length > 0 ? "red" : "blue"}>
-                        {formatShortDate(deadline)}
+                        {formatShortDate(deadline, locale)}
                       </StatusPill>
                     </Td>
                     <Td>
@@ -130,7 +133,9 @@ export default async function EmployeesPage({
                           }
                           className="rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
                         >
-                          {selected?.id === employee.id ? "Hide" : "Detail"}
+                          {selected?.id === employee.id
+                            ? t("employees.hide")
+                            : t("employees.detail")}
                         </Link>
                         {missing.length > 0 && (
                           <SendReminderButton

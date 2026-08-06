@@ -1,3 +1,5 @@
+import { getServerLocale, getT } from "@/lib/i18n/server";
+
 function Row({ label, value }: { label: string; value: string | null }) {
   return (
     <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
@@ -9,7 +11,7 @@ function Row({ label, value }: { label: string; value: string | null }) {
   );
 }
 
-export function CurrentAccessPanel({
+export async function CurrentAccessPanel({
   employeeName,
   data,
 }: {
@@ -26,23 +28,29 @@ export function CurrentAccessPanel({
     trainerName: string | null;
   } | null;
 }) {
+  const t = getT(await getServerLocale());
   return (
     <div>
       <h3 className="mb-2.5 text-xs font-bold text-slate-900 dark:text-zinc-50">
-        👁 Current Access — {employeeName}
+        👁 {t("access.currentAccess")} — {employeeName}
       </h3>
-      <Row label="Door Passcode" value={data?.doorPasscode ?? null} />
-      <Row label="Building Passcode" value={data?.buildingPasscode ?? null} />
-      <Row label="Wi-Fi Password" value={data?.wifiPassword ?? null} />
-      <Row label="Work Email" value={data?.workEmail ?? null} />
-      <Row label="MEDEXA Password" value={data?.medexaPassword ? "••••••••" : null} />
-      <Row label="Myle Password" value={data?.mylePassword ? "••••••••" : null} />
-      <Row label="Equipment Box" value={data?.equipmentBoxLocation ?? null} />
-      <Row label="Equipment Requests" value={data?.equipmentRequestEmail ?? null} />
-      <Row label="Trainer" value={data?.trainerName ?? null} />
+      <Row label={t("access.doorPasscode")} value={data?.doorPasscode ?? null} />
+      <Row label={t("access.buildingPasscode")} value={data?.buildingPasscode ?? null} />
+      <Row label={t("access.wifiPassword")} value={data?.wifiPassword ?? null} />
+      <Row label={t("home.workEmail")} value={data?.workEmail ?? null} />
+      <Row
+        label={t("access.medexaPassword")}
+        value={data?.medexaPassword ? "••••••••" : null}
+      />
+      <Row label={t("access.mylePassword")} value={data?.mylePassword ? "••••••••" : null} />
+      <Row label={t("access.equipmentBox")} value={data?.equipmentBoxLocation ?? null} />
+      <Row
+        label={t("access.equipmentRequests")}
+        value={data?.equipmentRequestEmail ?? null}
+      />
+      <Row label={t("access.trainer")} value={data?.trainerName ?? null} />
       <div className="mt-3 rounded-lg bg-slate-100 p-3 text-[11px] text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
-        Each employee can have different credentials per location. Only HR can view
-        and edit these.
+        {t("access.perLocationNote")}
       </div>
     </div>
   );

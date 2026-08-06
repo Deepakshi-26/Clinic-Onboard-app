@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { deleteDocument, updateDocumentAssignment } from "@/app/hr/documents/actions";
-import { JOB_TITLE_LABELS, titleLabel } from "@/lib/labels";
+import { jobTitleLabels, titleLabel } from "@/lib/labels";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { JobTitle } from "@prisma/client";
 
 type Employee = { id: string; fullName: string };
@@ -22,12 +23,13 @@ export function DocumentTile({
   assignedEmployees: Employee[];
   allEmployees: Employee[];
 }) {
+  const { t, locale } = useLocale();
   const [editing, setEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const assignedNames = assignedEmployees.map((e) => e.fullName);
-  const scopeParts = [...roles.map(titleLabel), ...assignedNames];
-  const scope = scopeParts.length > 0 ? scopeParts.join(", ") : "Nobody yet";
+  const scopeParts = [...roles.map((r) => titleLabel(r, locale)), ...assignedNames];
+  const scope = scopeParts.length > 0 ? scopeParts.join(", ") : t("documents.nobodyYet");
 
   if (editing) {
     return (
@@ -42,15 +44,15 @@ export function DocumentTile({
       >
         <input type="hidden" name="documentId" value={id} />
         <div className="mb-2.5 text-xs font-semibold text-slate-900 dark:text-zinc-50">
-          Editing: {name}
+          {t("documents.editingPrefix")} {name}
         </div>
 
         <div className="mb-2.5">
           <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
-            Roles
+            {t("documents.roles")}
           </span>
           <div className="grid grid-cols-2 gap-1">
-            {Object.entries(JOB_TITLE_LABELS).map(([value, label]) => (
+            {Object.entries(jobTitleLabels(locale)).map(([value, label]) => (
               <label key={value} className="flex items-center gap-1.5 text-[11px]">
                 <input
                   type="checkbox"
@@ -67,7 +69,7 @@ export function DocumentTile({
 
         <div className="mb-3">
           <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
-            Specific People
+            {t("documents.specificPeople")}
           </span>
           <div className="flex flex-col gap-1">
             {allEmployees.map((e) => (
@@ -91,14 +93,14 @@ export function DocumentTile({
             disabled={isPending}
             className="rounded-md bg-teal-600 px-3 py-1.5 text-[11px] font-semibold text-white disabled:opacity-60"
           >
-            {isPending ? "Saving..." : "Save"}
+            {isPending ? t("common.saving") : t("common.save")}
           </button>
           <button
             type="button"
             onClick={() => setEditing(false)}
             className="rounded-md border border-slate-300 px-3 py-1.5 text-[11px] font-medium text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
         </div>
       </form>
@@ -120,13 +122,13 @@ export function DocumentTile({
         onClick={() => setEditing(true)}
         className="flex-shrink-0 text-[11px] font-medium text-teal-600 hover:text-teal-700"
       >
-        Edit
+        {t("common.edit")}
       </button>
       <button
         onClick={() => startTransition(() => deleteDocument(id))}
         disabled={isPending}
         className="flex-shrink-0 text-xs text-red-500 hover:text-red-600 disabled:opacity-50"
-        title="Delete document"
+        title={t("documents.deleteTitle")}
       >
         {isPending ? "…" : "✕"}
       </button>

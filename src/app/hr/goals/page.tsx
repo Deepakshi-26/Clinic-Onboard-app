@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
 import { GoalsSetupPanel } from "@/components/hr/GoalsSetupPanel";
@@ -9,6 +10,7 @@ export default async function GoalsSetupPage({
   searchParams: Promise<{ employeeId?: string }>;
 }) {
   const { employeeId } = await searchParams;
+  const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
     select: { id: true, fullName: true },
@@ -26,7 +28,7 @@ export default async function GoalsSetupPage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        Goals Setup
+        {t("goalsSetup.heading")}
       </h2>
 
       <div className="max-w-xs">
@@ -40,7 +42,7 @@ export default async function GoalsSetupPage({
       {!selectedId ? (
         <Card>
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            No employees yet — invite a new hire first.
+            {t("access.noEmployees")}
           </p>
         </Card>
       ) : (

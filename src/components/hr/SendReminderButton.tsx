@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { sendReminder } from "@/app/hr/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function SendReminderButton({
   employeeId,
@@ -12,6 +13,7 @@ export function SendReminderButton({
   employeeName: string;
   overdue: boolean;
 }) {
+  const { t } = useLocale();
   const [isPending, startTransition] = useTransition();
   const [sent, setSent] = useState(false);
 
@@ -27,9 +29,9 @@ export function SendReminderButton({
       className={`rounded-md px-2.5 py-1 text-[11px] font-semibold text-white transition-opacity disabled:opacity-60 ${
         overdue ? "bg-red-600" : "bg-amber-500"
       }`}
-      title={`Send reminder to ${employeeName}`}
+      title={`${t("messages.sendReminderTo")} ${employeeName}`}
     >
-      {sent ? "✓ Sent" : "📧 Send Reminder"}
+      {sent ? `✓ ${t("messages.sent")}` : `📧 ${t("messages.sendReminder")}`}
     </button>
   );
 }

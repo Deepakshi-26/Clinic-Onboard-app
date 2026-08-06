@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { AppShell } from "@/components/shell/AppShell";
 
 export default async function HrLayout({
@@ -11,11 +12,13 @@ export default async function HrLayout({
   if (!session?.user) redirect("/login");
   if (session.user.role !== "HR") redirect("/employee");
 
+  const t = getT(await getServerLocale());
+
   return (
     <AppShell
       role="HR"
-      userLabel={session.user.name ?? session.user.email ?? "HR"}
-      userSubLabel="HR Director"
+      userLabel={session.user.name ?? session.user.email ?? t("shell.hrFallback")}
+      userSubLabel={t("shell.hrDirector")}
     >
       {children}
     </AppShell>

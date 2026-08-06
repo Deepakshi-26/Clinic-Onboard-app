@@ -3,7 +3,8 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { createInvite, type InviteActionState } from "@/app/hr/invite/actions";
-import { JOB_TITLE_LABELS, LOCATION_LABELS } from "@/lib/labels";
+import { jobTitleLabels, locationLabels } from "@/lib/labels";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 const inputClasses =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950";
@@ -11,6 +12,7 @@ const inputClasses =
 const TRAINERS = ["Dr. Leila Nouri", "Sarah Mitchell (HR)", "Tom Bergeron"];
 
 export function InviteForm() {
+  const { t, locale } = useLocale();
   const [state, formAction] = useActionState<InviteActionState, FormData>(
     createInvite,
     null
@@ -19,10 +21,15 @@ export function InviteForm() {
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-4">
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Full Name">
-          <input name="fullName" required className={inputClasses} placeholder="e.g. Jordan Lee" />
+        <Field label={t("invite.fullName")}>
+          <input
+            name="fullName"
+            required
+            className={inputClasses}
+            placeholder={t("invite.fullNamePlaceholder")}
+          />
         </Field>
-        <Field label="Personal Email">
+        <Field label={t("invite.personalEmail")}>
           <input
             type="email"
             name="personalEmail"
@@ -34,24 +41,24 @@ export function InviteForm() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Title / Role">
+        <Field label={t("invite.titleRole")}>
           <select name="title" required defaultValue="" className={inputClasses}>
             <option value="" disabled>
-              Select...
+              {t("common.selectEllipsis")}
             </option>
-            {Object.entries(JOB_TITLE_LABELS).map(([value, label]) => (
+            {Object.entries(jobTitleLabels(locale)).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Primary Location">
+        <Field label={t("invite.primaryLocation")}>
           <select name="location" required defaultValue="" className={inputClasses}>
             <option value="" disabled>
-              Select...
+              {t("common.selectEllipsis")}
             </option>
-            {Object.entries(LOCATION_LABELS).map(([value, label]) => (
+            {Object.entries(locationLabels(locale)).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
@@ -61,36 +68,36 @@ export function InviteForm() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Start Date">
+        <Field label={t("invite.startDate")}>
           <input type="date" name="startDate" required className={inputClasses} />
         </Field>
-        <Field label="Onboarding Duration (days)">
+        <Field label={t("invite.onboardingDuration")}>
           <select
             name="onboardingDurationDays"
             defaultValue="30"
             className={inputClasses}
           >
-            <option value="30">30 Days</option>
-            <option value="60">60 Days</option>
+            <option value="30">{t("invite.days30")}</option>
+            <option value="60">{t("invite.days60")}</option>
           </select>
         </Field>
       </div>
 
-      <Field label="Assigned Trainer">
+      <Field label={t("access.assignedTrainer")}>
         <input name="trainerName" list="trainers" className={inputClasses} />
         <datalist id="trainers">
-          {TRAINERS.map((t) => (
-            <option key={t} value={t} />
+          {TRAINERS.map((trainer) => (
+            <option key={trainer} value={trainer} />
           ))}
         </datalist>
       </Field>
 
-      <Field label="Personal Welcome Message (optional)">
+      <Field label={t("invite.welcomeMessage")}>
         <textarea
           name="welcomeMessage"
           rows={3}
           className={inputClasses}
-          placeholder="Welcome to the team! We're so excited to have you join us at the clinic..."
+          placeholder={t("invite.welcomeMessagePlaceholder")}
         />
       </Field>
 
@@ -114,13 +121,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { t } = useLocale();
   return (
     <button
       type="submit"
       disabled={pending}
       className="mt-1 w-full rounded-lg bg-teal-600 py-3 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-60"
     >
-      {pending ? "Sending..." : "✉️ Send Invitation"}
+      ✉️ {pending ? t("invite.sending") : t("invite.sendInvitation")}
     </button>
   );
 }

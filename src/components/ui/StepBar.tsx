@@ -1,10 +1,14 @@
+"use client";
+
 import type { Step } from "@/lib/progress";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function StepBar({ steps }: { steps: Step[] }) {
+  const { t } = useLocale();
   return (
     <div className="mb-5 flex">
       {steps.map((step, i) => (
-        <div key={step.label} className="relative flex-1 text-center">
+        <div key={step.labelKey} className="relative flex-1 text-center">
           {i < steps.length - 1 && (
             <div
               className={`absolute top-3.5 left-1/2 h-0.5 w-full ${
@@ -32,7 +36,7 @@ export function StepBar({ steps }: { steps: Step[] }) {
                   : "text-slate-400 dark:text-zinc-500"
             }`}
           >
-            {step.label}
+            {t(step.labelKey)}
           </div>
         </div>
       ))}

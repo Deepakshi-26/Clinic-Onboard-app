@@ -8,6 +8,7 @@ import {
   daysAgoDate,
   formatShortDate,
 } from "@/lib/progress";
+import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -21,6 +22,9 @@ function isOverdue(startDate: Date, durationDays: number): boolean {
 }
 
 export default async function HrDashboardPage() {
+  const locale = await getServerLocale();
+  const t = getT(locale);
+
   const employees = await prisma.employee.findMany({
     where: { status: "ACTIVE" },
     include: { goals: true },
@@ -65,36 +69,40 @@ export default async function HrDashboardPage() {
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-4 gap-3.5">
         <StatCard
-          label="Active Onboardings"
+          label={t("dashboard.activeOnboardings")}
           value={String(employees.length)}
-          sub={`${employees.length} in progress`}
+          sub={`${employees.length} ${t("dashboard.inProgress")}`}
           tone="green"
         />
         <StatCard
-          label="Docs Pending"
+          label={t("dashboard.docsPending")}
           value={String(totalMissingDocs)}
-          sub={overdueMissingDocs > 0 ? `⚠ ${overdueMissingDocs} overdue` : "None overdue"}
+          sub={
+            overdueMissingDocs > 0
+              ? `⚠ ${overdueMissingDocs} ${t("dashboard.overdue")}`
+              : t("dashboard.noneOverdue")
+          }
           tone={overdueMissingDocs > 0 ? "red" : "green"}
         />
         <StatCard
-          label="Avg. Completion"
+          label={t("dashboard.avgCompletion")}
           value={`${avgCompletion}%`}
-          sub="Across active onboardings"
+          sub={t("dashboard.acrossActive")}
           tone="amber"
         />
         <StatCard
-          label="Completed (30d)"
+          label={t("dashboard.completed30d")}
           value={String(completedLast30d)}
-          sub="On track"
+          sub={t("dashboard.onTrack")}
           tone="green"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Card title="🚨 Urgent — Action Required">
+        <Card title={`🚨 ${t("dashboard.urgentActionRequired")}`}>
           {withMissingDocs.length === 0 ? (
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Nothing urgent — no missing documents right now.
+              {t("dashboard.nothingUrgent")}
             </p>
           ) : (
             <div className="flex flex-col gap-2.5">
@@ -107,12 +115,13 @@ export default async function HrDashboardPage() {
                       : "border-amber-500 bg-amber-50 dark:bg-amber-950/30"
                   }`}
                 >
-                  <strong>{employee.fullName}</strong> — {missing[0].label.toLowerCase()}{" "}
-                  missing.{" "}
+                  <strong>{employee.fullName}</strong> — {t(missing[0].labelKey).toLowerCase()}{" "}
+                  {t("dashboard.missingSuffix")}{" "}
                   <strong>
-                    Deadline:{" "}
+                    {t("dashboard.deadline")}{" "}
                     {formatShortDate(
-                      computeDeadline(employee.startDate, employee.onboardingDurationDays)
+                      computeDeadline(employee.startDate, employee.onboardingDurationDays),
+                      locale
                     )}
                   </strong>
                   <div className="mt-2 flex gap-1.5">
@@ -128,10 +137,10 @@ export default async function HrDashboardPage() {
           )}
         </Card>
 
-        <Card title="📊 Employee Progress">
+        <Card title={`📊 ${t("dashboard.employeeProgress")}`}>
           {employees.length === 0 ? (
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              No active onboardings yet — invite a new hire to get started.
+              {t("dashboard.noActiveOnboardings")}
             </p>
           ) : (
             <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
@@ -145,7 +154,7 @@ export default async function HrDashboardPage() {
                         {employee.fullName}
                       </div>
                       <div className="truncate text-[11px] text-slate-500 dark:text-zinc-400">
-                        {titleLabel(employee.title)} · {locationLabel(employee.location)}
+                        {titleLabel(employee.title, locale)} · {locationLabel(employee.location, locale)}
                       </div>
                     </div>
                     <div className="w-20 flex-shrink-0 text-right">

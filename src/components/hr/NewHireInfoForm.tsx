@@ -2,6 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { updateEmployeeInfo } from "@/app/hr/new-hire-info/actions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type InitialData = {
   employeeId: string;
@@ -23,13 +24,14 @@ const missingClasses = "border-red-400 bg-red-50 dark:bg-red-950/20";
 const normalClasses = "border-slate-300 dark:border-zinc-700";
 
 export function NewHireInfoForm({ data }: { data: InitialData }) {
+  const { t } = useLocale();
   return (
     <form action={updateEmployeeInfo} className="flex flex-col gap-5">
       <input type="hidden" name="employeeId" value={data.employeeId} />
 
       <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-3.5">
-          <Field label="Full Name">
+          <Field label={t("invite.fullName")}>
             <input
               name="fullName"
               defaultValue={data.fullName}
@@ -37,7 +39,7 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
               required
             />
           </Field>
-          <Field label="Date of Birth">
+          <Field label={t("docs.dateOfBirth")}>
             <input
               type="date"
               name="dateOfBirth"
@@ -45,14 +47,14 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
               className={`${inputClasses} ${data.dateOfBirth ? normalClasses : missingClasses}`}
             />
           </Field>
-          <Field label="Phone Number">
+          <Field label={t("form.phoneNumber")}>
             <input
               name="phone"
               defaultValue={data.phone}
               className={`${inputClasses} ${data.phone ? normalClasses : missingClasses}`}
             />
           </Field>
-          <Field label="Personal Email">
+          <Field label={t("invite.personalEmail")}>
             <input
               type="email"
               name="personalEmail"
@@ -61,7 +63,7 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
               required
             />
           </Field>
-          <Field label="Residential Address">
+          <Field label={t("form.residentialAddress")}>
             <input
               name="residentialAddress"
               defaultValue={data.residentialAddress}
@@ -73,29 +75,29 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Field label="SIN Number">
+          <Field label={t("newHireForm.sinNumber")}>
             <input
               name="sinNumber"
               defaultValue={data.sinNumber}
-              placeholder="Not yet submitted"
+              placeholder={t("newHireForm.notSubmitted")}
               className={`${inputClasses} ${data.sinNumber ? normalClasses : missingClasses}`}
             />
           </Field>
-          <Field label="Health / Membership Card #">
+          <Field label={t("newHireForm.healthCardHash")}>
             <input
               name="healthCardNumber"
               defaultValue={data.healthCardNumber}
-              placeholder="Not yet submitted"
+              placeholder={t("newHireForm.notSubmitted")}
               className={`${inputClasses} ${
                 data.healthCardNumber ? normalClasses : missingClasses
               }`}
             />
           </Field>
-          <Field label="Permit Number">
+          <Field label={t("docs.permitNumber")}>
             <input
               name="permitNumber"
               defaultValue={data.permitNumber}
-              placeholder="Not yet submitted"
+              placeholder={t("newHireForm.notSubmitted")}
               className={`${inputClasses} ${
                 data.permitNumber ? normalClasses : missingClasses
               }`}
@@ -108,14 +110,14 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
               defaultChecked={data.voidChequeUploaded}
               className="h-4 w-4 accent-teal-600"
             />
-            Void cheque uploaded
+            {t("newHireForm.voidChequeUploaded")}
           </label>
-          <Field label="Notes">
+          <Field label={t("newHireForm.notes")}>
             <textarea
               name="hrNotes"
               defaultValue={data.hrNotes}
               rows={3}
-              placeholder="Any HR notes about this employee..."
+              placeholder={t("newHireForm.notesPlaceholder")}
               className={`${inputClasses} ${normalClasses}`}
             />
           </Field>
@@ -140,13 +142,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { t } = useLocale();
   return (
     <button
       type="submit"
       disabled={pending}
       className="w-fit rounded-lg bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-60"
     >
-      {pending ? "Saving..." : "Save Changes"}
+      {pending ? t("common.saving") : t("newHireForm.saveChanges")}
     </button>
   );
 }
