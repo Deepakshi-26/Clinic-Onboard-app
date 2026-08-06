@@ -59,6 +59,7 @@ export default async function AccessPage({
           <div className="grid grid-cols-2 gap-4">
             <Card title="🔐 Edit Access Details">
               <AccessCredentialForm
+                key={`${selectedId}-${selectedLocation}`}
                 data={{
                   employeeId: selectedId!,
                   location: selectedLocation,

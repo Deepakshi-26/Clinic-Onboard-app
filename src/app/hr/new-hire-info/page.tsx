@@ -52,6 +52,7 @@ export default async function NewHireInfoPage({
           </p>
         ) : (
           <NewHireInfoForm
+            key={info.id}
             data={{
               employeeId: info.id,
               fullName: info.fullName,
