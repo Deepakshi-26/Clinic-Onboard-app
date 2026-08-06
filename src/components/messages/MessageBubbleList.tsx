@@ -3,6 +3,8 @@ export type BubbleMessage = {
   body: string;
   createdAt: Date;
   alignRight: boolean;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
 };
 
 export function MessageBubbleList({ messages }: { messages: BubbleMessage[] }) {
@@ -25,7 +27,21 @@ export function MessageBubbleList({ messages }: { messages: BubbleMessage[] }) {
               : "rounded-bl-sm bg-slate-100 text-slate-900 dark:bg-zinc-800 dark:text-zinc-50"
           }`}
         >
-          <div>{m.body}</div>
+          {m.body && <div>{m.body}</div>}
+          {m.attachmentUrl && (
+            <a
+              href={m.attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium underline-offset-2 hover:underline ${
+                m.alignRight
+                  ? "bg-white/15 text-white"
+                  : "bg-white text-teal-700 dark:bg-zinc-900 dark:text-teal-400"
+              }`}
+            >
+              📎 {m.attachmentName ?? "Attachment"}
+            </a>
+          )}
           <div
             className={`mt-1 text-[9px] ${
               m.alignRight ? "text-teal-100" : "text-slate-400 dark:text-zinc-500"

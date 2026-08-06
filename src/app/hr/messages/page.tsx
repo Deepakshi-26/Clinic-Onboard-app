@@ -27,6 +27,8 @@ export default async function HrMessagesPage({
     body: m.body,
     createdAt: m.createdAt,
     alignRight: m.senderRole === "HR",
+    attachmentUrl: m.attachmentUrl,
+    attachmentName: m.attachmentName,
   }));
 
   const peerMessages = await prisma.message.findMany({

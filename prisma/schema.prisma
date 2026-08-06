@@ -262,6 +262,10 @@ model Message {
 
   body String
 
+  attachmentUrl  String?
+  attachmentName String?
+  attachmentSize Int?
+
   createdAt DateTime @default(now())
 
   @@index([channel, employeeId])

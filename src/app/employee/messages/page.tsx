@@ -37,6 +37,8 @@ export default async function EmployeeMessagesPage({
     body: m.body,
     createdAt: m.createdAt,
     alignRight: m.senderRole === "EMPLOYEE",
+    attachmentUrl: m.attachmentUrl,
+    attachmentName: m.attachmentName,
   }));
 
   const cohort = await prisma.employee.findMany({
@@ -54,6 +56,8 @@ export default async function EmployeeMessagesPage({
     id: m.id,
     body: m.body,
     createdAt: m.createdAt,
+    attachmentUrl: m.attachmentUrl,
+    attachmentName: m.attachmentName,
     alignRight: m.senderEmployeeId === employee.id,
   }));
 
