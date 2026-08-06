@@ -1,0 +1,50 @@
+import { prisma } from "@/lib/db";
+import { Card } from "@/components/ui/Card";
+import { DocumentUploadForm } from "@/components/hr/DocumentUploadForm";
+import { DocumentTile } from "@/components/hr/DocumentTile";
+
+export default async function HrDocumentsPage() {
+  const [employees, documents] = await Promise.all([
+    prisma.employee.findMany({
+      select: { id: true, fullName: true },
+      orderBy: { fullName: "asc" },
+    }),
+    prisma.trainingDocument.findMany({
+      include: { assignedEmployee: { select: { fullName: true } } },
+      orderBy: { uploadedAt: "desc" },
+    }),
+  ]);
+
+  return (
+    <div className="flex flex-col gap-5">
+      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
+        Documents & Training Materials
+      </h2>
+      <div className="grid grid-cols-2 gap-4">
+        <Card title="📤 Upload New Material">
+          <DocumentUploadForm employees={employees} />
+        </Card>
+        <Card title="📚 Uploaded Materials">
+          {documents.length === 0 ? (
+            <p className="text-xs text-slate-500 dark:text-zinc-400">
+              No documents uploaded yet.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {documents.map((doc) => (
+                <DocumentTile
+                  key={doc.id}
+                  id={doc.id}
+                  name={doc.name}
+                  docType={doc.docType}
+                  roles={doc.roles}
+                  assignedEmployeeName={doc.assignedEmployee?.fullName ?? null}
+                />
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}

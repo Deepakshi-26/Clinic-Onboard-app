@@ -12,6 +12,7 @@
     "@anthropic-ai/sdk": "^0.115.0",
     "@auth/prisma-adapter": "^2.11.3",
     "@prisma/client": "6.19.3",
+    "@vercel/blob": "^2.6.1",
     "bcryptjs": "^3.0.3",
     "next": "16.2.12",
     "next-auth": "5.0.0-beta.32",

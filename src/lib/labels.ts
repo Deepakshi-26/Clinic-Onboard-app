@@ -49,6 +49,24 @@ export function avatarColor(seed: string): string {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
+export const DOC_TYPES = [
+  "MEDEXA Therapist Guide",
+  "MEDEXA Admin Guide",
+  "Myle Doctor Guide",
+  "Myle Admin Guide",
+  "CNESST Admin Guide",
+  "SAAQ Admin Guide",
+  "BC Admin Guide",
+  "Clinic Procedure",
+  "Evals & Suivis Notes",
+  "Physio Documents",
+  "Ergo Documents",
+  "Exercise Programs",
+  "Training Booklet – Rehab Admin",
+  "Training Booklet – Medical Admin",
+  "Other",
+];
+
 export function initials(fullName: string): string {
   return fullName
     .split(" ")
