@@ -15,7 +15,6 @@ const HR_NAV: NavItem[] = [
   { href: "/hr/access", label: "Access & Passwords", icon: "🔐" },
   { href: "/hr/goals", label: "Goals Setup", icon: "🎯" },
   { href: "/hr/invite", label: "Invite New Hire", icon: "✉️" },
-  { href: "/hr/progress", label: "Progress Tracker", icon: "📈" },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
@@ -33,7 +32,6 @@ const TITLES: Record<string, string> = {
   "/hr/access": "Access & Passwords",
   "/hr/goals": "Goals Setup",
   "/hr/invite": "Invite New Hire",
-  "/hr/progress": "Progress Tracker",
   "/employee": "My Onboarding",
   "/employee/documents": "My Documents",
   "/employee/training": "Training Materials",
