@@ -10,7 +10,7 @@ export default async function HrDocumentsPage() {
       orderBy: { fullName: "asc" },
     }),
     prisma.trainingDocument.findMany({
-      include: { assignedEmployee: { select: { fullName: true } } },
+      include: { assignedEmployees: { select: { id: true, fullName: true } } },
       orderBy: { uploadedAt: "desc" },
     }),
   ]);
@@ -38,7 +38,8 @@ export default async function HrDocumentsPage() {
                   name={doc.name}
                   docType={doc.docType}
                   roles={doc.roles}
-                  assignedEmployeeName={doc.assignedEmployee?.fullName ?? null}
+                  assignedEmployees={doc.assignedEmployees}
+                  allEmployees={employees}
                 />
               ))}
             </div>

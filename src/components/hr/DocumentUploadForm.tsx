@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { uploadDocument, type UploadActionState } from "@/app/hr/documents/actions";
 import { DOC_TYPES, JOB_TITLE_LABELS } from "@/lib/labels";
@@ -17,7 +17,6 @@ export function DocumentUploadForm({
     uploadDocument,
     null
   );
-  const [assignMode, setAssignMode] = useState<"roles" | "employee">("roles");
 
   return (
     <form action={formAction} className="flex flex-col gap-3.5">
@@ -40,56 +39,44 @@ export function DocumentUploadForm({
 
       <div>
         <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
-          Assign To
+          Assign to Roles (optional)
         </span>
-        <div className="mb-2.5 flex gap-1.5 rounded-lg bg-slate-100 p-1 dark:bg-zinc-900">
-          <button
-            type="button"
-            onClick={() => setAssignMode("roles")}
-            className={`flex-1 rounded-md py-1.5 text-xs font-medium ${
-              assignMode === "roles"
-                ? "bg-white text-slate-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-50"
-                : "text-slate-500 dark:text-zinc-400"
-            }`}
-          >
-            By Role
-          </button>
-          <button
-            type="button"
-            onClick={() => setAssignMode("employee")}
-            className={`flex-1 rounded-md py-1.5 text-xs font-medium ${
-              assignMode === "employee"
-                ? "bg-white text-slate-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-50"
-                : "text-slate-500 dark:text-zinc-400"
-            }`}
-          >
-            Specific Employee
-          </button>
+        <div className="grid grid-cols-2 gap-1.5">
+          {Object.entries(JOB_TITLE_LABELS).map(([value, label]) => (
+            <label
+              key={value}
+              className="flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs dark:border-zinc-700"
+            >
+              <input type="checkbox" name="roles" value={value} className="accent-teal-600" />
+              {label}
+            </label>
+          ))}
         </div>
+      </div>
 
-        {assignMode === "roles" ? (
-          <div className="grid grid-cols-2 gap-1.5">
-            {Object.entries(JOB_TITLE_LABELS).map(([value, label]) => (
+      <div>
+        <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
+          Also Assign to Specific People (optional)
+        </span>
+        {employees.length === 0 ? (
+          <p className="text-xs text-slate-400 dark:text-zinc-500">No employees yet.</p>
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            {employees.map((e) => (
               <label
-                key={value}
+                key={e.id}
                 className="flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs dark:border-zinc-700"
               >
-                <input type="checkbox" name="roles" value={value} className="accent-teal-600" />
-                {label}
+                <input
+                  type="checkbox"
+                  name="employeeIds"
+                  value={e.id}
+                  className="accent-teal-600"
+                />
+                {e.fullName}
               </label>
             ))}
           </div>
-        ) : (
-          <select name="assignedEmployeeId" defaultValue="" className={inputClasses}>
-            <option value="" disabled>
-              Select an employee...
-            </option>
-            {employees.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.fullName}
-              </option>
-            ))}
-          </select>
         )}
       </div>
 

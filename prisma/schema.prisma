@@ -166,8 +166,9 @@ model Goal {
 }
 
 // A document is visible to an employee if either: their title is in `roles`,
-// OR `assignedEmployeeId` points at them specifically (a narrower override —
-// mirrors the prototype's "assign by role" vs "assign to one employee" choice).
+// OR they're individually listed in `assignedEmployees`. The two are additive
+// (a doc can target a whole role AND a few extra specific people at once),
+// not mutually exclusive.
 model TrainingDocument {
   id       String @id @default(cuid())
   name     String
@@ -176,9 +177,8 @@ model TrainingDocument {
   fileName String
   fileSize Int
 
-  roles              JobTitle[]
-  assignedEmployeeId String?
-  assignedEmployee   Employee?  @relation(fields: [assignedEmployeeId], references: [id], onDelete: SetNull)
+  roles             JobTitle[]
+  assignedEmployees Employee[]
 
   uploadedAt DateTime @default(now())
 }

@@ -22,7 +22,10 @@ export default async function EmployeeTrainingPage() {
 
   const documents = await prisma.trainingDocument.findMany({
     where: {
-      OR: [{ assignedEmployeeId: employee.id }, { roles: { has: employee.title } }],
+      OR: [
+        { assignedEmployees: { some: { id: employee.id } } },
+        { roles: { has: employee.title } },
+      ],
     },
     orderBy: { uploadedAt: "desc" },
   });

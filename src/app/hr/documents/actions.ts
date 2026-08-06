@@ -11,7 +11,7 @@ const UploadSchema = z.object({
   name: z.string().min(1),
   docType: z.string().min(1),
   roles: z.array(z.string()).default([]),
-  assignedEmployeeId: z.string().optional(),
+  employeeIds: z.array(z.string()).default([]),
 });
 
 export type UploadActionState = { error: string } | null;
@@ -37,7 +37,7 @@ export async function uploadDocument(
     name: formData.get("name"),
     docType: formData.get("docType"),
     roles: formData.getAll("roles"),
-    assignedEmployeeId: formData.get("assignedEmployeeId") || undefined,
+    employeeIds: formData.getAll("employeeIds"),
   });
   if (!result.success) {
     return { error: "Please fill in all required fields." };
@@ -56,14 +56,42 @@ export async function uploadDocument(
       fileUrl: blob.url,
       fileName: file.name,
       fileSize: file.size,
-      roles: parsed.assignedEmployeeId ? [] : (parsed.roles as JobTitle[]),
-      assignedEmployeeId: parsed.assignedEmployeeId || null,
+      roles: parsed.roles as JobTitle[],
+      assignedEmployees: { connect: parsed.employeeIds.map((id) => ({ id })) },
     },
   });
 
   revalidatePath("/hr/documents");
   revalidatePath("/employee/training");
   return null;
+}
+
+const UpdateAssignmentSchema = z.object({
+  documentId: z.string().min(1),
+  roles: z.array(z.string()).default([]),
+  employeeIds: z.array(z.string()).default([]),
+});
+
+export async function updateDocumentAssignment(formData: FormData) {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  const parsed = UpdateAssignmentSchema.parse({
+    documentId: formData.get("documentId"),
+    roles: formData.getAll("roles"),
+    employeeIds: formData.getAll("employeeIds"),
+  });
+
+  await prisma.trainingDocument.update({
+    where: { id: parsed.documentId },
+    data: {
+      roles: parsed.roles as JobTitle[],
+      assignedEmployees: { set: parsed.employeeIds.map((id) => ({ id })) },
+    },
+  });
+
+  revalidatePath("/hr/documents");
+  revalidatePath("/employee/training");
 }
 
 export async function deleteDocument(id: string) {
