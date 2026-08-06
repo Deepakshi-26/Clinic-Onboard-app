@@ -145,6 +145,7 @@ model Employee {
   emailLogs         EmailLog[]
   assignedDocuments TrainingDocument[]
   accessCredentials AccessCredential[]
+  personalDocuments PersonalDocument[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -210,6 +211,23 @@ model AccessCredential {
   updatedAt DateTime @updatedAt
 
   @@unique([employeeId, location])
+}
+
+// Files an employee uploads about themselves (void cheque photo, permit
+// photo, etc.) — the reverse direction of TrainingDocument, where HR uploads
+// materials for employees. Freeform `label` rather than a fixed enum since
+// HR may ask for different proof documents per role/situation.
+model PersonalDocument {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  label    String
+  fileUrl  String
+  fileName String
+  fileSize Int
+
+  uploadedAt DateTime @default(now())
 }
 
 // Reused for both the Invite "Send Invitation Email" stub and the Dashboard
