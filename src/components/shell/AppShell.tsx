@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "./SignOutButton";
+import { ThemeToggle } from "./ThemeToggle";
 import { Chatbot } from "@/components/chatbot/Chatbot";
 
 type NavItem = { href: string; label: string; icon: string };
@@ -102,10 +103,11 @@ export function AppShell({
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white px-6 dark:border-zinc-800 dark:bg-zinc-950">
+        <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 dark:border-zinc-800 dark:bg-zinc-950">
           <h1 className="text-base font-bold text-slate-900 dark:text-zinc-50">
             {title}
           </h1>
+          <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto bg-slate-50 p-6 dark:bg-zinc-950">
           {children}
