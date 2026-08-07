@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { sendMessageToHr } from "@/app/employee/messages/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { MicButton } from "@/components/messages/MicButton";
 
 export function HrReplyForm() {
   const { t } = useLocale();
@@ -28,7 +29,7 @@ export function HrReplyForm() {
     <div className="mt-3">
       {file && (
         <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-zinc-400">
-          📎 {file.name}
+          {file.type.startsWith("audio/") ? "🎤" : "📎"} {file.name}
           <button onClick={() => setFile(null)} className="text-red-500">
             ✕
           </button>
@@ -48,6 +49,10 @@ export function HrReplyForm() {
         >
           +
         </button>
+        <MicButton
+          onTranscript={(spoken) => setText((prev) => (prev ? `${prev} ${spoken}` : spoken))}
+          onRecordingComplete={setFile}
+        />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}

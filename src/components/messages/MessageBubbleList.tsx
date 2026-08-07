@@ -9,7 +9,16 @@ export type BubbleMessage = {
   alignRight: boolean;
   attachmentUrl?: string | null;
   attachmentName?: string | null;
+  read?: boolean;
 };
+
+const AUDIO_EXTENSIONS = [".webm", ".ogg", ".m4a", ".mp3", ".wav", ".mp4"];
+
+function isAudioAttachment(name: string | null | undefined): boolean {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  return AUDIO_EXTENSIONS.some((ext) => lower.endsWith(ext));
+}
 
 export function MessageBubbleList({ messages }: { messages: BubbleMessage[] }) {
   const { t } = useLocale();
@@ -33,26 +42,41 @@ export function MessageBubbleList({ messages }: { messages: BubbleMessage[] }) {
           }`}
         >
           {m.body && <div>{m.body}</div>}
-          {m.attachmentUrl && (
-            <a
-              href={m.attachmentUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium underline-offset-2 hover:underline ${
-                m.alignRight
-                  ? "bg-white/15 text-white"
-                  : "bg-white text-teal-700 dark:bg-zinc-900 dark:text-teal-400"
-              }`}
-            >
-              📎 {m.attachmentName ?? "Attachment"}
-            </a>
-          )}
+          {m.attachmentUrl &&
+            (isAudioAttachment(m.attachmentName) ? (
+              <audio
+                controls
+                src={m.attachmentUrl}
+                className="mt-1.5 h-8 w-full max-w-56"
+                style={{ filter: m.alignRight ? "invert(1)" : undefined }}
+              />
+            ) : (
+              <a
+                href={m.attachmentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`mt-1 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium underline-offset-2 hover:underline ${
+                  m.alignRight
+                    ? "bg-white/15 text-white"
+                    : "bg-white text-teal-700 dark:bg-zinc-900 dark:text-teal-400"
+                }`}
+              >
+                📎 {m.attachmentName ?? "Attachment"}
+              </a>
+            ))}
           <div
-            className={`mt-1 text-[9px] ${
+            className={`mt-1 flex items-center gap-1 text-[9px] ${
               m.alignRight ? "text-teal-100" : "text-slate-400 dark:text-zinc-500"
             }`}
           >
-            {m.createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            <span>
+              {m.createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
+            {m.alignRight && (
+              <span title={m.read ? t("messages.read") : t("messages.sentStatus")}>
+                {m.read ? "✓✓" : "✓"}
+              </span>
+            )}
           </div>
         </div>
       ))}

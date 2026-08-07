@@ -272,7 +272,10 @@ model Message {
   attachmentName String?
   attachmentSize Int?
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  // Set when the recipient(s) have viewed the thread this message belongs
+  // to — null means sent/delivered but not yet read.
+  readAt    DateTime?
 
   @@index([channel, employeeId])
   @@index([channel, peerEmployeeId])

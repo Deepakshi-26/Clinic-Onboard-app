@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getHrEmployeeThread } from "@/lib/repositories/messages";
+import { getHrEmployeeThread, markHrEmployeeThreadRead } from "@/lib/repositories/messages";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
@@ -24,6 +24,7 @@ export default async function HrMessagesPage({
   const selectedId = employeeId ?? employees[0]?.id;
   const selected = employees.find((e) => e.id === selectedId);
 
+  if (selectedId) await markHrEmployeeThreadRead(selectedId, "HR");
   const thread = selectedId ? await getHrEmployeeThread(selectedId) : [];
   const bubbles = thread.map((m) => ({
     id: m.id,
@@ -32,6 +33,7 @@ export default async function HrMessagesPage({
     alignRight: m.senderRole === "HR",
     attachmentUrl: m.attachmentUrl,
     attachmentName: m.attachmentName,
+    read: m.readAt !== null,
   }));
 
   const peerMessages = await prisma.message.findMany({

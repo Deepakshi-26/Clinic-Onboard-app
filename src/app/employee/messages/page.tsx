@@ -2,7 +2,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { getHrEmployeeThread, getPeerThread } from "@/lib/repositories/messages";
+import {
+  getHrEmployeeThread,
+  getPeerThread,
+  markHrEmployeeThreadRead,
+  markPeerThreadRead,
+} from "@/lib/repositories/messages";
 import { locationLabel, titleLabel } from "@/lib/labels";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
@@ -35,6 +40,7 @@ export default async function EmployeeMessagesPage({
     );
   }
 
+  await markHrEmployeeThreadRead(employee.id, "EMPLOYEE");
   const hrThread = await getHrEmployeeThread(employee.id);
   const hrBubbles = hrThread.map((m) => ({
     id: m.id,
@@ -43,6 +49,7 @@ export default async function EmployeeMessagesPage({
     alignRight: m.senderRole === "EMPLOYEE",
     attachmentUrl: m.attachmentUrl,
     attachmentName: m.attachmentName,
+    read: m.readAt !== null,
   }));
 
   const cohort = await prisma.employee.findMany({
@@ -53,6 +60,7 @@ export default async function EmployeeMessagesPage({
 
   const { peerId } = await searchParams;
   const selectedPeer = peerId ? cohort.find((c) => c.id === peerId) : undefined;
+  if (selectedPeer) await markPeerThreadRead(employee.id, selectedPeer.id, employee.id);
   const peerThread = selectedPeer
     ? await getPeerThread(employee.id, selectedPeer.id)
     : [];
@@ -63,6 +71,7 @@ export default async function EmployeeMessagesPage({
     attachmentUrl: m.attachmentUrl,
     attachmentName: m.attachmentName,
     alignRight: m.senderEmployeeId === employee.id,
+    read: m.readAt !== null,
   }));
 
   return (

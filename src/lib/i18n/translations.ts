@@ -58,6 +58,11 @@ export const translations: Record<Locale, Dict> = {
       "Account created, but the invitation email failed to send. Check your email configuration, or use \"Resend Invite Email\" below once it's fixed.",
     "invite.resendEmail": "Resend Invite Email",
     "messages.sendFailed": "Failed to send",
+    "messages.read": "Read",
+    "messages.sentStatus": "Sent",
+    "messages.startRecording": "Record a voice message",
+    "messages.stopRecording": "Stop recording",
+    "messages.micPermissionDenied": "Microphone access was denied.",
 
     "docs.dateOfBirth": "Date of Birth",
     "docs.homeAddress": "Home Address",
@@ -374,6 +379,11 @@ export const translations: Record<Locale, Dict> = {
       "Compte créé, mais l'envoi du courriel d'invitation a échoué. Vérifiez votre configuration courriel, ou utilisez « Renvoyer le courriel d'invitation » ci-dessous une fois corrigé.",
     "invite.resendEmail": "Renvoyer le courriel d'invitation",
     "messages.sendFailed": "Échec de l'envoi",
+    "messages.read": "Lu",
+    "messages.sentStatus": "Envoyé",
+    "messages.startRecording": "Enregistrer un message vocal",
+    "messages.stopRecording": "Arrêter l'enregistrement",
+    "messages.micPermissionDenied": "L'accès au microphone a été refusé.",
 
     "docs.dateOfBirth": "Date de naissance",
     "docs.homeAddress": "Adresse domiciliaire",
