@@ -20,7 +20,7 @@ export function InviteForm() {
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.fullName")}>
           <input
             name="fullName"
@@ -40,7 +40,7 @@ export function InviteForm() {
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.titleRole")}>
           <select name="title" required defaultValue="" className={inputClasses}>
             <option value="" disabled>
@@ -67,7 +67,7 @@ export function InviteForm() {
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.startDate")}>
           <input type="date" name="startDate" required className={inputClasses} />
         </Field>

@@ -49,7 +49,7 @@ export default async function EmployeeTrainingPage() {
           </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3">
           {documents.map((doc) => (
             <div
               key={doc.id}

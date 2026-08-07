@@ -48,7 +48,7 @@ export function DocumentUploadForm({
         <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
           {t("documents.assignRoles")}
         </span>
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
           {Object.entries(jobTitleLabels(locale)).map(([value, label]) => (
             <label
               key={value}

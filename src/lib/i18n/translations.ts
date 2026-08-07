@@ -39,8 +39,6 @@ export const translations: Record<Locale, Dict> = {
     "login.signIn": "Sign In",
     "login.signingIn": "Signing in...",
     "login.invalidCredentials": "Invalid email or password.",
-    "login.demoHint": "Demo — HR: hr@clinic.com · Employee: maria.s@example.com",
-    "login.demoPassword": "password: changeme123",
     "login.passwordSetSuccess": "Your password is set — you can now log in.",
 
     "acceptInvite.subtitle": "Set up your account password",
@@ -364,8 +362,6 @@ export const translations: Record<Locale, Dict> = {
     "login.signIn": "Se connecter",
     "login.signingIn": "Connexion...",
     "login.invalidCredentials": "Courriel ou mot de passe invalide.",
-    "login.demoHint": "Démo — RH : hr@clinic.com · Employé : maria.s@example.com",
-    "login.demoPassword": "mot de passe : changeme123",
     "login.passwordSetSuccess": "Votre mot de passe est configuré — vous pouvez maintenant vous connecter.",
 
     "acceptInvite.subtitle": "Configurez le mot de passe de votre compte",

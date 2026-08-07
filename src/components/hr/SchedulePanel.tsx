@@ -84,7 +84,7 @@ export function SchedulePanel({
         )}
       </div>
 
-      <div className="mt-3.5 grid grid-cols-2 gap-1.5">
+      <div className="mt-3.5 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
         <input
           type="date"
           value={date}

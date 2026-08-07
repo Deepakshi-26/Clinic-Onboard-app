@@ -24,7 +24,7 @@ export default async function HrDocumentsPage() {
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
         {t("documents.heading")}
       </h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`📤 ${t("documents.uploadNew")}`}>
           <DocumentUploadForm employees={employees} />
         </Card>

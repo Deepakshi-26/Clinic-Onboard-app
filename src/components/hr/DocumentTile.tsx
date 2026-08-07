@@ -51,7 +51,7 @@ export function DocumentTile({
           <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
             {t("documents.roles")}
           </span>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
             {Object.entries(jobTitleLabels(locale)).map(([value, label]) => (
               <label key={value} className="flex items-center gap-1.5 text-[11px]">
                 <input

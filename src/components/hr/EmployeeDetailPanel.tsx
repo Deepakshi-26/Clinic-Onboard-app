@@ -26,7 +26,7 @@ export async function EmployeeDetailPanel({
   return (
     <Card title={`👤 ${employee.fullName} — ${t("employees.onboardingDetail")}`}>
       <StepBar steps={steps} />
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div>
           <SectionLabel>{t("steps.documents")}</SectionLabel>
           <div className="flex flex-col gap-1.5">

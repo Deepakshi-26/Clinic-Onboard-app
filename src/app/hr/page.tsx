@@ -67,7 +67,7 @@ export default async function HrDashboardPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={t("dashboard.activeOnboardings")}
           value={String(employees.length)}
@@ -98,7 +98,7 @@ export default async function HrDashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`🚨 ${t("dashboard.urgentActionRequired")}`}>
           {withMissingDocs.length === 0 ? (
             <p className="text-xs text-slate-500 dark:text-zinc-400">

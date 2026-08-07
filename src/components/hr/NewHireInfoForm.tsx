@@ -45,7 +45,7 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
         <p className="text-xs text-red-600">{t("newHireForm.forbidden")}</p>
       )}
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-3.5">
           <Field label={t("invite.fullName")}>
             <input

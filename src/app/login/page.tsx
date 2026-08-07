@@ -124,12 +124,6 @@ export default function LoginPage() {
             {submitting ? t("login.signingIn") : t("login.signIn")}
           </button>
         </form>
-
-        <p className="mt-4 text-center text-[11px] text-slate-400 dark:text-zinc-500">
-          {t("login.demoHint")}
-          <br />
-          {t("login.demoPassword")}
-        </p>
       </div>
     </div>
   );

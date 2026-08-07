@@ -49,14 +49,14 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
       <button
         onClick={() => setOpen((o) => !o)}
         title={t("chatbot.title")}
-        className="fixed bottom-6 right-6 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-xl text-white shadow-lg transition-transform hover:scale-105"
+        className="fixed right-4 bottom-4 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-xl text-white shadow-lg transition-transform hover:scale-105 sm:right-6 sm:bottom-6"
         style={{ height: 52, width: 52 }}
       >
         💬
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-6 z-40 flex h-[490px] w-[350px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="fixed right-3 bottom-20 left-3 z-40 flex h-[min(490px,70vh)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:right-6 sm:bottom-24 sm:left-auto sm:w-[350px] dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center gap-2.5 bg-slate-900 px-4 py-3.5 text-white">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-600 text-sm">
               🤖

@@ -40,7 +40,7 @@ export default async function EmployeeHomePage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`👋 ${t("home.welcomeGreeting")}, ${firstName}!`}>
           <p className="mb-3.5 text-xs leading-relaxed text-slate-600 dark:text-zinc-400">
             {employee.welcomeMessage ||
