@@ -6,18 +6,29 @@ import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { EmployeeDetailPanel } from "@/components/hr/EmployeeDetailPanel";
 import { ReactivateEmployeeButton } from "@/components/hr/ReactivateEmployeeButton";
+import { EmployeeSearchBox } from "@/components/hr/EmployeeSearchBox";
 
 export default async function InactiveEmployeesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ employeeId?: string }>;
+  searchParams: Promise<{ employeeId?: string; q?: string }>;
 }) {
-  const { employeeId } = await searchParams;
+  const { employeeId, q } = await searchParams;
   const locale = await getServerLocale();
   const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
-    where: { status: "INACTIVE" },
+    where: {
+      status: "INACTIVE",
+      ...(q
+        ? {
+            OR: [
+              { fullName: { contains: q, mode: "insensitive" } },
+              { personalEmail: { contains: q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
     include: { goals: true },
     orderBy: { inactiveAt: "desc" },
   });
@@ -48,10 +59,12 @@ export default async function InactiveEmployeesPage({
         {t("nav.inactive")}
       </h2>
 
+      <EmployeeSearchBox basePath="/hr/inactive" />
+
       <Card>
         {employees.length === 0 ? (
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            {t("inactive.empty")}
+            {q ? t("common.noSearchResults") : t("inactive.empty")}
           </p>
         ) : (
           <div className="-mx-5 overflow-x-auto">

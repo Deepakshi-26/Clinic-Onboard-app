@@ -15,6 +15,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeDetailPanel } from "@/components/hr/EmployeeDetailPanel";
 import { SendReminderButton } from "@/components/hr/SendReminderButton";
+import { EmployeeSearchBox } from "@/components/hr/EmployeeSearchBox";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 
 function isOverdue(startDate: Date, durationDays: number): boolean {
@@ -24,14 +25,24 @@ function isOverdue(startDate: Date, durationDays: number): boolean {
 export default async function EmployeesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ employeeId?: string; emailStatus?: string }>;
+  searchParams: Promise<{ employeeId?: string; emailStatus?: string; q?: string }>;
 }) {
-  const { employeeId, emailStatus } = await searchParams;
+  const { employeeId, emailStatus, q } = await searchParams;
   const locale = await getServerLocale();
   const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
-    where: { status: { not: "INACTIVE" } },
+    where: {
+      status: { not: "INACTIVE" },
+      ...(q
+        ? {
+            OR: [
+              { fullName: { contains: q, mode: "insensitive" } },
+              { personalEmail: { contains: q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
     include: { goals: true },
     orderBy: { startDate: "desc" },
   });
@@ -57,7 +68,14 @@ export default async function EmployeesPage({
         </p>
       )}
 
+      <EmployeeSearchBox basePath="/hr/employees" />
+
       <Card>
+        {employees.length === 0 && q ? (
+          <p className="text-sm text-slate-500 dark:text-zinc-400">
+            {t("common.noSearchResults")}
+          </p>
+        ) : (
         <div className="-mx-5 overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
@@ -166,6 +184,7 @@ export default async function EmployeesPage({
             </tbody>
           </table>
         </div>
+        )}
       </Card>
 
       {selected && (

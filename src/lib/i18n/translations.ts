@@ -169,6 +169,8 @@ export const translations: Record<Locale, Dict> = {
     "common.edit": "Edit",
     "common.uploading": "Uploading...",
     "common.selectEmployee": "Select an employee...",
+    "common.searchPlaceholder": "Search by name or email...",
+    "common.noSearchResults": "No one matches that search.",
     "shell.toggleTheme": "Toggle dark / light mode",
 
     "documents.heading": "Documents & Training Materials",
@@ -493,6 +495,8 @@ export const translations: Record<Locale, Dict> = {
     "common.edit": "Modifier",
     "common.uploading": "Téléversement...",
     "common.selectEmployee": "Sélectionner un employé...",
+    "common.searchPlaceholder": "Rechercher par nom ou courriel...",
+    "common.noSearchResults": "Personne ne correspond à cette recherche.",
     "shell.toggleTheme": "Basculer entre mode sombre / clair",
 
     "documents.heading": "Documents et matériel de formation",
