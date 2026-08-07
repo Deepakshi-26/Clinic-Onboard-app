@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { defaultGoalSet } from "@/lib/default-goals";
+import { buildInviteEmailHtml, getBaseUrl, sendEmail } from "@/lib/email";
 
 const InviteSchema = z.object({
   fullName: z.string().min(1),
@@ -36,6 +37,8 @@ const InviteSchema = z.object({
 
 export type InviteActionState = { error: string } | null;
 
+const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
 export async function createInvite(
   _prevState: InviteActionState,
   formData: FormData
@@ -58,8 +61,11 @@ export async function createInvite(
     return { error: "An account with this email already exists." };
   }
 
-  const tempPassword = crypto.randomBytes(9).toString("base64url");
-  const passwordHash = await bcrypt.hash(tempPassword, 10);
+  // The account's real password is set by the new hire via the emailed
+  // accept-invite link — this hash is a random, never-revealed placeholder
+  // that makes the account impossible to log into until then.
+  const unusablePassword = crypto.randomBytes(32).toString("hex");
+  const passwordHash = await bcrypt.hash(unusablePassword, 10);
 
   const user = await prisma.user.create({
     data: {
@@ -84,23 +90,35 @@ export async function createInvite(
     include: { employee: true },
   });
 
+  const token = crypto.randomBytes(32).toString("hex");
+  await prisma.verificationToken.create({
+    data: {
+      identifier: parsed.personalEmail,
+      token,
+      expires: new Date(Date.now() + TOKEN_TTL_MS),
+    },
+  });
+
+  const acceptUrl = `${getBaseUrl()}/accept-invite?token=${token}`;
+  const emailResult = await sendEmail({
+    to: parsed.personalEmail,
+    subject: "Welcome to ClinicBoard — Set up your account",
+    html: buildInviteEmailHtml({ fullName: parsed.fullName, acceptUrl }),
+  });
+
   await prisma.emailLog.create({
     data: {
       kind: "INVITE",
       toEmail: parsed.personalEmail,
       subject: "Welcome to ClinicBoard",
-      body: `Hi ${parsed.fullName}, your onboarding portal account is ready. Check your email for login instructions.`,
+      body: `Hi ${parsed.fullName}, your onboarding portal account is ready. Check your email for a link to set your password.`,
       employeeId: user.employee!.id,
     },
   });
 
-  // DEV-ONLY: the temp password is never persisted, only logged here so it
-  // can be used to sign in and test the new hire's account during development.
-  console.log(
-    `[stub email] Invite sent to ${parsed.personalEmail} — temp password: ${tempPassword}`
-  );
-
   revalidatePath("/hr/employees");
   revalidatePath("/hr");
-  redirect(`/hr/employees?employeeId=${user.employee!.id}`);
+  redirect(
+    `/hr/employees?employeeId=${user.employee!.id}&emailStatus=${emailResult.ok ? "sent" : "failed"}`
+  );
 }

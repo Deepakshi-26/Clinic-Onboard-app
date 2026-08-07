@@ -24,9 +24,9 @@ function isOverdue(startDate: Date, durationDays: number): boolean {
 export default async function EmployeesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ employeeId?: string }>;
+  searchParams: Promise<{ employeeId?: string; emailStatus?: string }>;
 }) {
-  const { employeeId } = await searchParams;
+  const { employeeId, emailStatus } = await searchParams;
   const locale = await getServerLocale();
   const t = getT(locale);
 
@@ -44,6 +44,17 @@ export default async function EmployeesPage({
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
         {t("employees.allEmployees")}
       </h2>
+
+      {emailStatus === "sent" && (
+        <p className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+          ✅ {t("invite.emailSent")}
+        </p>
+      )}
+      {emailStatus === "failed" && (
+        <p className="rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
+          ⚠️ {t("invite.emailFailed")}
+        </p>
+      )}
 
       <Card>
         <div className="-mx-5 overflow-x-auto">

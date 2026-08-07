@@ -40,6 +40,23 @@ export const translations: Record<Locale, Dict> = {
     "login.invalidCredentials": "Invalid email or password.",
     "login.demoHint": "Demo — HR: hr@clinic.com · Employee: maria.s@example.com",
     "login.demoPassword": "password: changeme123",
+    "login.passwordSetSuccess": "Your password is set — you can now log in.",
+
+    "acceptInvite.subtitle": "Set up your account password",
+    "acceptInvite.invalidLink":
+      "This invite link is invalid or has expired. Ask HR to resend your invite.",
+    "acceptInvite.newPassword": "New Password",
+    "acceptInvite.confirmPassword": "Confirm Password",
+    "acceptInvite.passwordMismatch": "Passwords don't match.",
+    "acceptInvite.passwordTooShort": "Password must be at least 8 characters.",
+    "acceptInvite.setting": "Setting...",
+    "acceptInvite.setPassword": "Set Password",
+
+    "invite.emailSent": "Invitation email sent.",
+    "invite.emailFailed":
+      "Account created, but the invitation email failed to send. Check your email configuration, or use \"Resend Invite Email\" below once it's fixed.",
+    "invite.resendEmail": "Resend Invite Email",
+    "messages.sendFailed": "Failed to send",
 
     "docs.dateOfBirth": "Date of Birth",
     "docs.homeAddress": "Home Address",
@@ -325,6 +342,23 @@ export const translations: Record<Locale, Dict> = {
     "login.invalidCredentials": "Courriel ou mot de passe invalide.",
     "login.demoHint": "Démo — RH : hr@clinic.com · Employé : maria.s@example.com",
     "login.demoPassword": "mot de passe : changeme123",
+    "login.passwordSetSuccess": "Votre mot de passe est configuré — vous pouvez maintenant vous connecter.",
+
+    "acceptInvite.subtitle": "Configurez le mot de passe de votre compte",
+    "acceptInvite.invalidLink":
+      "Ce lien d'invitation est invalide ou a expiré. Demandez aux RH de renvoyer votre invitation.",
+    "acceptInvite.newPassword": "Nouveau mot de passe",
+    "acceptInvite.confirmPassword": "Confirmer le mot de passe",
+    "acceptInvite.passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "acceptInvite.passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+    "acceptInvite.setting": "Configuration...",
+    "acceptInvite.setPassword": "Configurer le mot de passe",
+
+    "invite.emailSent": "Courriel d'invitation envoyé.",
+    "invite.emailFailed":
+      "Compte créé, mais l'envoi du courriel d'invitation a échoué. Vérifiez votre configuration courriel, ou utilisez « Renvoyer le courriel d'invitation » ci-dessous une fois corrigé.",
+    "invite.resendEmail": "Renvoyer le courriel d'invitation",
+    "messages.sendFailed": "Échec de l'envoi",
 
     "docs.dateOfBirth": "Date de naissance",
     "docs.homeAddress": "Adresse domiciliaire",

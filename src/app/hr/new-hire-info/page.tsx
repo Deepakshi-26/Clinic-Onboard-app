@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
 import { NewHireInfoForm } from "@/components/hr/NewHireInfoForm";
+import { ResendInviteButton } from "@/components/hr/ResendInviteButton";
 
 function toDateInputValue(date: Date | null): string {
   if (!date) return "";
@@ -57,6 +58,7 @@ export default async function NewHireInfoPage({
           {info && missing.length === 0 && (
             <StatusPill tone="green">{t("newHire.allDocsComplete")}</StatusPill>
           )}
+          {info && <ResendInviteButton employeeId={info.id} />}
         </div>
 
         {!info ? (

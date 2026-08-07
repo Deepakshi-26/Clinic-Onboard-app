@@ -3,13 +3,20 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { buildReminderEmailHtml, sendEmail } from "@/lib/email";
 
-export async function sendReminder(employeeId: string) {
+export async function sendReminder(employeeId: string): Promise<{ ok: boolean }> {
   const session = await auth();
   if (session?.user?.role !== "HR") throw new Error("Forbidden");
 
   const employee = await prisma.employee.findUniqueOrThrow({
     where: { id: employeeId },
+  });
+
+  const emailResult = await sendEmail({
+    to: employee.personalEmail,
+    subject: "Reminder: outstanding onboarding documents",
+    html: buildReminderEmailHtml({ fullName: employee.fullName }),
   });
 
   await prisma.emailLog.create({
@@ -22,8 +29,8 @@ export async function sendReminder(employeeId: string) {
     },
   });
 
-  console.log(`[stub email] Reminder sent to ${employee.personalEmail}`);
-
   revalidatePath("/hr");
   revalidatePath("/hr/employees");
+
+  return { ok: emailResult.ok };
 }

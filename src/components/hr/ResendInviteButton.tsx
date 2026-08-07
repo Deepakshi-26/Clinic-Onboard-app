@@ -1,18 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { sendReminder } from "@/app/hr/actions";
+import { resendInviteEmail } from "@/app/hr/new-hire-info/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-export function SendReminderButton({
-  employeeId,
-  employeeName,
-  overdue,
-}: {
-  employeeId: string;
-  employeeName: string;
-  overdue: boolean;
-}) {
+export function ResendInviteButton({ employeeId }: { employeeId: string }) {
   const { t } = useLocale();
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<"idle" | "sent" | "failed">("idle");
@@ -21,21 +13,18 @@ export function SendReminderButton({
     <button
       onClick={() =>
         startTransition(async () => {
-          const result = await sendReminder(employeeId);
+          const result = await resendInviteEmail(employeeId);
           setStatus(result.ok ? "sent" : "failed");
         })
       }
       disabled={isPending || status === "sent"}
-      className={`rounded-md px-2.5 py-1 text-[11px] font-semibold text-white transition-opacity disabled:opacity-60 ${
-        status === "failed" ? "bg-slate-500" : overdue ? "bg-red-600" : "bg-amber-500"
-      }`}
-      title={`${t("messages.sendReminderTo")} ${employeeName}`}
+      className="rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300"
     >
       {status === "sent"
         ? `✓ ${t("messages.sent")}`
         : status === "failed"
           ? `⚠️ ${t("messages.sendFailed")}`
-          : `📧 ${t("messages.sendReminder")}`}
+          : `✉️ ${t("invite.resendEmail")}`}
     </button>
   );
 }

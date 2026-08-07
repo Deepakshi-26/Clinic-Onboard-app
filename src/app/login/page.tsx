@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type Role = "HR" | "EMPLOYEE";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLocale();
+  const justSetPassword = searchParams.get("passwordSet") === "1";
   const [role, setRole] = useState<Role>("HR");
   const [email, setEmail] = useState("hr@clinic.com");
   const [password, setPassword] = useState("");
@@ -54,6 +56,12 @@ export default function LoginPage() {
         <p className="mb-7 pl-14 text-sm text-slate-500 dark:text-zinc-400">
           {t("login.subtitle")}
         </p>
+
+        {justSetPassword && (
+          <p className="mb-5 rounded-lg border-l-4 border-emerald-500 bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+            ✅ {t("login.passwordSetSuccess")}
+          </p>
+        )}
 
         <div className="mb-6 flex gap-2">
           <button
