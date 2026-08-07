@@ -16,6 +16,7 @@ export default async function HrMessagesPage({
   const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
+    where: { status: { not: "ARCHIVED" } },
     select: { id: true, fullName: true, title: true, location: true },
     orderBy: { fullName: "asc" },
   });

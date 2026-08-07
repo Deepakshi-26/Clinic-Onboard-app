@@ -7,7 +7,7 @@ import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
 import { NewHireInfoForm } from "@/components/hr/NewHireInfoForm";
 import { ResendInviteButton } from "@/components/hr/ResendInviteButton";
-import { DeleteEmployeeButton } from "@/components/hr/DeleteEmployeeButton";
+import { ArchiveEmployeeButton } from "@/components/hr/ArchiveEmployeeButton";
 
 function toDateInputValue(date: Date | null): string {
   if (!date) return "";
@@ -24,6 +24,7 @@ export default async function NewHireInfoPage({
   const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
+    where: { status: { not: "ARCHIVED" } },
     select: { id: true, fullName: true },
     orderBy: { fullName: "asc" },
   });
@@ -61,7 +62,7 @@ export default async function NewHireInfoPage({
           )}
           {info && <ResendInviteButton employeeId={info.id} />}
           {info && (
-            <DeleteEmployeeButton employeeId={info.id} employeeName={info.fullName} />
+            <ArchiveEmployeeButton employeeId={info.id} employeeName={info.fullName} />
           )}
         </div>
 

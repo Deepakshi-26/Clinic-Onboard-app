@@ -16,11 +16,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = String(credentials?.password ?? "");
         if (!email || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({
+          where: { email },
+          include: { employee: true },
+        });
         if (!user) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
+
+        // Archived employees keep their record and data for history, but
+        // lose portal access.
+        if (user.employee?.status === "ARCHIVED") return null;
 
         return {
           id: user.id,

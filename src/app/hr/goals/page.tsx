@@ -13,6 +13,7 @@ export default async function GoalsSetupPage({
   const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
+    where: { status: { not: "ARCHIVED" } },
     select: { id: true, fullName: true },
     orderBy: { fullName: "asc" },
   });

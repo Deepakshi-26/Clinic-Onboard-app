@@ -13,6 +13,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.invite": "Invite New Hire",
     "nav.messages": "Messages",
     "nav.schedule": "Schedule",
+    "nav.archive": "Archive",
     "nav.home": "Home",
     "nav.myDocuments": "My Documents",
     "nav.training": "Training Materials",
@@ -291,12 +292,12 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notesPlaceholder": "Any HR notes about this employee...",
     "newHireForm.saveChanges": "Save Changes",
     "newHireForm.emailInUse":
-      "That email already belongs to a different account. Fix the typo, or delete the other duplicate record below if it was created by mistake.",
+      "That email already belongs to a different account. Fix the typo, or archive the other duplicate record below if it was created by mistake.",
     "newHireForm.forbidden": "You don't have permission to do that.",
 
-    "newHire.deleteEmployee": "Delete Employee",
-    "newHire.deleteConfirm":
-      "This permanently deletes the account and all its data (goals, documents, messages, schedule). This cannot be undone. Delete",
+    "newHire.archiveEmployee": "Archive Employee",
+    "newHire.archiveConfirm":
+      "This moves the employee to the Archive and revokes their portal login. Their history (goals, documents, messages, schedule) is kept and can be restored later. Archive",
 
     "shell.hrDirector": "HR Director",
     "shell.hrFallback": "HR",
@@ -310,6 +311,11 @@ export const translations: Record<Locale, Dict> = {
     "schedule.employeeHeading": "My Schedule",
     "schedule.employeeEmpty":
       "Your schedule hasn't been set up yet. Check back soon or ask HR.",
+
+    "archive.empty": "No archived employees yet.",
+    "archive.archivedOn": "Archived on",
+    "archive.restore": "Restore",
+    "archive.viewHistory": "View History",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -321,6 +327,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.invite": "Inviter un employé",
     "nav.messages": "Messages",
     "nav.schedule": "Horaire",
+    "nav.archive": "Archive",
     "nav.home": "Accueil",
     "nav.myDocuments": "Mes documents",
     "nav.training": "Matériel de formation",
@@ -605,12 +612,12 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notesPlaceholder": "Notes RH sur cet employé...",
     "newHireForm.saveChanges": "Enregistrer les modifications",
     "newHireForm.emailInUse":
-      "Ce courriel appartient déjà à un autre compte. Corrigez la faute de frappe, ou supprimez l'autre enregistrement en double ci-dessous s'il a été créé par erreur.",
+      "Ce courriel appartient déjà à un autre compte. Corrigez la faute de frappe, ou archivez l'autre enregistrement en double ci-dessous s'il a été créé par erreur.",
     "newHireForm.forbidden": "Vous n'avez pas la permission de faire cela.",
 
-    "newHire.deleteEmployee": "Supprimer l'employé",
-    "newHire.deleteConfirm":
-      "Ceci supprime définitivement le compte et toutes ses données (objectifs, documents, messages, horaire). Cette action est irréversible. Supprimer",
+    "newHire.archiveEmployee": "Archiver l'employé",
+    "newHire.archiveConfirm":
+      "Ceci déplace l'employé vers l'archive et révoque son accès au portail. Son historique (objectifs, documents, messages, horaire) est conservé et pourra être restauré plus tard. Archiver",
 
     "shell.hrDirector": "Directeur RH",
     "shell.hrFallback": "RH",
@@ -624,5 +631,10 @@ export const translations: Record<Locale, Dict> = {
     "schedule.employeeHeading": "Mon horaire",
     "schedule.employeeEmpty":
       "Votre horaire n'a pas encore été configuré. Revenez plus tard ou contactez les RH.",
+
+    "archive.empty": "Aucun employé archivé pour l'instant.",
+    "archive.archivedOn": "Archivé le",
+    "archive.restore": "Restaurer",
+    "archive.viewHistory": "Voir l'historique",
   },
 };

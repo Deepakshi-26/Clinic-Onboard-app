@@ -121,7 +121,10 @@ export async function resendInviteEmail(employeeId: string): Promise<{ ok: boole
   return { ok: emailResult.ok };
 }
 
-export async function deleteEmployee(employeeId: string) {
+// Archiving (not deleting) keeps the employee's full record — goals,
+// documents, messages, schedule — for history. Only their portal login is
+// revoked (see the ARCHIVED check in src/auth.ts).
+export async function archiveEmployee(employeeId: string) {
   const session = await auth();
   if (session?.user?.role !== "HR") throw new Error("Forbidden");
 
@@ -132,11 +135,28 @@ export async function deleteEmployee(employeeId: string) {
   await prisma.verificationToken.deleteMany({
     where: { identifier: employee.personalEmail },
   });
-  // Deleting the User cascades to Employee and everything hanging off it
-  // (goals, access credentials, documents, messages, schedule items).
-  await prisma.user.delete({ where: { id: employee.userId } });
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data: { status: "ARCHIVED", archivedAt: new Date() },
+  });
 
   revalidatePath("/hr/new-hire-info");
   revalidatePath("/hr/employees");
+  revalidatePath("/hr/archive");
+  revalidatePath("/hr");
+}
+
+export async function unarchiveEmployee(employeeId: string) {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data: { status: "ACTIVE", archivedAt: null },
+  });
+
+  revalidatePath("/hr/new-hire-info");
+  revalidatePath("/hr/employees");
+  revalidatePath("/hr/archive");
   revalidatePath("/hr");
 }
