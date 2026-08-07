@@ -12,10 +12,12 @@ export const translations: Record<Locale, Dict> = {
     "nav.goals": "Goals Setup",
     "nav.invite": "Invite New Hire",
     "nav.messages": "Messages",
+    "nav.schedule": "Schedule",
     "nav.home": "Home",
     "nav.myDocuments": "My Documents",
     "nav.training": "Training Materials",
     "nav.accessInfo": "Access Info",
+    "nav.mySchedule": "My Schedule",
     "shell.myOnboarding": "My Onboarding",
     "shell.signOut": "Sign Out",
 
@@ -274,6 +276,15 @@ export const translations: Record<Locale, Dict> = {
     "shell.hrDirector": "HR Director",
     "shell.hrFallback": "HR",
     "shell.employeeFallback": "Employee",
+
+    "schedule.date": "Date",
+    "schedule.time": "Time (optional)",
+    "schedule.titlePlaceholder": "e.g. Orientation with HR",
+    "schedule.notes": "Notes (optional)",
+    "schedule.empty": "No schedule items yet.",
+    "schedule.employeeHeading": "My Schedule",
+    "schedule.employeeEmpty":
+      "Your schedule hasn't been set up yet. Check back soon or ask HR.",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -284,10 +295,12 @@ export const translations: Record<Locale, Dict> = {
     "nav.goals": "Configuration des objectifs",
     "nav.invite": "Inviter un employé",
     "nav.messages": "Messages",
+    "nav.schedule": "Horaire",
     "nav.home": "Accueil",
     "nav.myDocuments": "Mes documents",
     "nav.training": "Matériel de formation",
     "nav.accessInfo": "Infos d'accès",
+    "nav.mySchedule": "Mon horaire",
     "shell.myOnboarding": "Mon intégration",
     "shell.signOut": "Déconnexion",
 
@@ -552,5 +565,14 @@ export const translations: Record<Locale, Dict> = {
     "shell.hrDirector": "Directeur RH",
     "shell.hrFallback": "RH",
     "shell.employeeFallback": "Employé",
+
+    "schedule.date": "Date",
+    "schedule.time": "Heure (optionnel)",
+    "schedule.titlePlaceholder": "ex. Orientation avec les RH",
+    "schedule.notes": "Notes (optionnel)",
+    "schedule.empty": "Aucun élément d'horaire pour l'instant.",
+    "schedule.employeeHeading": "Mon horaire",
+    "schedule.employeeEmpty":
+      "Votre horaire n'a pas encore été configuré. Revenez plus tard ou contactez les RH.",
   },
 };

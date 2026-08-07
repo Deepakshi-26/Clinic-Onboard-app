@@ -122,3 +122,11 @@ export function formatShortDate(date: Date, locale: "en" | "fr" = "en"): string 
     day: "numeric",
   });
 }
+
+export function formatScheduleDate(date: Date, locale: "en" | "fr" = "en"): string {
+  return new Date(date).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}

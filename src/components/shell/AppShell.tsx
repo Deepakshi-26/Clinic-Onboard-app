@@ -17,6 +17,7 @@ const HR_NAV: NavItem[] = [
   { href: "/hr/documents", labelKey: "nav.documents", icon: "📁" },
   { href: "/hr/access", labelKey: "nav.access", icon: "🔐" },
   { href: "/hr/goals", labelKey: "nav.goals", icon: "🎯" },
+  { href: "/hr/schedule", labelKey: "nav.schedule", icon: "🗓️" },
   { href: "/hr/invite", labelKey: "nav.invite", icon: "✉️" },
   { href: "/hr/messages", labelKey: "nav.messages", icon: "💬" },
 ];
@@ -26,6 +27,7 @@ const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee/documents", labelKey: "nav.myDocuments", icon: "📋" },
   { href: "/employee/training", labelKey: "nav.training", icon: "📚" },
   { href: "/employee/access", labelKey: "nav.accessInfo", icon: "🔑" },
+  { href: "/employee/schedule", labelKey: "nav.mySchedule", icon: "🗓️" },
   { href: "/employee/messages", labelKey: "nav.messages", icon: "💬" },
 ];
 
@@ -36,12 +38,14 @@ const TITLE_KEYS: Record<string, string> = {
   "/hr/documents": "nav.documents",
   "/hr/access": "nav.access",
   "/hr/goals": "nav.goals",
+  "/hr/schedule": "nav.schedule",
   "/hr/invite": "nav.invite",
   "/hr/messages": "nav.messages",
   "/employee": "shell.myOnboarding",
   "/employee/documents": "nav.myDocuments",
   "/employee/training": "nav.training",
   "/employee/access": "nav.accessInfo",
+  "/employee/schedule": "nav.mySchedule",
   "/employee/messages": "nav.messages",
 };
 
