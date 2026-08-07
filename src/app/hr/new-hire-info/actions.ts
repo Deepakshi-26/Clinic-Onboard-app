@@ -22,15 +22,44 @@ const UpdateSchema = z.object({
   hrNotes: z.string().optional(),
 });
 
-export async function updateEmployeeInfo(formData: FormData) {
+export type UpdateEmployeeState = { error: string } | null;
+
+export async function updateEmployeeInfo(
+  _prevState: UpdateEmployeeState,
+  formData: FormData
+): Promise<UpdateEmployeeState> {
   const session = await auth();
-  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+  if (session?.user?.role !== "HR") return { error: "forbidden" };
 
   const raw = Object.fromEntries(formData);
   const parsed = UpdateSchema.parse({
     ...raw,
     voidChequeUploaded: raw.voidChequeUploaded === "on",
   });
+
+  const employee = await prisma.employee.findUniqueOrThrow({
+    where: { id: parsed.employeeId },
+  });
+
+  // personalEmail doubles as the login (User.email) — if HR is correcting a
+  // typo'd or duplicate address, keep the two in sync rather than letting
+  // them drift apart.
+  if (parsed.personalEmail !== employee.personalEmail) {
+    const conflict = await prisma.user.findUnique({
+      where: { email: parsed.personalEmail },
+    });
+    if (conflict && conflict.id !== employee.userId) {
+      return { error: "emailInUse" };
+    }
+    await prisma.user.update({
+      where: { id: employee.userId },
+      data: { email: parsed.personalEmail },
+    });
+    // Any outstanding set-password link was issued for the old address.
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: employee.personalEmail },
+    });
+  }
 
   await prisma.employee.update({
     where: { id: parsed.employeeId },
@@ -54,6 +83,8 @@ export async function updateEmployeeInfo(formData: FormData) {
   revalidatePath("/hr/new-hire-info");
   revalidatePath("/hr/employees");
   revalidatePath("/hr");
+
+  return null;
 }
 
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -88,4 +119,24 @@ export async function resendInviteEmail(employeeId: string): Promise<{ ok: boole
   });
 
   return { ok: emailResult.ok };
+}
+
+export async function deleteEmployee(employeeId: string) {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  const employee = await prisma.employee.findUniqueOrThrow({
+    where: { id: employeeId },
+  });
+
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: employee.personalEmail },
+  });
+  // Deleting the User cascades to Employee and everything hanging off it
+  // (goals, access credentials, documents, messages, schedule items).
+  await prisma.user.delete({ where: { id: employee.userId } });
+
+  revalidatePath("/hr/new-hire-info");
+  revalidatePath("/hr/employees");
+  revalidatePath("/hr");
 }

@@ -93,6 +93,7 @@ export const translations: Record<Locale, Dict> = {
     "employees.missing": "Missing",
     "employees.hide": "Hide",
     "employees.detail": "Detail",
+    "employees.email": "Email",
 
     "goals.daily": "Daily",
     "goals.weekly": "Weekly",
@@ -289,6 +290,13 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notes": "Notes",
     "newHireForm.notesPlaceholder": "Any HR notes about this employee...",
     "newHireForm.saveChanges": "Save Changes",
+    "newHireForm.emailInUse":
+      "That email already belongs to a different account. Fix the typo, or delete the other duplicate record below if it was created by mistake.",
+    "newHireForm.forbidden": "You don't have permission to do that.",
+
+    "newHire.deleteEmployee": "Delete Employee",
+    "newHire.deleteConfirm":
+      "This permanently deletes the account and all its data (goals, documents, messages, schedule). This cannot be undone. Delete",
 
     "shell.hrDirector": "HR Director",
     "shell.hrFallback": "HR",
@@ -395,6 +403,7 @@ export const translations: Record<Locale, Dict> = {
     "employees.missing": "manquant(s)",
     "employees.hide": "Masquer",
     "employees.detail": "Détails",
+    "employees.email": "Courriel",
 
     "goals.daily": "Quotidien",
     "goals.weekly": "Hebdomadaire",
@@ -595,6 +604,13 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notes": "Notes",
     "newHireForm.notesPlaceholder": "Notes RH sur cet employé...",
     "newHireForm.saveChanges": "Enregistrer les modifications",
+    "newHireForm.emailInUse":
+      "Ce courriel appartient déjà à un autre compte. Corrigez la faute de frappe, ou supprimez l'autre enregistrement en double ci-dessous s'il a été créé par erreur.",
+    "newHireForm.forbidden": "Vous n'avez pas la permission de faire cela.",
+
+    "newHire.deleteEmployee": "Supprimer l'employé",
+    "newHire.deleteConfirm":
+      "Ceci supprime définitivement le compte et toutes ses données (objectifs, documents, messages, horaire). Cette action est irréversible. Supprimer",
 
     "shell.hrDirector": "Directeur RH",
     "shell.hrFallback": "RH",

@@ -1,7 +1,11 @@
 "use client";
 
+import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { updateEmployeeInfo } from "@/app/hr/new-hire-info/actions";
+import {
+  updateEmployeeInfo,
+  type UpdateEmployeeState,
+} from "@/app/hr/new-hire-info/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type InitialData = {
@@ -25,9 +29,21 @@ const normalClasses = "border-slate-300 dark:border-zinc-700";
 
 export function NewHireInfoForm({ data }: { data: InitialData }) {
   const { t } = useLocale();
+  const [state, formAction] = useActionState<UpdateEmployeeState, FormData>(
+    updateEmployeeInfo,
+    null
+  );
+
   return (
-    <form action={updateEmployeeInfo} className="flex flex-col gap-5">
+    <form action={formAction} className="flex flex-col gap-5">
       <input type="hidden" name="employeeId" value={data.employeeId} />
+
+      {state?.error === "emailInUse" && (
+        <p className="text-xs text-red-600">{t("newHireForm.emailInUse")}</p>
+      )}
+      {state?.error === "forbidden" && (
+        <p className="text-xs text-red-600">{t("newHireForm.forbidden")}</p>
+      )}
 
       <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-3.5">

@@ -62,6 +62,7 @@ export default async function EmployeesPage({
             <thead>
               <tr className="border-b-2 border-slate-200 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:border-zinc-800 dark:text-zinc-400">
                 <Th>{t("employees.name")}</Th>
+                <Th>{t("employees.email")}</Th>
                 <Th>{t("employees.title")}</Th>
                 <Th>{t("employees.location")}</Th>
                 <Th>{t("employees.startDate")}</Th>
@@ -96,6 +97,7 @@ export default async function EmployeesPage({
                     <Td>
                       <strong>{employee.fullName}</strong>
                     </Td>
+                    <Td>{employee.personalEmail}</Td>
                     <Td>{titleLabel(employee.title, locale)}</Td>
                     <Td>{locationLabel(employee.location, locale)}</Td>
                     <Td>{formatShortDate(employee.startDate, locale)}</Td>
