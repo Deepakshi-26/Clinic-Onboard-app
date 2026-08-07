@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 import { translations, type Locale } from "./translations";
 
 type LocaleContextValue = {
@@ -19,11 +20,16 @@ export function LocaleProvider({
   children: React.ReactNode;
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const router = useRouter();
 
-  const setLocale = useCallback((l: Locale) => {
-    setLocaleState(l);
-    document.cookie = `locale=${l}; path=/; max-age=31536000`;
-  }, []);
+  const setLocale = useCallback(
+    (l: Locale) => {
+      setLocaleState(l);
+      document.cookie = `locale=${l}; path=/; max-age=31536000`;
+      router.refresh();
+    },
+    [router]
+  );
 
   const t = useCallback(
     (key: string) => translations[locale][key] ?? translations.en[key] ?? key,
