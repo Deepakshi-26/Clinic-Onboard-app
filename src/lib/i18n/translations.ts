@@ -63,6 +63,8 @@ export const translations: Record<Locale, Dict> = {
     "messages.startRecording": "Record a voice message",
     "messages.stopRecording": "Stop recording",
     "messages.micPermissionDenied": "Microphone access was denied.",
+    "messages.today": "Today",
+    "messages.yesterday": "Yesterday",
 
     "docs.dateOfBirth": "Date of Birth",
     "docs.homeAddress": "Home Address",
@@ -384,6 +386,8 @@ export const translations: Record<Locale, Dict> = {
     "messages.startRecording": "Enregistrer un message vocal",
     "messages.stopRecording": "Arrêter l'enregistrement",
     "messages.micPermissionDenied": "L'accès au microphone a été refusé.",
+    "messages.today": "Aujourd'hui",
+    "messages.yesterday": "Hier",
 
     "docs.dateOfBirth": "Date de naissance",
     "docs.homeAddress": "Adresse domiciliaire",
