@@ -43,7 +43,9 @@ export async function updateEmployeeInfo(
 
   // personalEmail doubles as the login (User.email) — if HR is correcting a
   // typo'd or duplicate address, keep the two in sync rather than letting
-  // them drift apart.
+  // them drift apart. Everything below runs as one transaction so a
+  // mid-way failure can never leave the login email and the profile email
+  // pointing at different addresses.
   if (parsed.personalEmail !== employee.personalEmail) {
     const conflict = await prisma.user.findUnique({
       where: { email: parsed.personalEmail },
@@ -51,33 +53,42 @@ export async function updateEmployeeInfo(
     if (conflict && conflict.id !== employee.userId) {
       return { error: "emailInUse" };
     }
-    await prisma.user.update({
-      where: { id: employee.userId },
-      data: { email: parsed.personalEmail },
-    });
-    // Any outstanding set-password link was issued for the old address.
-    await prisma.verificationToken.deleteMany({
-      where: { identifier: employee.personalEmail },
-    });
   }
 
-  await prisma.employee.update({
-    where: { id: parsed.employeeId },
-    data: {
-      fullName: parsed.fullName,
-      phone: parsed.phone || null,
-      dateOfBirth: parsed.dateOfBirth ? new Date(parsed.dateOfBirth) : null,
-      personalEmail: parsed.personalEmail,
-      residentialAddress: parsed.residentialAddress || null,
-      voidChequeUploaded: parsed.voidChequeUploaded ?? false,
-      hrNotes: parsed.hrNotes || null,
-    },
-  });
+  await prisma.$transaction(async (tx) => {
+    if (parsed.personalEmail !== employee.personalEmail) {
+      await tx.user.update({
+        where: { id: employee.userId },
+        data: { email: parsed.personalEmail },
+      });
+      // Any outstanding set-password link was issued for the old address.
+      await tx.verificationToken.deleteMany({
+        where: { identifier: employee.personalEmail },
+      });
+    }
 
-  await updateEmployeeSensitiveInfo(parsed.employeeId, {
-    sinNumber: parsed.sinNumber,
-    healthCardNumber: parsed.healthCardNumber,
-    permitNumber: parsed.permitNumber,
+    await tx.employee.update({
+      where: { id: parsed.employeeId },
+      data: {
+        fullName: parsed.fullName,
+        phone: parsed.phone || null,
+        dateOfBirth: parsed.dateOfBirth ? new Date(parsed.dateOfBirth) : null,
+        personalEmail: parsed.personalEmail,
+        residentialAddress: parsed.residentialAddress || null,
+        voidChequeUploaded: parsed.voidChequeUploaded ?? false,
+        hrNotes: parsed.hrNotes || null,
+      },
+    });
+
+    await updateEmployeeSensitiveInfo(
+      parsed.employeeId,
+      {
+        sinNumber: parsed.sinNumber,
+        healthCardNumber: parsed.healthCardNumber,
+        permitNumber: parsed.permitNumber,
+      },
+      tx
+    );
   });
 
   revalidatePath("/hr/new-hire-info");

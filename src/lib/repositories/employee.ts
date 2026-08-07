@@ -1,6 +1,9 @@
 import "server-only";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { decryptField, encryptField } from "@/lib/encryption";
+
+type DbClient = typeof prisma | Prisma.TransactionClient;
 
 export async function getEmployeeSensitiveInfo(employeeId: string) {
   const employee = await prisma.employee.findUniqueOrThrow({
@@ -26,9 +29,10 @@ type SensitiveFieldUpdate = {
 
 export async function updateEmployeeSensitiveInfo(
   employeeId: string,
-  data: SensitiveFieldUpdate
+  data: SensitiveFieldUpdate,
+  client: DbClient = prisma
 ) {
-  return prisma.employee.update({
+  return client.employee.update({
     where: { id: employeeId },
     data: {
       ...(data.sinNumber !== undefined && {
