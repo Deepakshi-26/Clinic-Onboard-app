@@ -31,7 +31,7 @@ export default async function EmployeesPage({
   const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
-    where: { status: { not: "ARCHIVED" } },
+    where: { status: { not: "INACTIVE" } },
     include: { goals: true },
     orderBy: { startDate: "desc" },
   });

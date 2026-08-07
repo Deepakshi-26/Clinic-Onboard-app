@@ -121,10 +121,10 @@ export async function resendInviteEmail(employeeId: string): Promise<{ ok: boole
   return { ok: emailResult.ok };
 }
 
-// Archiving (not deleting) keeps the employee's full record — goals,
+// Marking inactive (not deleting) keeps the employee's full record — goals,
 // documents, messages, schedule — for history. Only their portal login is
-// revoked (see the ARCHIVED check in src/auth.ts).
-export async function archiveEmployee(employeeId: string) {
+// revoked (see the INACTIVE check in src/auth.ts).
+export async function deactivateEmployee(employeeId: string) {
   const session = await auth();
   if (session?.user?.role !== "HR") throw new Error("Forbidden");
 
@@ -137,26 +137,26 @@ export async function archiveEmployee(employeeId: string) {
   });
   await prisma.employee.update({
     where: { id: employeeId },
-    data: { status: "ARCHIVED", archivedAt: new Date() },
+    data: { status: "INACTIVE", inactiveAt: new Date() },
   });
 
   revalidatePath("/hr/new-hire-info");
   revalidatePath("/hr/employees");
-  revalidatePath("/hr/archive");
+  revalidatePath("/hr/inactive");
   revalidatePath("/hr");
 }
 
-export async function unarchiveEmployee(employeeId: string) {
+export async function reactivateEmployee(employeeId: string) {
   const session = await auth();
   if (session?.user?.role !== "HR") throw new Error("Forbidden");
 
   await prisma.employee.update({
     where: { id: employeeId },
-    data: { status: "ACTIVE", archivedAt: null },
+    data: { status: "ACTIVE", inactiveAt: null },
   });
 
   revalidatePath("/hr/new-hire-info");
   revalidatePath("/hr/employees");
-  revalidatePath("/hr/archive");
+  revalidatePath("/hr/inactive");
   revalidatePath("/hr");
 }

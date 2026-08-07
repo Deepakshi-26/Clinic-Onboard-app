@@ -9,7 +9,7 @@ export default async function HrDocumentsPage() {
 
   const [employees, documents] = await Promise.all([
     prisma.employee.findMany({
-      where: { status: { not: "ARCHIVED" } },
+      where: { status: { not: "INACTIVE" } },
       select: { id: true, fullName: true },
       orderBy: { fullName: "asc" },
     }),

@@ -2,10 +2,10 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { archiveEmployee } from "@/app/hr/new-hire-info/actions";
+import { deactivateEmployee } from "@/app/hr/new-hire-info/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-export function ArchiveEmployeeButton({
+export function DeactivateEmployeeButton({
   employeeId,
   employeeName,
 }: {
@@ -17,9 +17,9 @@ export function ArchiveEmployeeButton({
   const [isPending, startTransition] = useTransition();
 
   function handleClick() {
-    if (!window.confirm(`${t("newHire.archiveConfirm")} ${employeeName}?`)) return;
+    if (!window.confirm(`${t("newHire.deactivateConfirm")} ${employeeName}?`)) return;
     startTransition(async () => {
-      await archiveEmployee(employeeId);
+      await deactivateEmployee(employeeId);
       router.push("/hr/new-hire-info");
     });
   }
@@ -30,7 +30,7 @@ export function ArchiveEmployeeButton({
       disabled={isPending}
       className="text-[11px] font-medium text-slate-500 hover:text-red-600 disabled:opacity-50"
     >
-      {isPending ? t("common.saving") : `🗄️ ${t("newHire.archiveEmployee")}`}
+      {isPending ? t("common.saving") : `⏸️ ${t("newHire.deactivateEmployee")}`}
     </button>
   );
 }

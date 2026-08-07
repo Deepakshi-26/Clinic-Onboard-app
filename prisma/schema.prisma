@@ -40,7 +40,7 @@ enum EmployeeStatus {
   INVITED
   ACTIVE
   COMPLETED
-  ARCHIVED
+  INACTIVE
 }
 
 enum GoalType {
@@ -146,10 +146,10 @@ model Employee {
   // training-materials/completion model exists.
   trainingProgressPct Int       @default(0)
   completedAt         DateTime?
-  // Set when HR archives the employee instead of deleting them — the record
-  // and all related data (goals, documents, messages, schedule) are kept for
-  // history; only portal login access is revoked (see src/auth.ts).
-  archivedAt          DateTime?
+  // Set when HR marks the employee inactive instead of deleting them — the
+  // record and all related data (goals, documents, messages, schedule) are
+  // kept for history; only portal login access is revoked (see src/auth.ts).
+  inactiveAt          DateTime?
 
   goals             Goal[]
   emailLogs         EmailLog[]

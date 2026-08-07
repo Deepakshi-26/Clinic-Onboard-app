@@ -13,7 +13,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.invite": "Invite New Hire",
     "nav.messages": "Messages",
     "nav.schedule": "Schedule",
-    "nav.archive": "Archive",
+    "nav.inactive": "Inactive",
     "nav.home": "Home",
     "nav.myDocuments": "My Documents",
     "nav.training": "Training Materials",
@@ -292,12 +292,12 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notesPlaceholder": "Any HR notes about this employee...",
     "newHireForm.saveChanges": "Save Changes",
     "newHireForm.emailInUse":
-      "That email already belongs to a different account. Fix the typo, or archive the other duplicate record below if it was created by mistake.",
+      "That email already belongs to a different account. Fix the typo, or mark the other duplicate record below inactive if it was created by mistake.",
     "newHireForm.forbidden": "You don't have permission to do that.",
 
-    "newHire.archiveEmployee": "Archive Employee",
-    "newHire.archiveConfirm":
-      "This moves the employee to the Archive and revokes their portal login. Their history (goals, documents, messages, schedule) is kept and can be restored later. Archive",
+    "newHire.deactivateEmployee": "Mark Inactive",
+    "newHire.deactivateConfirm":
+      "This moves the employee to Inactive and revokes their portal login. Their history (goals, documents, messages, schedule) is kept and can be reactivated later. Mark inactive:",
 
     "shell.hrDirector": "HR Director",
     "shell.hrFallback": "HR",
@@ -312,10 +312,10 @@ export const translations: Record<Locale, Dict> = {
     "schedule.employeeEmpty":
       "Your schedule hasn't been set up yet. Check back soon or ask HR.",
 
-    "archive.empty": "No archived employees yet.",
-    "archive.archivedOn": "Archived on",
-    "archive.restore": "Restore",
-    "archive.viewHistory": "View History",
+    "inactive.empty": "No inactive employees yet.",
+    "inactive.since": "Inactive since",
+    "inactive.reactivate": "Reactivate",
+    "inactive.viewHistory": "View History",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -327,7 +327,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.invite": "Inviter un employé",
     "nav.messages": "Messages",
     "nav.schedule": "Horaire",
-    "nav.archive": "Archive",
+    "nav.inactive": "Inactifs",
     "nav.home": "Accueil",
     "nav.myDocuments": "Mes documents",
     "nav.training": "Matériel de formation",
@@ -612,12 +612,12 @@ export const translations: Record<Locale, Dict> = {
     "newHireForm.notesPlaceholder": "Notes RH sur cet employé...",
     "newHireForm.saveChanges": "Enregistrer les modifications",
     "newHireForm.emailInUse":
-      "Ce courriel appartient déjà à un autre compte. Corrigez la faute de frappe, ou archivez l'autre enregistrement en double ci-dessous s'il a été créé par erreur.",
+      "Ce courriel appartient déjà à un autre compte. Corrigez la faute de frappe, ou marquez inactif l'autre enregistrement en double ci-dessous s'il a été créé par erreur.",
     "newHireForm.forbidden": "Vous n'avez pas la permission de faire cela.",
 
-    "newHire.archiveEmployee": "Archiver l'employé",
-    "newHire.archiveConfirm":
-      "Ceci déplace l'employé vers l'archive et révoque son accès au portail. Son historique (objectifs, documents, messages, horaire) est conservé et pourra être restauré plus tard. Archiver",
+    "newHire.deactivateEmployee": "Marquer inactif",
+    "newHire.deactivateConfirm":
+      "Ceci déplace l'employé vers Inactifs et révoque son accès au portail. Son historique (objectifs, documents, messages, horaire) est conservé et pourra être réactivé plus tard. Marquer inactif :",
 
     "shell.hrDirector": "Directeur RH",
     "shell.hrFallback": "RH",
@@ -632,9 +632,9 @@ export const translations: Record<Locale, Dict> = {
     "schedule.employeeEmpty":
       "Votre horaire n'a pas encore été configuré. Revenez plus tard ou contactez les RH.",
 
-    "archive.empty": "Aucun employé archivé pour l'instant.",
-    "archive.archivedOn": "Archivé le",
-    "archive.restore": "Restaurer",
-    "archive.viewHistory": "Voir l'historique",
+    "inactive.empty": "Aucun employé inactif pour l'instant.",
+    "inactive.since": "Inactif depuis le",
+    "inactive.reactivate": "Réactiver",
+    "inactive.viewHistory": "Voir l'historique",
   },
 };

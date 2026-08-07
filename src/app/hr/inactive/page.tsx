@@ -5,9 +5,9 @@ import { formatScheduleDate, formatShortDate } from "@/lib/progress";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { EmployeeDetailPanel } from "@/components/hr/EmployeeDetailPanel";
-import { RestoreEmployeeButton } from "@/components/hr/RestoreEmployeeButton";
+import { ReactivateEmployeeButton } from "@/components/hr/ReactivateEmployeeButton";
 
-export default async function ArchivePage({
+export default async function InactiveEmployeesPage({
   searchParams,
 }: {
   searchParams: Promise<{ employeeId?: string }>;
@@ -17,9 +17,9 @@ export default async function ArchivePage({
   const t = getT(locale);
 
   const employees = await prisma.employee.findMany({
-    where: { status: "ARCHIVED" },
+    where: { status: "INACTIVE" },
     include: { goals: true },
-    orderBy: { archivedAt: "desc" },
+    orderBy: { inactiveAt: "desc" },
   });
 
   const selected = employeeId ? employees.find((e) => e.id === employeeId) : undefined;
@@ -45,13 +45,13 @@ export default async function ArchivePage({
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        {t("nav.archive")}
+        {t("nav.inactive")}
       </h2>
 
       <Card>
         {employees.length === 0 ? (
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            {t("archive.empty")}
+            {t("inactive.empty")}
           </p>
         ) : (
           <div className="-mx-5 overflow-x-auto">
@@ -62,7 +62,7 @@ export default async function ArchivePage({
                   <Th>{t("employees.email")}</Th>
                   <Th>{t("employees.title")}</Th>
                   <Th>{t("employees.location")}</Th>
-                  <Th>{t("archive.archivedOn")}</Th>
+                  <Th>{t("inactive.since")}</Th>
                   <Th>{t("employees.action")}</Th>
                 </tr>
               </thead>
@@ -79,20 +79,20 @@ export default async function ArchivePage({
                     <Td>{titleLabel(employee.title, locale)}</Td>
                     <Td>{locationLabel(employee.location, locale)}</Td>
                     <Td>
-                      {employee.archivedAt ? formatShortDate(employee.archivedAt, locale) : "—"}
+                      {employee.inactiveAt ? formatShortDate(employee.inactiveAt, locale) : "—"}
                     </Td>
                     <Td>
                       <Link
                         href={
                           selected?.id === employee.id
-                            ? "/hr/archive"
-                            : `/hr/archive?employeeId=${employee.id}`
+                            ? "/hr/inactive"
+                            : `/hr/inactive?employeeId=${employee.id}`
                         }
                         className="rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
                       >
                         {selected?.id === employee.id
                           ? t("employees.hide")
-                          : t("archive.viewHistory")}
+                          : t("inactive.viewHistory")}
                       </Link>
                     </Td>
                   </tr>
@@ -108,10 +108,10 @@ export default async function ArchivePage({
           <Card>
             <div className="flex items-center justify-between">
               <p className="text-xs text-slate-500 dark:text-zinc-400">
-                {t("archive.archivedOn")}{" "}
-                {selected.archivedAt ? formatShortDate(selected.archivedAt, locale) : "—"}
+                {t("inactive.since")}{" "}
+                {selected.inactiveAt ? formatShortDate(selected.inactiveAt, locale) : "—"}
               </p>
-              <RestoreEmployeeButton employeeId={selected.id} />
+              <ReactivateEmployeeButton employeeId={selected.id} />
             </div>
           </Card>
 

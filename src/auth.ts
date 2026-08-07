@@ -25,9 +25,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
 
-        // Archived employees keep their record and data for history, but
+        // Inactive employees keep their record and data for history, but
         // lose portal access.
-        if (user.employee?.status === "ARCHIVED") return null;
+        if (user.employee?.status === "INACTIVE") return null;
 
         return {
           id: user.id,

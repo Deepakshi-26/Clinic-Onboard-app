@@ -19,7 +19,7 @@ export default async function AccessPage({
   const t = getT(await getServerLocale());
 
   const employees = await prisma.employee.findMany({
-    where: { status: { not: "ARCHIVED" } },
+    where: { status: { not: "INACTIVE" } },
     select: { id: true, fullName: true },
     orderBy: { fullName: "asc" },
   });
