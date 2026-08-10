@@ -36,8 +36,9 @@ export function VoiceTourPlayer() {
         setSteps(body.steps);
         setStatus("ready");
       })
-      .catch(() => {
-        setErrorMessage(t("voiceTour.error"));
+      .catch((err: unknown) => {
+        const serverMessage = err instanceof Error && err.message !== "empty" ? err.message : "";
+        setErrorMessage(serverMessage || t("voiceTour.error"));
         setStatus("error");
       });
 

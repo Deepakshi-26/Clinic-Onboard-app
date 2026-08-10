@@ -66,8 +66,9 @@ export async function POST() {
     });
   } catch (err) {
     console.error("Voice tour generation failed:", err);
+    const detail = err instanceof Error ? err.message : String(err);
     return Response.json(
-      { error: "Couldn't prepare your voice tour right now. Please try again." },
+      { error: `Couldn't prepare your voice tour: ${detail}` },
       { status: 502 }
     );
   }
