@@ -21,8 +21,12 @@ export async function CurrentAccessPanel({
     buildingPasscode: string | null;
     wifiPassword: string | null;
     workEmail: string | null;
+    medexaUsername: string | null;
     medexaPassword: string | null;
+    medexaLink: string | null;
+    myleUsername: string | null;
     mylePassword: string | null;
+    myleLink: string | null;
     equipmentBoxLocation: string | null;
     equipmentRequestEmail: string | null;
     trainerName: string | null;
@@ -38,11 +42,15 @@ export async function CurrentAccessPanel({
       <Row label={t("access.buildingPasscode")} value={data?.buildingPasscode ?? null} />
       <Row label={t("access.wifiPassword")} value={data?.wifiPassword ?? null} />
       <Row label={t("home.workEmail")} value={data?.workEmail ?? null} />
+      <Row label={t("access.medexaUsername")} value={data?.medexaUsername ?? null} />
       <Row
         label={t("access.medexaPassword")}
         value={data?.medexaPassword ? "••••••••" : null}
       />
+      <Row label={t("access.medexaLink")} value={data?.medexaLink ?? null} />
+      <Row label={t("access.myleUsername")} value={data?.myleUsername ?? null} />
       <Row label={t("access.mylePassword")} value={data?.mylePassword ? "••••••••" : null} />
+      <Row label={t("access.myleLink")} value={data?.myleLink ?? null} />
       <Row label={t("access.equipmentBox")} value={data?.equipmentBoxLocation ?? null} />
       <Row
         label={t("access.equipmentRequests")}

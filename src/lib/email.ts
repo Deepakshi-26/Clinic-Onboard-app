@@ -1,5 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
+import { LOCATION_ADDRESSES } from "@/lib/labels";
+import type { Location } from "@prisma/client";
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "ClinicBoard <onboarding@resend.dev>";
 
@@ -52,7 +54,18 @@ const emailWrapper = (bodyHtml: string) => `
 export function buildInviteEmailHtml(params: {
   fullName: string;
   acceptUrl: string;
+  location?: Location;
 }): string {
+  const clinic = params.location ? LOCATION_ADDRESSES[params.location] : undefined;
+  const clinicBlock = clinic
+    ? `
+    <div style="margin-top: 24px; padding: 14px 16px; background: #f1f5f9; border-radius: 10px; font-size: 13px; color: #334155; line-height: 1.6;">
+      <strong style="color: #1e293b;">${clinic.name}</strong><br/>
+      ${clinic.address}<br/>
+      Tel / Tél: ${clinic.phone}
+    </div>`
+    : "";
+
   return emailWrapper(`
     <p style="font-size: 15px; color: #1e293b;">Hi ${params.fullName},</p>
     <p style="font-size: 14px; color: #334155; line-height: 1.6;">
@@ -66,6 +79,7 @@ export function buildInviteEmailHtml(params: {
     <a href="${params.acceptUrl}" style="display: inline-block; margin-top: 12px; padding: 12px 24px; background: #0D7377; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
       Set Your Password / Configurer votre mot de passe
     </a>
+    ${clinicBlock}
   `);
 }
 

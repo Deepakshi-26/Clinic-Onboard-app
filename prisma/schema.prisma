@@ -114,7 +114,13 @@ model Employee {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // fullName is derived from first/middle/last and kept in sync on every
+  // create/update — kept as its own column since it's what almost every
+  // display, search, and sort in the app reads.
   fullName               String
+  firstName              String         @default("")
+  middleName             String?
+  lastName               String         @default("")
   title                  JobTitle
   location               Location
   startDate              DateTime
@@ -212,8 +218,12 @@ model AccessCredential {
   doorPasscodeEnc     String?
   buildingPasscodeEnc String?
   wifiPasswordEnc     String?
+  medexaUsername      String?
   medexaPasswordEnc   String?
+  medexaLink          String?
+  myleUsername        String?
   mylePasswordEnc     String?
+  myleLink            String?
 
   equipmentBoxLocation  String?
   equipmentRequestEmail String?

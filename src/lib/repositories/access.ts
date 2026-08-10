@@ -28,8 +28,12 @@ type CredentialFields = {
   doorPasscode?: string;
   buildingPasscode?: string;
   wifiPassword?: string;
+  medexaUsername?: string;
   medexaPassword?: string;
+  medexaLink?: string;
+  myleUsername?: string;
   mylePassword?: string;
+  myleLink?: string;
   equipmentBoxLocation?: string;
   equipmentRequestEmail?: string;
   trainerName?: string;
@@ -49,8 +53,12 @@ export async function upsertAccessCredential(
       ? encryptField(data.buildingPasscode)
       : null,
     wifiPasswordEnc: data.wifiPassword ? encryptField(data.wifiPassword) : null,
+    medexaUsername: data.medexaUsername || null,
     medexaPasswordEnc: data.medexaPassword ? encryptField(data.medexaPassword) : null,
+    medexaLink: data.medexaLink || null,
+    myleUsername: data.myleUsername || null,
     mylePasswordEnc: data.mylePassword ? encryptField(data.mylePassword) : null,
+    myleLink: data.myleLink || null,
     equipmentBoxLocation: data.equipmentBoxLocation || null,
     equipmentRequestEmail: data.equipmentRequestEmail || null,
     trainerName: data.trainerName || null,

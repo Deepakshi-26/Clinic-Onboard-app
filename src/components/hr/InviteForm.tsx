@@ -21,13 +21,27 @@ export function InviteForm() {
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label={t("invite.fullName")}>
+        <Field label={t("invite.firstName")}>
           <input
-            name="fullName"
+            name="firstName"
             required
             className={inputClasses}
-            placeholder={t("invite.fullNamePlaceholder")}
+            placeholder={t("invite.firstNamePlaceholder")}
           />
+        </Field>
+        <Field label={t("invite.lastName")}>
+          <input
+            name="lastName"
+            required
+            className={inputClasses}
+            placeholder={t("invite.lastNamePlaceholder")}
+          />
+        </Field>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label={t("invite.middleName")}>
+          <input name="middleName" className={inputClasses} />
         </Field>
         <Field label={t("invite.personalEmail")}>
           <input

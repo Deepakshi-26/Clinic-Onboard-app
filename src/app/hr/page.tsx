@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { locationLabel, titleLabel } from "@/lib/labels";
 import {
@@ -165,6 +166,14 @@ export default async function HrDashboardPage() {
                 );
               })}
             </div>
+          )}
+          {employees.length > 5 && (
+            <Link
+              href="/hr/employees"
+              className="mt-3 block text-center text-[11px] font-medium text-teal-600 hover:text-teal-700"
+            >
+              {t("dashboard.viewAll")} ({employees.length}) →
+            </Link>
           )}
         </Card>
       </div>

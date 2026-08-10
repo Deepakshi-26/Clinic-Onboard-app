@@ -75,7 +75,9 @@ export default async function NewHireInfoPage({
             key={info.id}
             data={{
               employeeId: info.id,
-              fullName: info.fullName,
+              firstName: info.firstName,
+              middleName: info.middleName ?? "",
+              lastName: info.lastName,
               phone: info.phone ?? "",
               dateOfBirth: toDateInputValue(info.dateOfBirth),
               personalEmail: info.personalEmail,

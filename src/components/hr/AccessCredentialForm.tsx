@@ -11,8 +11,12 @@ type InitialData = {
   doorPasscode: string;
   buildingPasscode: string;
   wifiPassword: string;
+  medexaUsername: string;
   medexaPassword: string;
+  medexaLink: string;
+  myleUsername: string;
   mylePassword: string;
+  myleLink: string;
   equipmentBoxLocation: string;
   equipmentRequestEmail: string;
   trainerName: string;
@@ -51,6 +55,13 @@ export function AccessCredentialForm({ data }: { data: InitialData }) {
           className={inputClasses}
         />
       </Field>
+      <Field label={t("access.medexaUsername")}>
+        <input
+          name="medexaUsername"
+          defaultValue={data.medexaUsername}
+          className={inputClasses}
+        />
+      </Field>
       <Field label={t("access.medexaPassword")}>
         <input
           name="medexaPassword"
@@ -58,8 +69,29 @@ export function AccessCredentialForm({ data }: { data: InitialData }) {
           className={inputClasses}
         />
       </Field>
+      <Field label={t("access.medexaLink")}>
+        <input
+          type="url"
+          name="medexaLink"
+          defaultValue={data.medexaLink}
+          placeholder="https://..."
+          className={inputClasses}
+        />
+      </Field>
+      <Field label={t("access.myleUsername")}>
+        <input name="myleUsername" defaultValue={data.myleUsername} className={inputClasses} />
+      </Field>
       <Field label={t("access.mylePassword")}>
         <input name="mylePassword" defaultValue={data.mylePassword} className={inputClasses} />
+      </Field>
+      <Field label={t("access.myleLink")}>
+        <input
+          type="url"
+          name="myleLink"
+          defaultValue={data.myleLink}
+          placeholder="https://..."
+          className={inputClasses}
+        />
       </Field>
       <Field label={t("access.equipmentBoxLocation")}>
         <input

@@ -10,7 +10,9 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type InitialData = {
   employeeId: string;
-  fullName: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   phone: string;
   dateOfBirth: string;
   personalEmail: string;
@@ -47,10 +49,25 @@ export function NewHireInfoForm({ data }: { data: InitialData }) {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-3.5">
-          <Field label={t("invite.fullName")}>
+          <Field label={t("invite.firstName")}>
             <input
-              name="fullName"
-              defaultValue={data.fullName}
+              name="firstName"
+              defaultValue={data.firstName}
+              className={`${inputClasses} ${normalClasses}`}
+              required
+            />
+          </Field>
+          <Field label={t("invite.middleName")}>
+            <input
+              name="middleName"
+              defaultValue={data.middleName}
+              className={`${inputClasses} ${normalClasses}`}
+            />
+          </Field>
+          <Field label={t("invite.lastName")}>
+            <input
+              name="lastName"
+              defaultValue={data.lastName}
               className={`${inputClasses} ${normalClasses}`}
               required
             />

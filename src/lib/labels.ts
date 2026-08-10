@@ -66,6 +66,29 @@ export function locationLabel(location: Location, locale: Locale = "en"): string
   return locationLabels(locale)[location];
 }
 
+export type ClinicAddress = { name: string; address: string; phone: string };
+
+// Sourced from the clinic's own contact page. Lachine's isn't in hand yet —
+// omitted here on purpose so email templates skip that section gracefully
+// rather than showing a placeholder.
+export const LOCATION_ADDRESSES: Partial<Record<Location, ClinicAddress>> = {
+  PARC_EXTENSION: {
+    name: "Clinique Physioversal de Parc-Extension",
+    address: "6830 Avenue Du Parc, Suite 100 et 103 RDC, Montréal, Québec H3N 1W7, Canada",
+    phone: "514-531-9049",
+  },
+  COTE_VERTU: {
+    name: "Clinique Physioversal de Côte-Vertu",
+    address: "1077 Bd Décarie, Suite 2, RDC, Saint-Laurent, Québec H4L 3M8, Canada",
+    phone: "(514) 447-9221",
+  },
+  MONTREAL_NORD: {
+    name: "Clinique Physioversal de Montréal-Nord",
+    address: "5879 Boulevard Henri-Bourassa Est, Local 307, 3e étage, Montréal-Nord, Québec H1G 2V1, Canada",
+    phone: "(514) 258-0343",
+  },
+};
+
 const AVATAR_COLORS = [
   "#6941C6",
   "#0D7377",

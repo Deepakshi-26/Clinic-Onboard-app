@@ -11,7 +11,9 @@ import { defaultGoalSet } from "@/lib/default-goals";
 import { buildInviteEmailHtml, getBaseUrl, sendEmail } from "@/lib/email";
 
 const InviteSchema = z.object({
-  fullName: z.string().min(1),
+  firstName: z.string().min(1),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1),
   personalEmail: z.string().email(),
   title: z.enum([
     "PHYSIOTHERAPIST",
@@ -53,6 +55,9 @@ export async function createInvite(
     return { error: "Please fill in all required fields correctly." };
   }
   const parsed = result.data;
+  const fullName = [parsed.firstName, parsed.middleName, parsed.lastName]
+    .filter(Boolean)
+    .join(" ");
 
   const existing = await prisma.user.findUnique({
     where: { email: parsed.personalEmail },
@@ -74,7 +79,10 @@ export async function createInvite(
       role: "EMPLOYEE",
       employee: {
         create: {
-          fullName: parsed.fullName,
+          fullName,
+          firstName: parsed.firstName,
+          middleName: parsed.middleName || null,
+          lastName: parsed.lastName,
           personalEmail: parsed.personalEmail,
           title: parsed.title,
           location: parsed.location,
@@ -103,7 +111,7 @@ export async function createInvite(
   const emailResult = await sendEmail({
     to: parsed.personalEmail,
     subject: "Welcome to ClinicBoard — Set up your account",
-    html: buildInviteEmailHtml({ fullName: parsed.fullName, acceptUrl }),
+    html: buildInviteEmailHtml({ fullName, acceptUrl, location: parsed.location }),
   });
 
   await prisma.emailLog.create({
@@ -111,7 +119,7 @@ export async function createInvite(
       kind: "INVITE",
       toEmail: parsed.personalEmail,
       subject: "Welcome to ClinicBoard",
-      body: `Hi ${parsed.fullName}, your onboarding portal account is ready. Check your email for a link to set your password.`,
+      body: `Hi ${fullName}, your onboarding portal account is ready. Check your email for a link to set your password.`,
       employeeId: user.employee!.id,
     },
   });

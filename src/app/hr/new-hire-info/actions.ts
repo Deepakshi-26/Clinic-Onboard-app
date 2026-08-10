@@ -10,7 +10,9 @@ import { buildInviteEmailHtml, getBaseUrl, sendEmail } from "@/lib/email";
 
 const UpdateSchema = z.object({
   employeeId: z.string().min(1),
-  fullName: z.string().min(1),
+  firstName: z.string().min(1),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1),
   phone: z.string().optional(),
   dateOfBirth: z.string().optional(),
   personalEmail: z.string().email(),
@@ -67,10 +69,17 @@ export async function updateEmployeeInfo(
       });
     }
 
+    const fullName = [parsed.firstName, parsed.middleName, parsed.lastName]
+      .filter(Boolean)
+      .join(" ");
+
     await tx.employee.update({
       where: { id: parsed.employeeId },
       data: {
-        fullName: parsed.fullName,
+        fullName,
+        firstName: parsed.firstName,
+        middleName: parsed.middleName || null,
+        lastName: parsed.lastName,
         phone: parsed.phone || null,
         dateOfBirth: parsed.dateOfBirth ? new Date(parsed.dateOfBirth) : null,
         personalEmail: parsed.personalEmail,
@@ -126,7 +135,11 @@ export async function resendInviteEmail(employeeId: string): Promise<{ ok: boole
   const emailResult = await sendEmail({
     to: employee.personalEmail,
     subject: "Welcome to ClinicBoard — Set up your account",
-    html: buildInviteEmailHtml({ fullName: employee.fullName, acceptUrl }),
+    html: buildInviteEmailHtml({
+      fullName: employee.fullName,
+      acceptUrl,
+      location: employee.location,
+    }),
   });
 
   return { ok: emailResult.ok };
