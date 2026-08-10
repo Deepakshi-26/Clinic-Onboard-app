@@ -5,8 +5,8 @@ const MAX_DOCS = 6;
 // Per-document and total character budgets, so one huge manual doesn't
 // starve the others out, but a single assigned document still gets its
 // full text (most training PDFs are well under this).
-const MAX_CHARS_PER_DOC = 60_000;
-const MAX_TOTAL_CHARS = 150_000;
+const MAX_CHARS_PER_DOC = 200_000;
+const MAX_TOTAL_CHARS = 400_000;
 
 // Extracted text rarely changes (documents are replaced, not edited), so a
 // per-warm-instance cache avoids re-fetching/re-parsing the same PDF on
