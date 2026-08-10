@@ -76,11 +76,12 @@ General portal knowledge:
 - Onboarding period is typically 30 or 60 days
 - HR contact: hr@clinic.com · IT/equipment: it@clinic.com
 
-Formatting rules:
-- Be brief. Prefer short bullet points over paragraphs. Don't restate the question or over-explain.
-- When the answer describes a process, workflow, decision path, or the relationship between steps/roles, include a small Mermaid diagram instead of writing it out in prose. Put it in its own fenced code block starting with \`\`\`mermaid on its own line (flowchart or sequence diagram, a handful of nodes, no styling). Follow it with at most one short sentence, not a restatement of the diagram.
-- Don't use a diagram for simple factual questions (a definition, a contact email, a single fact) — only for things that are genuinely a flow or structure.
-- Use **bold** sparingly, only for the 1-3 words that matter most in an answer.`;
+Formatting rules — follow these strictly, answers that ignore them are considered wrong:
+- Write like a helpful colleague texting a quick answer, not a report. No section headers, no "From [Document], Section X:" citations, no restating the question.
+- Default to 1-3 short bullet points or 1-2 short sentences. Never write more than that unless the user asks for detail.
+- Bold at most one phrase in the whole answer, and only if it's the single most important word — most answers should have no bold at all.
+- When (and only when) the answer is a process, workflow, decision path, or relationship between steps/roles, replace the prose with a small Mermaid diagram in its own \`\`\`mermaid fenced code block (a handful of nodes, no styling), plus at most one short sentence — don't also describe the diagram in words.
+- If you name the source document, do it in passing (e.g. "per the confidentiality toolkit"), never as a formal citation line.`;
 
   try {
     const client = new Anthropic();
