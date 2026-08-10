@@ -62,7 +62,7 @@ export function buildInviteEmailHtml(params: {
     <div style="margin-top: 24px; padding: 14px 16px; background: #f1f5f9; border-radius: 10px; font-size: 13px; color: #334155; line-height: 1.6;">
       <strong style="color: #1e293b;">${clinic.name}</strong><br/>
       ${clinic.address}<br/>
-      Tel / Tél: ${clinic.phone}
+      Tel / Tél: ${clinic.phone}${clinic.email ? `<br/>Email / Courriel: ${clinic.email}` : ""}
     </div>`
     : "";
 

@@ -66,11 +66,14 @@ export function locationLabel(location: Location, locale: Locale = "en"): string
   return locationLabels(locale)[location];
 }
 
-export type ClinicAddress = { name: string; address: string; phone: string };
+export type ClinicAddress = {
+  name: string;
+  address: string;
+  phone: string;
+  email?: string;
+};
 
-// Sourced from the clinic's own contact page. Lachine's isn't in hand yet —
-// omitted here on purpose so email templates skip that section gracefully
-// rather than showing a placeholder.
+// Sourced from the clinic's own contact page.
 export const LOCATION_ADDRESSES: Partial<Record<Location, ClinicAddress>> = {
   PARC_EXTENSION: {
     name: "Clinique Physioversal de Parc-Extension",
@@ -86,6 +89,12 @@ export const LOCATION_ADDRESSES: Partial<Record<Location, ClinicAddress>> = {
     name: "Clinique Physioversal de Montréal-Nord",
     address: "5879 Boulevard Henri-Bourassa Est, Local 307, 3e étage, Montréal-Nord, Québec H1G 2V1, Canada",
     phone: "(514) 258-0343",
+  },
+  LACHINE: {
+    name: "Clinique Physioversal de Lachine",
+    address: "3130 Rue Remembrance, Suite 1, Lachine, Québec H8S 1X8, Canada",
+    phone: "(438) 819-2000",
+    email: "lachine@physioversal.ca",
   },
 };
 
