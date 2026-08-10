@@ -29,23 +29,36 @@ export function VoiceTourPlayer() {
   useEffect(() => {
     fetch("/api/voice-tour", { method: "POST" })
       .then(async (res) => {
-        const body = await res.json();
-        if (!res.ok || !body.steps?.length) {
-          throw new Error(body.error ?? "empty");
+        const rawText = await res.text();
+        let body: { steps?: TourStepData[]; error?: string } | null = null;
+        try {
+          body = JSON.parse(rawText);
+        } catch {
+          // response wasn't JSON — fall through, handled below
+        }
+
+        if (!res.ok) {
+          const detail = body?.error ?? rawText.slice(0, 400) ?? "(empty response)";
+          setErrorMessage(`[HTTP ${res.status}] ${detail || "(empty response)"}`);
+          setStatus("error");
+          return;
+        }
+        if (!body?.steps?.length) {
+          setErrorMessage(`[HTTP ${res.status}] Server returned no steps. Raw: ${rawText.slice(0, 400)}`);
+          setStatus("error");
+          return;
         }
         setSteps(body.steps);
         setStatus("ready");
       })
       .catch((err: unknown) => {
-        const serverMessage = err instanceof Error && err.message !== "empty" ? err.message : "";
-        setErrorMessage(serverMessage || t("voiceTour.error"));
+        setErrorMessage(`[network] ${err instanceof Error ? err.message : String(err)}`);
         setStatus("error");
       });
 
     return () => {
       audioRef.current?.pause();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function playStep(index: number) {
