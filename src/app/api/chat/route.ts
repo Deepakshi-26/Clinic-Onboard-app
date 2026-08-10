@@ -5,16 +5,32 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { buildTrainingContext } from "@/lib/documentText";
 
+const MAX_HISTORY = 20;
+
 const ChatSchema = z.object({
-  messages: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().max(2000),
-      })
-    )
-    .max(20),
+  message: z.string().min(1).max(2000),
 });
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rows = await prisma.chatMessage.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+  rows.reverse();
+
+  return Response.json({
+    messages: rows.map((r) => ({
+      role: r.role === "USER" ? "user" : "assistant",
+      content: r.content,
+    })),
+  });
+}
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -33,6 +49,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return Response.json({ error: "Invalid request." }, { status: 400 });
   }
+  const userMessage = parsed.data.message;
 
   const role = session.user.role;
   const employee =
@@ -83,17 +100,41 @@ Formatting rules — follow these strictly, answers that ignore them are conside
 - When (and only when) the answer is a process, workflow, decision path, or relationship between steps/roles, replace the prose with a small Mermaid diagram in its own \`\`\`mermaid fenced code block (a handful of nodes, no styling), plus at most one short sentence — don't also describe the diagram in words.
 - If you name the source document, do it in passing (e.g. "per the confidentiality toolkit"), never as a formal citation line.`;
 
+  const historyRows = await prisma.chatMessage.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+    take: MAX_HISTORY,
+  });
+  historyRows.reverse();
+
+  const anthropicMessages = [
+    ...historyRows.map((r) => ({
+      role: r.role === "USER" ? ("user" as const) : ("assistant" as const),
+      content: r.content,
+    })),
+    { role: "user" as const, content: userMessage },
+  ];
+
   try {
     const client = new Anthropic();
     const response = await client.messages.create({
       model: "claude-sonnet-5",
       max_tokens: 1024,
       system: systemPrompt,
-      messages: parsed.data.messages,
+      messages: anthropicMessages,
     });
 
     const textBlock = response.content.find((block) => block.type === "text");
-    return Response.json({ reply: textBlock?.text ?? "" });
+    const replyText = textBlock?.text ?? "";
+
+    await prisma.chatMessage.createMany({
+      data: [
+        { userId: session.user.id, role: "USER", content: userMessage },
+        { userId: session.user.id, role: "ASSISTANT", content: replyText },
+      ],
+    });
+
+    return Response.json({ reply: replyText });
   } catch (err) {
     console.error("Chat request failed:", err);
     return Response.json(

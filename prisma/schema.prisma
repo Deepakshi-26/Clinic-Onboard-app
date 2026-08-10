@@ -59,6 +59,11 @@ enum MessageChannel {
   PEER
 }
 
+enum ChatRole {
+  USER
+  ASSISTANT
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -73,9 +78,10 @@ model User {
   // from "Send Password Reset" (they're already active) in the UI.
   passwordSetAt DateTime?
 
-  employee Employee?
-  accounts Account[]
-  sessions Session[]
+  employee     Employee?
+  accounts     Account[]
+  sessions     Session[]
+  chatMessages ChatMessage[]
 }
 
 // Standard Auth.js Prisma-adapter shape. Not exercised by the Credentials+JWT
@@ -327,4 +333,17 @@ model EmailLog {
   employeeId String?
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
   createdAt  DateTime  @default(now())
+}
+
+// Each user (HR or employee) has their own AI chatbot conversation —
+// not shared like the HR/employee Message inbox.
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      ChatRole
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { MermaidDiagram } from "@/components/chatbot/MermaidDiagram";
 
@@ -37,18 +37,35 @@ function renderBoldSegments(text: string) {
 export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", content: t("chatbot.greeting") },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const hasFetchedHistory = useRef(false);
+
+  useEffect(() => {
+    if (!open || hasFetchedHistory.current) return;
+    hasFetchedHistory.current = true;
+
+    fetch("/api/chat")
+      .then((res) => (res.ok ? res.json() : { messages: [] }))
+      .then((body: { messages?: ChatMessage[] }) => {
+        setMessages(
+          body.messages && body.messages.length > 0
+            ? body.messages
+            : [{ role: "assistant", content: t("chatbot.greeting") }]
+        );
+      })
+      .catch(() => {
+        setMessages([{ role: "assistant", content: t("chatbot.greeting") }]);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   async function send() {
     const text = input.trim();
     if (!text || sending) return;
 
-    const next: ChatMessage[] = [...messages, { role: "user", content: text }];
-    setMessages(next);
+    setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     setSending(true);
 
@@ -56,7 +73,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ message: text }),
       });
       const body = await res.json();
       const reply: string = res.ok
