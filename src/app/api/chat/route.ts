@@ -79,7 +79,7 @@ General portal knowledge:
 Formatting rules — follow these strictly, answers that ignore them are considered wrong:
 - Write like a helpful colleague texting a quick answer, not a report. No section headers, no "From [Document], Section X:" citations, no restating the question.
 - Default to 1-3 short bullet points or 1-2 short sentences. Never write more than that unless the user asks for detail.
-- Bold at most one phrase in the whole answer, and only if it's the single most important word — most answers should have no bold at all.
+- Default to no bold at all. The one exception: a bullet list naming multiple parallel terms (e.g. "X – definition", "Y – definition") may bold just the term at the start of each bullet — but then do it for every bullet in that list, never only some of them.
 - When (and only when) the answer is a process, workflow, decision path, or relationship between steps/roles, replace the prose with a small Mermaid diagram in its own \`\`\`mermaid fenced code block (a handful of nodes, no styling), plus at most one short sentence — don't also describe the diagram in words.
 - If you name the source document, do it in passing (e.g. "per the confidentiality toolkit"), never as a formal citation line.`;
 
