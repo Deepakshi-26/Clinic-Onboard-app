@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { buildTrainingContext } from "@/lib/documentText";
 
 const ChatSchema = z.object({
   messages: z
@@ -39,16 +40,35 @@ export async function POST(request: Request) {
       ? await prisma.employee.findUnique({ where: { userId: session.user.id } })
       : null;
 
-  const accessNote =
-    role === "HR"
-      ? "The user is HR and has full access to all portal information."
-      : `The user is an onboarding employee (${employee?.title ?? "role unknown"} at ${
-          employee?.location ?? "an unassigned location"
-        }). They have role-scoped access — a training document library doesn't exist yet, so if asked about specific training materials, say that's not available yet and to contact HR.`;
+  let accessNote: string;
+  let trainingContext = "";
+
+  if (role === "HR") {
+    accessNote = "The user is HR and has full access to all portal information.";
+  } else {
+    accessNote = `The user is an onboarding employee (${employee?.title ?? "role unknown"} at ${
+      employee?.location ?? "an unassigned location"
+    }). They have role-scoped access — only answer using the training document content provided below or general portal knowledge; for anything else, tell them to contact HR.`;
+
+    if (employee) {
+      const documents = await prisma.trainingDocument.findMany({
+        where: {
+          OR: [
+            { assignedEmployees: { some: { id: employee.id } } },
+            { roles: { has: employee.title } },
+          ],
+        },
+        orderBy: { uploadedAt: "desc" },
+      });
+      trainingContext = await buildTrainingContext(documents);
+    }
+  }
 
   const systemPrompt = `You are ClinicBoard's onboarding assistant for a medical clinic in Montreal, Quebec.
 
 ${accessNote}
+
+${trainingContext}
 
 General portal knowledge:
 - Clinic locations: Parc Extension, Montréal Nord, Côte-Vertu, Lachine
