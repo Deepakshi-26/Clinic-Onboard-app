@@ -4,10 +4,18 @@ import { useState, useTransition } from "react";
 import { resendInviteEmail } from "@/app/hr/new-hire-info/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-export function ResendInviteButton({ employeeId }: { employeeId: string }) {
+export function ResendInviteButton({
+  employeeId,
+  accountActive,
+}: {
+  employeeId: string;
+  accountActive: boolean;
+}) {
   const { t } = useLocale();
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<"idle" | "sent" | "failed">("idle");
+
+  const idleLabel = accountActive ? t("invite.sendPasswordReset") : t("invite.resendEmail");
 
   return (
     <button
@@ -24,7 +32,7 @@ export function ResendInviteButton({ employeeId }: { employeeId: string }) {
         ? `✓ ${t("messages.sent")}`
         : status === "failed"
           ? `⚠️ ${t("messages.sendFailed")}`
-          : `✉️ ${t("invite.resendEmail")}`}
+          : `✉️ ${idleLabel}`}
     </button>
   );
 }

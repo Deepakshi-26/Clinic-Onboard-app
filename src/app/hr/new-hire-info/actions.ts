@@ -6,7 +6,12 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { updateEmployeeSensitiveInfo } from "@/lib/repositories/employee";
-import { buildInviteEmailHtml, getBaseUrl, sendEmail } from "@/lib/email";
+import {
+  buildInviteEmailHtml,
+  buildPasswordResetEmailHtml,
+  getBaseUrl,
+  sendEmail,
+} from "@/lib/email";
 
 const UpdateSchema = z.object({
   employeeId: z.string().min(1),
@@ -109,13 +114,17 @@ export async function updateEmployeeInfo(
 
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-export async function resendInviteEmail(employeeId: string): Promise<{ ok: boolean }> {
+export async function resendInviteEmail(
+  employeeId: string
+): Promise<{ ok: boolean; kind: "invite" | "reset" }> {
   const session = await auth();
   if (session?.user?.role !== "HR") throw new Error("Forbidden");
 
   const employee = await prisma.employee.findUniqueOrThrow({
     where: { id: employeeId },
+    include: { user: { select: { passwordSetAt: true } } },
   });
+  const kind: "invite" | "reset" = employee.user.passwordSetAt ? "reset" : "invite";
 
   // Invalidate any outstanding links before issuing a new one.
   await prisma.verificationToken.deleteMany({
@@ -132,17 +141,24 @@ export async function resendInviteEmail(employeeId: string): Promise<{ ok: boole
   });
 
   const acceptUrl = `${getBaseUrl()}/accept-invite?token=${token}`;
-  const emailResult = await sendEmail({
-    to: employee.personalEmail,
-    subject: "Welcome to ClinicBoard — Set up your account",
-    html: buildInviteEmailHtml({
-      fullName: employee.fullName,
-      acceptUrl,
-      location: employee.location,
-    }),
-  });
+  const emailResult =
+    kind === "reset"
+      ? await sendEmail({
+          to: employee.personalEmail,
+          subject: "ClinicBoard — Reset your password",
+          html: buildPasswordResetEmailHtml({ fullName: employee.fullName, acceptUrl }),
+        })
+      : await sendEmail({
+          to: employee.personalEmail,
+          subject: "Welcome to ClinicBoard — Set up your account",
+          html: buildInviteEmailHtml({
+            fullName: employee.fullName,
+            acceptUrl,
+            location: employee.location,
+          }),
+        });
 
-  return { ok: emailResult.ok };
+  return { ok: emailResult.ok, kind };
 }
 
 // Marking inactive (not deleting) keeps the employee's full record — goals,

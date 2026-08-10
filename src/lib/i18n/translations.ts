@@ -55,6 +55,7 @@ export const translations: Record<Locale, Dict> = {
     "invite.emailFailed":
       "Account created, but the invitation email failed to send. Check your email configuration, or use \"Resend Invite Email\" below once it's fixed.",
     "invite.resendEmail": "Resend Invite Email",
+    "invite.sendPasswordReset": "Send Password Reset",
     "messages.sendFailed": "Failed to send",
     "messages.read": "Read",
     "messages.sentStatus": "Sent",
@@ -124,6 +125,8 @@ export const translations: Record<Locale, Dict> = {
       "Nothing uploaded yet — the employee can add documents (like a void cheque or permit photo) from their own portal.",
     "newHire.uploaded": "Uploaded",
     "newHire.view": "View",
+    "newHire.accountActive": "Account active",
+    "newHire.accountPending": "Account not yet activated",
 
     "dashboard.activeOnboardings": "Active Onboardings",
     "dashboard.inProgress": "in progress",
@@ -389,6 +392,7 @@ export const translations: Record<Locale, Dict> = {
     "invite.emailFailed":
       "Compte créé, mais l'envoi du courriel d'invitation a échoué. Vérifiez votre configuration courriel, ou utilisez « Renvoyer le courriel d'invitation » ci-dessous une fois corrigé.",
     "invite.resendEmail": "Renvoyer le courriel d'invitation",
+    "invite.sendPasswordReset": "Envoyer une réinitialisation",
     "messages.sendFailed": "Échec de l'envoi",
     "messages.read": "Lu",
     "messages.sentStatus": "Envoyé",
@@ -459,6 +463,8 @@ export const translations: Record<Locale, Dict> = {
       "Rien n'a encore été téléversé — l'employé peut ajouter des documents (comme un chèque annulé ou une photo de permis) depuis son propre portail.",
     "newHire.uploaded": "Téléversé le",
     "newHire.view": "Voir",
+    "newHire.accountActive": "Compte actif",
+    "newHire.accountPending": "Compte pas encore activé",
 
     "dashboard.activeOnboardings": "Intégrations actives",
     "dashboard.inProgress": "en cours",

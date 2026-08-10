@@ -83,6 +83,29 @@ export function buildInviteEmailHtml(params: {
   `);
 }
 
+export function buildPasswordResetEmailHtml(params: {
+  fullName: string;
+  acceptUrl: string;
+}): string {
+  return emailWrapper(`
+    <p style="font-size: 15px; color: #1e293b;">Hi ${params.fullName},</p>
+    <p style="font-size: 14px; color: #334155; line-height: 1.6;">
+      HR sent you a link to reset your password on the onboarding portal.
+      Click below to set a new password — this link expires in 7 days. If you
+      didn't expect this, you can ignore it and keep using your current password.
+    </p>
+    <p style="font-size: 14px; color: #334155; line-height: 1.6;">
+      Les RH vous ont envoyé un lien pour réinitialiser votre mot de passe sur
+      le portail d'intégration. Cliquez ci-dessous pour définir un nouveau mot
+      de passe — ce lien expire dans 7 jours. Si vous ne vous attendiez pas à
+      ce courriel, vous pouvez l'ignorer et garder votre mot de passe actuel.
+    </p>
+    <a href="${params.acceptUrl}" style="display: inline-block; margin-top: 12px; padding: 12px 24px; background: #0D7377; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+      Reset Your Password / Réinitialiser votre mot de passe
+    </a>
+  `);
+}
+
 export function buildReminderEmailHtml(params: { fullName: string }): string {
   return emailWrapper(`
     <p style="font-size: 15px; color: #1e293b;">Hi ${params.fullName},</p>

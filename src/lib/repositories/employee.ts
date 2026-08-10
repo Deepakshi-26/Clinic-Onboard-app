@@ -8,9 +8,11 @@ type DbClient = typeof prisma | Prisma.TransactionClient;
 export async function getEmployeeSensitiveInfo(employeeId: string) {
   const employee = await prisma.employee.findUniqueOrThrow({
     where: { id: employeeId },
+    include: { user: { select: { passwordSetAt: true } } },
   });
   return {
     ...employee,
+    passwordSetAt: employee.user.passwordSetAt,
     sinNumber: employee.sinNumberEnc ? decryptField(employee.sinNumberEnc) : null,
     healthCardNumber: employee.healthCardNumberEnc
       ? decryptField(employee.healthCardNumberEnc)

@@ -60,7 +60,14 @@ export default async function NewHireInfoPage({
           {info && missing.length === 0 && (
             <StatusPill tone="green">{t("newHire.allDocsComplete")}</StatusPill>
           )}
-          {info && <ResendInviteButton employeeId={info.id} />}
+          {info && (
+            <StatusPill tone={info.passwordSetAt ? "blue" : "amber"}>
+              {info.passwordSetAt ? t("newHire.accountActive") : t("newHire.accountPending")}
+            </StatusPill>
+          )}
+          {info && (
+            <ResendInviteButton employeeId={info.id} accountActive={!!info.passwordSetAt} />
+          )}
           {info && (
             <DeactivateEmployeeButton employeeId={info.id} employeeName={info.fullName} />
           )}

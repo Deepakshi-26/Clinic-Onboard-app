@@ -39,7 +39,7 @@ export async function setPassword(
 
   await prisma.user.update({
     where: { email: record.identifier },
-    data: { passwordHash },
+    data: { passwordHash, passwordSetAt: new Date() },
   });
 
   // Single-use: clear every outstanding token for this identifier, not just
