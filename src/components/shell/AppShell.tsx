@@ -26,6 +26,7 @@ const HR_NAV: NavItem[] = [
 
 const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee", labelKey: "nav.home", icon: "🏠" },
+  { href: "/employee/voice-tour", labelKey: "nav.voiceTour", icon: "🎙️" },
   { href: "/employee/documents", labelKey: "nav.myDocuments", icon: "📋" },
   { href: "/employee/training", labelKey: "nav.training", icon: "📚" },
   { href: "/employee/access", labelKey: "nav.accessInfo", icon: "🔑" },
@@ -45,6 +46,7 @@ const TITLE_KEYS: Record<string, string> = {
   "/hr/messages": "nav.messages",
   "/hr/inactive": "nav.inactive",
   "/employee": "shell.myOnboarding",
+  "/employee/voice-tour": "nav.voiceTour",
   "/employee/documents": "nav.myDocuments",
   "/employee/training": "nav.training",
   "/employee/access": "nav.accessInfo",
