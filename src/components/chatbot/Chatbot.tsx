@@ -1,9 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { MermaidDiagram } from "@/components/chatbot/MermaidDiagram";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
+
+type ContentPart = { type: "text"; text: string } | { type: "mermaid"; chart: string };
+
+function parseMessageContent(content: string): ContentPart[] {
+  const parts: ContentPart[] = [];
+  const regex = /```mermaid\n([\s\S]*?)```/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(content)) !== null) {
+    const before = content.slice(lastIndex, match.index).trim();
+    if (before) parts.push({ type: "text", text: before });
+    parts.push({ type: "mermaid", chart: match[1].trim() });
+    lastIndex = regex.lastIndex;
+  }
+  const rest = content.slice(lastIndex).trim();
+  if (rest) parts.push({ type: "text", text: rest });
+  return parts;
+}
+
+function renderBoldSegments(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((segment, i) =>
+    segment.startsWith("**") && segment.endsWith("**") ? (
+      <strong key={i}>{segment.slice(2, -2)}</strong>
+    ) : (
+      <Fragment key={i}>{segment}</Fragment>
+    )
+  );
+}
 
 export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
   const { t } = useLocale();
@@ -85,7 +114,15 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
                     : "rounded-bl-sm bg-slate-100 text-slate-900 dark:bg-zinc-800 dark:text-zinc-50"
                 }`}
               >
-                {m.content}
+                {parseMessageContent(m.content).map((part, j) =>
+                  part.type === "mermaid" ? (
+                    <MermaidDiagram key={j} chart={part.chart} />
+                  ) : (
+                    <div key={j} className="whitespace-pre-wrap">
+                      {renderBoldSegments(part.text)}
+                    </div>
+                  )
+                )}
               </div>
             ))}
             {sending && (

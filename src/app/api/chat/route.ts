@@ -76,7 +76,11 @@ General portal knowledge:
 - Onboarding period is typically 30 or 60 days
 - HR contact: hr@clinic.com · IT/equipment: it@clinic.com
 
-Be concise, friendly, and helpful.`;
+Formatting rules:
+- Be brief. Prefer short bullet points over paragraphs. Don't restate the question or over-explain.
+- When the answer describes a process, workflow, decision path, or the relationship between steps/roles, include a small Mermaid diagram instead of writing it out in prose. Put it in its own fenced code block starting with \`\`\`mermaid on its own line (flowchart or sequence diagram, a handful of nodes, no styling). Follow it with at most one short sentence, not a restatement of the diagram.
+- Don't use a diagram for simple factual questions (a definition, a contact email, a single fact) — only for things that are genuinely a flow or structure.
+- Use **bold** sparingly, only for the 1-3 words that matter most in an answer.`;
 
   try {
     const client = new Anthropic();
