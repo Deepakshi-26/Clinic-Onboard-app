@@ -4,6 +4,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { buildTrainingContext } from "@/lib/documentText";
+import { getServerLocale } from "@/lib/i18n/server";
 
 const MAX_HISTORY = 20;
 
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
   const userMessage = parsed.data.message;
 
   const role = session.user.role;
+  const locale = await getServerLocale();
   const employee =
     role === "EMPLOYEE"
       ? await prisma.employee.findUnique({ where: { userId: session.user.id } })
@@ -82,6 +84,8 @@ export async function POST(request: Request) {
   }
 
   const systemPrompt = `You are ClinicBoard's onboarding assistant for a medical clinic in Montreal, Quebec.
+
+The portal's interface language is currently set to ${locale === "fr" ? "French" : "English"}. Always respond in ${locale === "fr" ? "French" : "English"}, regardless of what language the user types in.
 
 ${accessNote}
 
