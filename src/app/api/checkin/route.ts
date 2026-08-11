@@ -5,7 +5,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getServerLocale } from "@/lib/i18n/server";
-import { getDueCheckInDay } from "@/lib/checkin";
+import { getDueCheckInDay, getNextIncompleteCheckInDay } from "@/lib/checkin";
 import {
   computeDaysElapsed,
   computeGoalsProgress,
@@ -23,6 +23,9 @@ const TurnSchema = z.object({
 const CheckInSchema = z.object({
   turns: z.array(TurnSchema).max(MAX_TURNS),
   forceEnd: z.boolean().optional(),
+  // Bypasses the elapsed-time gate for testing — still requires the day slot
+  // to not already be completed, never lets a check-in be redone.
+  test: z.boolean().optional(),
 });
 
 const SUMMARY_MARKER = "---SUMMARY---";
@@ -59,10 +62,10 @@ export async function POST(request: Request) {
     where: { employeeId: employee.id },
     select: { dayOffset: true },
   });
-  const dueDay = getDueCheckInDay(
-    employee,
-    existingCheckIns.map((c) => c.dayOffset)
-  );
+  const completedDayOffsets = existingCheckIns.map((c) => c.dayOffset);
+  const dueDay =
+    getDueCheckInDay(employee, completedDayOffsets) ??
+    (parsed.data.test ? getNextIncompleteCheckInDay(employee, completedDayOffsets) : null);
   if (dueDay === null) {
     return Response.json({ error: "No check-in is due right now." }, { status: 400 });
   }

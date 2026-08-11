@@ -36,7 +36,15 @@ function getSpeechRecognitionCtor(): SpeechRecognitionCtor | null {
 type Turn = { role: "user" | "assistant"; content: string };
 type Status = "idle" | "thinking" | "speaking" | "listening" | "done" | "error";
 
-export function CheckInConversation({ dayOffset, firstName }: { dayOffset: number; firstName: string }) {
+export function CheckInConversation({
+  dayOffset,
+  firstName,
+  isTest = false,
+}: {
+  dayOffset: number;
+  firstName: string;
+  isTest?: boolean;
+}) {
   const { t, locale } = useLocale();
   const [status, setStatus] = useState<Status>("idle");
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -53,7 +61,7 @@ export function CheckInConversation({ dayOffset, firstName }: { dayOffset: numbe
       const res = await fetch("/api/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ turns: turnsSoFar, forceEnd }),
+        body: JSON.stringify({ turns: turnsSoFar, forceEnd, test: isTest }),
       });
       const rawText = await res.text();
       let body: { reply?: string; audioBase64?: string; done?: boolean; error?: string } | null = null;
