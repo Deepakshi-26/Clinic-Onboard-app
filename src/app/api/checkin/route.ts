@@ -95,23 +95,23 @@ CRITICAL formatting rule: your output is converted directly to speech. Never use
 
 Keep the whole call to roughly 3-5 of your turns. When the conversation feels naturally complete (or you're told to wrap up), give a brief warm closing, then on a new line write exactly "${SUMMARY_MARKER}" followed by a 2-3 sentence plain-text summary for HR of how the employee is doing and anything HR should follow up on. Do not include the marker or summary unless you are ending the call.`;
 
+  // Written in the target locale, not just described as such in the system
+  // prompt — a stray English instruction here was enough to bias the AI's
+  // opening reply into English even with an explicit French system rule.
+  const kickoffMessage =
+    locale === "fr"
+      ? "(L'employé vient de rejoindre son appel de suivi. Accueille-le chaleureusement par son prénom et commence la conversation, en français.)"
+      : "(The employee has just joined their check-in call. Greet them warmly by name and start the conversation, in English.)";
+  const wrapUpMessage =
+    locale === "fr"
+      ? "(L'appel doit se terminer maintenant. Donne une brève conclusion chaleureuse en français et inclus le résumé comme indiqué.)"
+      : "(The call needs to end now. Give a brief warm closing in English and include the summary as instructed.)";
+
   const anthropicMessages: { role: "user" | "assistant"; content: string }[] =
-    turns.length === 0
-      ? [
-          {
-            role: "user",
-            content:
-              "(The employee has just joined their check-in call. Greet them warmly by name and start the conversation.)",
-          },
-        ]
-      : [...turns];
+    turns.length === 0 ? [{ role: "user", content: kickoffMessage }] : [...turns];
 
   if (forceEnd) {
-    anthropicMessages.push({
-      role: "user",
-      content:
-        "(The call needs to end now. Give a brief warm closing and include the summary as instructed.)",
-    });
+    anthropicMessages.push({ role: "user", content: wrapUpMessage });
   }
 
   try {
