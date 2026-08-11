@@ -7,6 +7,7 @@ import { SignOutButton } from "./SignOutButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { Chatbot } from "@/components/chatbot/Chatbot";
+import { VoiceTourOverlay } from "@/components/shell/VoiceTourOverlay";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type NavItem = { href: string; labelKey: string; icon: string };
@@ -26,7 +27,6 @@ const HR_NAV: NavItem[] = [
 
 const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee", labelKey: "nav.home", icon: "🏠" },
-  { href: "/employee/voice-tour", labelKey: "nav.voiceTour", icon: "🎙️" },
   { href: "/employee/documents", labelKey: "nav.myDocuments", icon: "📋" },
   { href: "/employee/training", labelKey: "nav.training", icon: "📚" },
   { href: "/employee/access", labelKey: "nav.accessInfo", icon: "🔑" },
@@ -46,7 +46,7 @@ const TITLE_KEYS: Record<string, string> = {
   "/hr/messages": "nav.messages",
   "/hr/inactive": "nav.inactive",
   "/employee": "shell.myOnboarding",
-  "/employee/voice-tour": "nav.voiceTour",
+  "/employee/check-in": "checkin.pageTitle",
   "/employee/documents": "nav.myDocuments",
   "/employee/training": "nav.training",
   "/employee/access": "nav.accessInfo",
@@ -71,7 +71,7 @@ export function AppShell({
   const nav = role === "HR" ? HR_NAV : EMPLOYEE_NAV;
   const title = TITLE_KEYS[pathname] ? t(TITLE_KEYS[pathname]) : "";
 
-  return (
+  const shell = (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
         <div
@@ -159,4 +159,6 @@ export function AppShell({
       <Chatbot role={role} />
     </div>
   );
+
+  return role === "EMPLOYEE" ? <VoiceTourOverlay>{shell}</VoiceTourOverlay> : shell;
 }
