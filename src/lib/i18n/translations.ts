@@ -126,6 +126,9 @@ export const translations: Record<Locale, Dict> = {
       "Nothing uploaded yet — the employee can add documents (like a void cheque or permit photo) from their own portal.",
     "newHire.uploaded": "Uploaded",
     "newHire.view": "View",
+    "newHire.aiCheckIns": "AI Check-ins",
+    "newHire.noCheckInsYet": "No check-ins completed yet.",
+    "newHire.day": "Day",
     "newHire.accountActive": "Account active",
     "newHire.accountPending": "Account not yet activated",
 
@@ -361,6 +364,28 @@ export const translations: Record<Locale, Dict> = {
     "voiceTour.replay": "Replay Tour",
     "voiceTour.backHome": "Back to Home",
     "voiceTour.error": "Couldn't prepare your voice tour. Please try again.",
+
+    "checkin.pageTitle": "AI Check-in",
+    "checkin.noneDue": "No check-in is due right now — check back later.",
+    "checkin.dayLabel": "Day",
+    "checkin.checkinWord": "Check-in",
+    "checkin.greeting": "Hi",
+    "checkin.readySubtitle":
+      "This is a quick spoken check-in with your AI onboarding assistant — it'll ask how things are going. Put your sound on and make sure your mic is available.",
+    "checkin.startButton": "📞 Start Check-in",
+    "checkin.statusThinking": "Thinking…",
+    "checkin.statusSpeaking": "Speaking…",
+    "checkin.statusListening": "Listening — tap Done when you're finished",
+    "checkin.doneSpeaking": "Done Speaking",
+    "checkin.endCall": "End Check-in",
+    "checkin.doneTitle": "Check-in complete!",
+    "checkin.backHome": "Back to Home",
+    "checkin.micDenied": "Microphone access is needed for the check-in. Please allow it and try again.",
+    "checkin.noSpeechSupport":
+      "Your browser doesn't support speech recognition. Try Chrome or Edge instead.",
+    "checkin.homeCardTitle": "📞 Your Day",
+    "checkin.homeCardBody": "Check-in is ready — a quick chat with your AI assistant about how it's going.",
+    "checkin.homeCardButton": "Start Check-in",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -488,6 +513,9 @@ export const translations: Record<Locale, Dict> = {
       "Rien n'a encore été téléversé — l'employé peut ajouter des documents (comme un chèque annulé ou une photo de permis) depuis son propre portail.",
     "newHire.uploaded": "Téléversé le",
     "newHire.view": "Voir",
+    "newHire.aiCheckIns": "Suivis IA",
+    "newHire.noCheckInsYet": "Aucun suivi complété pour l'instant.",
+    "newHire.day": "Jour",
     "newHire.accountActive": "Compte actif",
     "newHire.accountPending": "Compte pas encore activé",
 
@@ -725,5 +753,28 @@ export const translations: Record<Locale, Dict> = {
     "voiceTour.replay": "Revoir la visite",
     "voiceTour.backHome": "Retour à l'accueil",
     "voiceTour.error": "Impossible de préparer ta visite vocale. Réessaie.",
+
+    "checkin.pageTitle": "Suivi IA",
+    "checkin.noneDue": "Aucun suivi n'est prévu pour le moment — reviens plus tard.",
+    "checkin.dayLabel": "Jour",
+    "checkin.checkinWord": "Suivi",
+    "checkin.greeting": "Salut",
+    "checkin.readySubtitle":
+      "C'est un court suivi vocal avec ton assistant IA d'intégration — il te demandera comment ça se passe. Mets le son et assure-toi que ton micro est disponible.",
+    "checkin.startButton": "📞 Démarrer le suivi",
+    "checkin.statusThinking": "Réflexion…",
+    "checkin.statusSpeaking": "En train de parler…",
+    "checkin.statusListening": "À l'écoute — appuie sur Terminé quand tu as fini",
+    "checkin.doneSpeaking": "Terminé",
+    "checkin.endCall": "Terminer le suivi",
+    "checkin.doneTitle": "Suivi terminé!",
+    "checkin.backHome": "Retour à l'accueil",
+    "checkin.micDenied": "L'accès au micro est nécessaire pour le suivi. Autorise-le et réessaie.",
+    "checkin.noSpeechSupport":
+      "Ton navigateur ne prend pas en charge la reconnaissance vocale. Essaie Chrome ou Edge.",
+    "checkin.homeCardTitle": "📞 Ton suivi du jour",
+    "checkin.homeCardBody":
+      "est prêt — une courte discussion avec ton assistant IA sur comment ça se passe.",
+    "checkin.homeCardButton": "Démarrer le suivi",
   },
 };

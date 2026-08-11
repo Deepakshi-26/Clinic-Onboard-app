@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { locationLabel } from "@/lib/labels";
 import { computeDaysRemaining, computeOverallProgress } from "@/lib/progress";
+import { getDueCheckInDay } from "@/lib/checkin";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -39,6 +40,15 @@ export default async function EmployeeHomePage() {
   const firstName = employee.fullName.split(" ")[0];
   const dailyGoals = employee.goals.filter((g) => g.type === "DAILY");
 
+  const existingCheckIns = await prisma.checkIn.findMany({
+    where: { employeeId: employee.id },
+    select: { dayOffset: true },
+  });
+  const dueCheckInDay = getDueCheckInDay(
+    employee,
+    existingCheckIns.map((c) => c.dayOffset)
+  );
+
   return (
     <div className="flex flex-col gap-5">
       <Link
@@ -53,6 +63,23 @@ export default async function EmployeeHomePage() {
           {t("voiceTour.homeCardButton")} →
         </span>
       </Link>
+
+      {dueCheckInDay !== null && (
+        <Link
+          href="/employee/check-in"
+          className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-400 px-5 py-4 text-white shadow-md transition-transform hover:scale-[1.01]"
+        >
+          <div>
+            <div className="text-sm font-bold">
+              {t("checkin.homeCardTitle")} {dueCheckInDay}
+            </div>
+            <div className="mt-0.5 text-xs text-white/85">{t("checkin.homeCardBody")}</div>
+          </div>
+          <span className="flex-shrink-0 rounded-full bg-white/20 px-3.5 py-2 text-xs font-semibold whitespace-nowrap">
+            {t("checkin.homeCardButton")} →
+          </span>
+        </Link>
+      )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`👋 ${t("home.welcomeGreeting")}, ${firstName}!`}>

@@ -177,6 +177,7 @@ model Employee {
   peerMessages      Message[]          @relation("MessagePeerEmployee")
   sentMessages      Message[]          @relation("MessageSender")
   scheduleItems     ScheduleItem[]
+  checkIns          CheckIn[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -346,4 +347,20 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
+}
+
+// One row per completed AI voice check-in (every CHECKIN_INTERVAL_DAYS —
+// see src/lib/checkin.ts). dayOffset is the onboarding day it targeted
+// (3, 6, 9, ...), not a calendar date, so the schedule stays relative to
+// each employee's own startDate.
+model CheckIn {
+  id          String   @id @default(cuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  dayOffset   Int
+  transcript  String
+  summary     String?
+  completedAt DateTime @default(now())
+
+  @@unique([employeeId, dayOffset])
 }

@@ -38,6 +38,12 @@ export default async function NewHireInfoPage({
         orderBy: { uploadedAt: "desc" },
       })
     : [];
+  const checkIns = selectedId
+    ? await prisma.checkIn.findMany({
+        where: { employeeId: selectedId },
+        orderBy: { dayOffset: "asc" },
+      })
+    : [];
 
   return (
     <div className="flex flex-col gap-5">
@@ -130,6 +136,37 @@ export default async function NewHireInfoPage({
                     {t("newHire.view")}
                   </a>
                 </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
+
+      {info && (
+        <Card title={`📞 ${t("newHire.aiCheckIns")}`}>
+          {checkIns.length === 0 ? (
+            <p className="text-xs text-slate-500 dark:text-zinc-400">
+              {t("newHire.noCheckInsYet")}
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2.5">
+              {checkIns.map((checkIn) => (
+                <details
+                  key={checkIn.id}
+                  className="rounded-lg border border-slate-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
+                >
+                  <summary className="cursor-pointer text-xs font-semibold text-slate-900 dark:text-zinc-50">
+                    {t("newHire.day")} {checkIn.dayOffset} — {formatShortDate(checkIn.completedAt, locale)}
+                  </summary>
+                  {checkIn.summary && (
+                    <p className="mt-2 text-xs leading-relaxed text-slate-700 dark:text-zinc-300">
+                      {checkIn.summary}
+                    </p>
+                  )}
+                  <pre className="mt-2 max-h-48 overflow-y-auto rounded-md bg-slate-50 p-2.5 text-[11px] whitespace-pre-wrap text-slate-500 dark:bg-zinc-950 dark:text-zinc-400">
+                    {checkIn.transcript}
+                  </pre>
+                </details>
               ))}
             </div>
           )}
