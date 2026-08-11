@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { NetworkBackground } from "@/components/auth/NetworkBackground";
 
 type Role = "HR" | "EMPLOYEE";
 
@@ -43,8 +44,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 to-teal-700 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-2xl dark:bg-zinc-900">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-teal-950 to-teal-800 px-4">
+      <NetworkBackground />
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-10 shadow-2xl dark:bg-zinc-900">
         <div className="mb-1 flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 text-xl">
             🏥
