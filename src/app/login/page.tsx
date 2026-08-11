@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -126,6 +127,13 @@ export default function LoginPage() {
             {submitting ? t("login.signingIn") : t("login.signIn")}
           </button>
         </form>
+
+        <Link
+          href="/privacy"
+          className="mt-6 block text-center text-[11px] text-slate-400 hover:text-teal-600 dark:text-zinc-500"
+        >
+          {t("login.privacyPolicy")}
+        </Link>
       </div>
     </div>
   );

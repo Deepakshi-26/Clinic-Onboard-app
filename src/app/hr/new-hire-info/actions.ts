@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { updateEmployeeSensitiveInfo } from "@/lib/repositories/employee";
+import { logAudit } from "@/lib/audit";
 import {
   buildInviteEmailHtml,
   buildPasswordResetEmailHtml,
@@ -103,6 +104,13 @@ export async function updateEmployeeInfo(
       },
       tx
     );
+  });
+
+  await logAudit({
+    actorUserId: session.user.id,
+    actorEmail: session.user.email ?? "",
+    action: "EDIT_SENSITIVE_INFO",
+    targetEmployeeId: parsed.employeeId,
   });
 
   revalidatePath("/hr/new-hire-info");

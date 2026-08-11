@@ -14,6 +14,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.messages": "Messages",
     "nav.schedule": "Schedule",
     "nav.inactive": "Inactive",
+    "nav.auditLog": "Audit Log",
     "nav.home": "Home",
     "nav.myDocuments": "My Documents",
     "nav.training": "Training Materials",
@@ -39,6 +40,7 @@ export const translations: Record<Locale, Dict> = {
     "login.password": "Password",
     "login.signIn": "Sign In",
     "login.signingIn": "Signing in...",
+    "login.privacyPolicy": "Privacy Policy",
     "login.invalidCredentials": "Invalid email or password.",
     "login.passwordSetSuccess": "Your password is set — you can now log in.",
 
@@ -386,6 +388,18 @@ export const translations: Record<Locale, Dict> = {
     "checkin.homeCardTitle": "📞 Your Day",
     "checkin.homeCardBody": "Check-in is ready — a quick chat with your AI assistant about how it's going.",
     "checkin.homeCardButton": "Start Check-in",
+
+    "auditLog.title": "Audit Log",
+    "auditLog.subtitle":
+      "A record of who viewed or edited sensitive employee information (SIN, health card, permit number) and when.",
+    "auditLog.empty": "No activity recorded yet.",
+    "auditLog.when": "When",
+    "auditLog.who": "Who",
+    "auditLog.action": "Action",
+    "auditLog.employee": "Employee",
+    "auditLog.actionView": "Viewed",
+    "auditLog.actionEdit": "Edited",
+    "auditLog.unknownEmployee": "(removed employee)",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -425,6 +439,7 @@ export const translations: Record<Locale, Dict> = {
     "login.password": "Mot de passe",
     "login.signIn": "Se connecter",
     "login.signingIn": "Connexion...",
+    "login.privacyPolicy": "Politique de confidentialité",
     "login.invalidCredentials": "Courriel ou mot de passe invalide.",
     "login.passwordSetSuccess": "Votre mot de passe est configuré — vous pouvez maintenant vous connecter.",
 
@@ -776,5 +791,17 @@ export const translations: Record<Locale, Dict> = {
     "checkin.homeCardBody":
       "est prêt — une courte discussion avec ton assistant IA sur comment ça se passe.",
     "checkin.homeCardButton": "Démarrer le suivi",
+
+    "auditLog.title": "Journal d'audit",
+    "auditLog.subtitle":
+      "Un registre de qui a consulté ou modifié des informations sensibles d'un employé (NAS, carte d'assurance maladie, numéro de permis) et quand.",
+    "auditLog.empty": "Aucune activité enregistrée pour l'instant.",
+    "auditLog.when": "Quand",
+    "auditLog.who": "Qui",
+    "auditLog.action": "Action",
+    "auditLog.employee": "Employé",
+    "auditLog.actionView": "Consulté",
+    "auditLog.actionEdit": "Modifié",
+    "auditLog.unknownEmployee": "(employé retiré)",
   },
 };

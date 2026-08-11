@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { SignOutButton } from "./SignOutButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import { IdleLogout } from "./IdleLogout";
 import { Chatbot } from "@/components/chatbot/Chatbot";
 import { VoiceTourOverlay } from "@/components/shell/VoiceTourOverlay";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -23,6 +24,7 @@ const HR_NAV: NavItem[] = [
   { href: "/hr/invite", labelKey: "nav.invite", icon: "✉️" },
   { href: "/hr/messages", labelKey: "nav.messages", icon: "💬" },
   { href: "/hr/inactive", labelKey: "nav.inactive", icon: "⏸️" },
+  { href: "/hr/audit-log", labelKey: "nav.auditLog", icon: "🛡️" },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
@@ -45,6 +47,7 @@ const TITLE_KEYS: Record<string, string> = {
   "/hr/invite": "nav.invite",
   "/hr/messages": "nav.messages",
   "/hr/inactive": "nav.inactive",
+  "/hr/audit-log": "nav.auditLog",
   "/employee": "shell.myOnboarding",
   "/employee/check-in": "checkin.pageTitle",
   "/employee/documents": "nav.myDocuments",
@@ -157,6 +160,7 @@ export function AppShell({
       </div>
 
       <Chatbot role={role} />
+      <IdleLogout />
     </div>
   );
 

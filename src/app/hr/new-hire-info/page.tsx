@@ -1,7 +1,9 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getEmployeeSensitiveInfo } from "@/lib/repositories/employee";
 import { computeMissingDocs, formatShortDate } from "@/lib/progress";
 import { getServerLocale, getT } from "@/lib/i18n/server";
+import { logAudit } from "@/lib/audit";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { EmployeeSelector } from "@/components/hr/EmployeeSelector";
@@ -22,6 +24,7 @@ export default async function NewHireInfoPage({
   const { employeeId } = await searchParams;
   const locale = await getServerLocale();
   const t = getT(locale);
+  const session = await auth();
 
   const employees = await prisma.employee.findMany({
     where: { status: { not: "INACTIVE" } },
@@ -31,6 +34,15 @@ export default async function NewHireInfoPage({
 
   const selectedId = employeeId ?? employees[0]?.id;
   const info = selectedId ? await getEmployeeSensitiveInfo(selectedId) : null;
+
+  if (info && session?.user) {
+    await logAudit({
+      actorUserId: session.user.id,
+      actorEmail: session.user.email ?? "",
+      action: "VIEW_SENSITIVE_INFO",
+      targetEmployeeId: info.id,
+    });
+  }
   const missing = info ? computeMissingDocs(info) : [];
   const personalDocuments = selectedId
     ? await prisma.personalDocument.findMany({
