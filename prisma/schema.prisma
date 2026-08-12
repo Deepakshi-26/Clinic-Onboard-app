@@ -439,6 +439,15 @@ model IncidentLog {
   createdAt        DateTime  @default(now())
 }
 
+// Public, unauthenticated waitlist signups from the marketing page
+// (src/app/waitlist) — separate from User/Employee since these people
+// aren't clinic staff yet, just interested leads.
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
 // A short-lived, single-use code emailed at login time as a second factor.
 // authorize() in src/auth.ts is the sole place that consumes a row — it
 // requires a matching, unexpired, unconsumed code for the email being

@@ -54,6 +54,17 @@ export const translations: Record<Locale, Dict> = {
     "login.back": "← Back",
     "login.resendCode": "Resend code",
 
+    "waitlist.tagline": "Staff Onboarding Portal",
+    "waitlist.heading": "Join the waitlist",
+    "waitlist.subheading":
+      "Be the first to know when ClinicBoard is ready for your clinic.",
+    "waitlist.emailPlaceholder": "you@clinic.com",
+    "waitlist.joinButton": "Join Waitlist",
+    "waitlist.joining": "Joining...",
+    "waitlist.error": "Please enter a valid email address.",
+    "waitlist.successTitle": "You're on the list!",
+    "waitlist.successBody": "We'll email you as soon as ClinicBoard is ready.",
+
     "acceptInvite.subtitle": "Set up your account password",
     "acceptInvite.invalidLink":
       "This invite link is invalid or has expired. Ask HR to resend your invite.",
@@ -506,6 +517,18 @@ export const translations: Record<Locale, Dict> = {
     "login.invalidCode": "Code invalide ou expiré.",
     "login.back": "← Retour",
     "login.resendCode": "Renvoyer le code",
+
+    "waitlist.tagline": "Portail d'intégration du personnel",
+    "waitlist.heading": "Rejoindre la liste d'attente",
+    "waitlist.subheading":
+      "Soyez parmi les premiers informés quand ClinicBoard sera prêt pour votre clinique.",
+    "waitlist.emailPlaceholder": "vous@clinique.com",
+    "waitlist.joinButton": "Rejoindre la liste",
+    "waitlist.joining": "Envoi...",
+    "waitlist.error": "Veuillez entrer une adresse courriel valide.",
+    "waitlist.successTitle": "Vous êtes sur la liste!",
+    "waitlist.successBody":
+      "Nous vous écrirons dès que ClinicBoard sera prêt.",
 
     "acceptInvite.subtitle": "Configurez le mot de passe de votre compte",
     "acceptInvite.invalidLink":
