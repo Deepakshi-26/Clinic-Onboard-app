@@ -221,8 +221,25 @@ model TrainingDocument {
 
   roles             JobTitle[]
   assignedEmployees Employee[]
+  chunks            DocumentChunk[]
 
   uploadedAt DateTime @default(now())
+}
+
+// Chunked + embedded text of a TrainingDocument's PDF, used for retrieval-
+// augmented chat answers (see src/lib/rag.ts). `embedding` is a pgvector
+// column — Prisma has no native vector type, so it's read/written via raw
+// SQL ($queryRaw/$executeRaw) rather than the generated client API.
+model DocumentChunk {
+  id         String           @id @default(cuid())
+  documentId String
+  document   TrainingDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  chunkIndex Int
+  content    String
+  embedding  Unsupported("vector(1536)")
+  createdAt  DateTime         @default(now())
+
+  @@index([documentId])
 }
 
 // One row per employee per location. Passcodes/passwords are encrypted at

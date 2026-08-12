@@ -5,6 +5,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { indexTrainingDocument } from "@/lib/rag";
 import type { JobTitle } from "@prisma/client";
 
 const UploadSchema = z.object({
@@ -49,7 +50,7 @@ export async function uploadDocument(
     addRandomSuffix: true,
   });
 
-  await prisma.trainingDocument.create({
+  const document = await prisma.trainingDocument.create({
     data: {
       name: parsed.name,
       docType: parsed.docType,
@@ -60,6 +61,14 @@ export async function uploadDocument(
       assignedEmployees: { connect: parsed.employeeIds.map((id) => ({ id })) },
     },
   });
+
+  // Chunk + embed for RAG search. Best-effort: a failure here (e.g. a
+  // scanned/non-text PDF) shouldn't block the upload itself.
+  try {
+    await indexTrainingDocument(document);
+  } catch (err) {
+    console.error(`Failed to index document ${document.id}:`, err);
+  }
 
   revalidatePath("/hr/documents");
   revalidatePath("/employee/training");
@@ -92,6 +101,30 @@ export async function updateDocumentAssignment(formData: FormData) {
 
   revalidatePath("/hr/documents");
   revalidatePath("/employee/training");
+}
+
+// Re-chunks and re-embeds every training document. Mainly for documents
+// uploaded before RAG search existed, but safe to run anytime — chunks for
+// each document are replaced, not duplicated.
+export async function reindexAllDocuments(): Promise<{ indexed: number }> {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  const documents = await prisma.trainingDocument.findMany({
+    select: { id: true, fileUrl: true, fileName: true },
+  });
+
+  let indexed = 0;
+  for (const doc of documents) {
+    try {
+      await indexTrainingDocument(doc);
+      indexed += 1;
+    } catch (err) {
+      console.error(`Failed to index document ${doc.id}:`, err);
+    }
+  }
+
+  return { indexed };
 }
 
 export async function deleteDocument(id: string) {

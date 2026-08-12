@@ -211,6 +211,9 @@ export const translations: Record<Locale, Dict> = {
     "documents.specificPeople": "Specific People",
     "documents.deleteTitle": "Delete document",
     "documents.nobodyYet": "Nobody yet",
+    "documents.reindexForSearch": "🔎 Index for AI search",
+    "documents.reindexing": "Indexing...",
+    "documents.reindexDone": "Done — documents are searchable by the chatbot.",
 
     "access.heading": "Access & Passwords",
     "access.noEmployees": "No employees yet — invite a new hire first.",
@@ -663,6 +666,9 @@ export const translations: Record<Locale, Dict> = {
     "documents.specificPeople": "Personnes spécifiques",
     "documents.deleteTitle": "Supprimer le document",
     "documents.nobodyYet": "Personne pour l'instant",
+    "documents.reindexForSearch": "🔎 Indexer pour la recherche IA",
+    "documents.reindexing": "Indexation...",
+    "documents.reindexDone": "Terminé — les documents sont maintenant consultables par le chatbot.",
 
     "access.heading": "Accès et mots de passe",
     "access.noEmployees": "Aucun employé pour l'instant — invitez d'abord un nouvel employé.",

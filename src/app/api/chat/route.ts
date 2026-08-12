@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { buildTrainingContext } from "@/lib/documentText";
+import { buildRagContext } from "@/lib/rag";
 import { getServerLocale } from "@/lib/i18n/server";
 
 const MAX_HISTORY = 20;
@@ -64,6 +64,11 @@ export async function POST(request: Request) {
 
   if (role === "HR") {
     accessNote = "The user is HR and has full access to all portal information.";
+    const documents = await prisma.trainingDocument.findMany({
+      select: { id: true, name: true },
+      orderBy: { uploadedAt: "desc" },
+    });
+    trainingContext = await buildRagContext(userMessage, documents);
   } else {
     accessNote = `The user is an onboarding employee (${employee?.title ?? "role unknown"} at ${
       employee?.location ?? "an unassigned location"
@@ -77,9 +82,10 @@ export async function POST(request: Request) {
             { roles: { has: employee.title } },
           ],
         },
+        select: { id: true, name: true },
         orderBy: { uploadedAt: "desc" },
       });
-      trainingContext = await buildTrainingContext(documents);
+      trainingContext = await buildRagContext(userMessage, documents);
     }
   }
 

@@ -3,6 +3,7 @@ import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { DocumentUploadForm } from "@/components/hr/DocumentUploadForm";
 import { DocumentTile } from "@/components/hr/DocumentTile";
+import { ReindexButton } from "@/components/hr/ReindexButton";
 
 export default async function HrDocumentsPage() {
   const t = getT(await getServerLocale());
@@ -21,9 +22,12 @@ export default async function HrDocumentsPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
-        {t("documents.heading")}
-      </h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-base font-bold text-slate-900 dark:text-zinc-50">
+          {t("documents.heading")}
+        </h2>
+        <ReindexButton />
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`📤 ${t("documents.uploadNew")}`}>
           <DocumentUploadForm employees={employees} />
