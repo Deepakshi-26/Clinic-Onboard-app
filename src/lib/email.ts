@@ -106,6 +106,24 @@ export function buildPasswordResetEmailHtml(params: {
   `);
 }
 
+export function buildLoginOtpEmailHtml(params: { code: string }): string {
+  return emailWrapper(`
+    <p style="font-size: 14px; color: #334155; line-height: 1.6;">
+      Use this code to finish signing in. It expires in 10 minutes.
+    </p>
+    <p style="font-size: 14px; color: #334155; line-height: 1.6;">
+      Utilisez ce code pour terminer votre connexion. Il expire dans 10 minutes.
+    </p>
+    <div style="margin-top: 12px; padding: 16px 20px; background: #f1f5f9; border-radius: 10px; font-size: 28px; font-weight: 700; letter-spacing: 6px; text-align: center; color: #0D7377;">
+      ${params.code}
+    </div>
+    <p style="margin-top: 16px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+      If you didn't try to sign in, you can ignore this email.<br/>
+      Si vous n'avez pas tenté de vous connecter, vous pouvez ignorer ce courriel.
+    </p>
+  `);
+}
+
 export function buildReminderEmailHtml(params: { fullName: string }): string {
   return emailWrapper(`
     <p style="font-size: 15px; color: #1e293b;">Hi ${params.fullName},</p>

@@ -10,11 +10,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: { signIn: "/login" },
   providers: [
     Credentials({
-      credentials: { email: {}, password: {} },
+      credentials: { email: {}, password: {}, code: {} },
       async authorize(credentials) {
         const email = String(credentials?.email ?? "");
         const password = String(credentials?.password ?? "");
-        if (!email || !password) return null;
+        const code = String(credentials?.code ?? "");
+        if (!email || !password || !code) return null;
 
         const user = await prisma.user.findUnique({
           where: { email },
@@ -28,6 +29,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Inactive employees keep their record and data for history, but
         // lose portal access.
         if (user.employee?.status === "INACTIVE") return null;
+
+        // Second factor: an unexpired, unconsumed code emailed to this
+        // address by requestLoginOtp(). Consumed atomically via the
+        // where-clause guard so a code can never be replayed even under a
+        // race between two concurrent sign-in attempts.
+        const otp = await prisma.loginOtp.findFirst({
+          where: { email, consumed: false, expiresAt: { gt: new Date() } },
+          orderBy: { createdAt: "desc" },
+        });
+        if (!otp) return null;
+
+        const codeValid = await bcrypt.compare(code, otp.codeHash);
+        if (!codeValid) return null;
+
+        const consume = await prisma.loginOtp.updateMany({
+          where: { id: otp.id, consumed: false },
+          data: { consumed: true },
+        });
+        if (consume.count !== 1) return null;
 
         return {
           id: user.id,

@@ -45,6 +45,14 @@ export const translations: Record<Locale, Dict> = {
     "login.privacyPolicy": "Privacy Policy",
     "login.invalidCredentials": "Invalid email or password.",
     "login.passwordSetSuccess": "Your password is set — you can now log in.",
+    "login.sendingCode": "Sending code...",
+    "login.otpSendFailed": "Could not send the verification code. Please try again.",
+    "login.otpSentTo": "We emailed a 6-digit code to",
+    "login.otpCode": "Verification Code",
+    "login.verifyCode": "Verify & Sign In",
+    "login.invalidCode": "Invalid or expired code.",
+    "login.back": "← Back",
+    "login.resendCode": "Resend code",
 
     "acceptInvite.subtitle": "Set up your account password",
     "acceptInvite.invalidLink":
@@ -487,6 +495,14 @@ export const translations: Record<Locale, Dict> = {
     "login.privacyPolicy": "Politique de confidentialité",
     "login.invalidCredentials": "Courriel ou mot de passe invalide.",
     "login.passwordSetSuccess": "Votre mot de passe est configuré — vous pouvez maintenant vous connecter.",
+    "login.sendingCode": "Envoi du code...",
+    "login.otpSendFailed": "Impossible d'envoyer le code de vérification. Veuillez réessayer.",
+    "login.otpSentTo": "Nous avons envoyé un code à 6 chiffres à",
+    "login.otpCode": "Code de vérification",
+    "login.verifyCode": "Vérifier et se connecter",
+    "login.invalidCode": "Code invalide ou expiré.",
+    "login.back": "← Retour",
+    "login.resendCode": "Renvoyer le code",
 
     "acceptInvite.subtitle": "Configurez le mot de passe de votre compte",
     "acceptInvite.invalidLink":

@@ -6,17 +6,21 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { NetworkBackground } from "@/components/auth/NetworkBackground";
+import { requestLoginOtp } from "./actions";
 
 type Role = "HR" | "EMPLOYEE";
+type Step = "credentials" | "otp";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useLocale();
   const justSetPassword = searchParams.get("passwordSet") === "1";
+  const [step, setStep] = useState<Step>("credentials");
   const [role, setRole] = useState<Role>("HR");
   const [email, setEmail] = useState("hr@clinic.com");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -25,23 +29,59 @@ export default function LoginPage() {
     setEmail(next === "HR" ? "hr@clinic.com" : "maria.s@example.com");
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmitCredentials(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    const result = await requestLoginOtp(email, password);
+    setSubmitting(false);
+
+    if (!result.ok) {
+      setError(
+        result.error === "otpSendFailed"
+          ? t("login.otpSendFailed")
+          : t("login.invalidCredentials")
+      );
+      return;
+    }
+    setCode("");
+    setStep("otp");
+  }
+
+  async function handleSubmitCode(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
     const result = await signIn("credentials", {
       email,
       password,
+      code,
       redirect: false,
     });
     setSubmitting(false);
 
     if (result?.error) {
-      setError(t("login.invalidCredentials"));
+      setError(t("login.invalidCode"));
       return;
     }
     router.push(role === "HR" ? "/hr" : "/employee");
     router.refresh();
+  }
+
+  async function handleResendCode() {
+    setError(null);
+    setSubmitting(true);
+    const result = await requestLoginOtp(email, password);
+    setSubmitting(false);
+    if (!result.ok) {
+      setError(
+        result.error === "otpSendFailed"
+          ? t("login.otpSendFailed")
+          : t("login.invalidCredentials")
+      );
+      return;
+    }
+    setCode("");
   }
 
   return (
@@ -66,67 +106,121 @@ export default function LoginPage() {
           </p>
         )}
 
-        <div className="mb-6 flex gap-2">
-          <button
-            type="button"
-            onClick={() => selectRole("HR")}
-            className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
-              role === "HR"
-                ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
-                : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
-            }`}
-          >
-            {t("login.roleHr")}
-          </button>
-          <button
-            type="button"
-            onClick={() => selectRole("EMPLOYEE")}
-            className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
-              role === "EMPLOYEE"
-                ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
-                : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
-            }`}
-          >
-            {t("login.roleEmployee")}
-          </button>
-        </div>
+        {step === "credentials" ? (
+          <>
+            <div className="mb-6 flex gap-2">
+              <button
+                type="button"
+                onClick={() => selectRole("HR")}
+                className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                  role === "HR"
+                    ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
+                    : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
+                }`}
+              >
+                {t("login.roleHr")}
+              </button>
+              <button
+                type="button"
+                onClick={() => selectRole("EMPLOYEE")}
+                className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                  role === "EMPLOYEE"
+                    ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
+                    : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
+                }`}
+              >
+                {t("login.roleEmployee")}
+              </button>
+            </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
-              {t("login.email")}
-            </span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
-              required
-            />
-          </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
-              {t("login.password")}
-            </span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
-              required
-            />
-          </label>
+            <form onSubmit={handleSubmitCredentials} className="flex flex-col gap-4">
+              <label className="flex flex-col gap-1.5">
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
+                  {t("login.email")}
+                </span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+                  required
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
+                  {t("login.password")}
+                </span>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+                  required
+                />
+              </label>
 
-          {error && <p className="text-xs text-red-600">{error}</p>}
+              {error && <p className="text-xs text-red-600">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-1 rounded-lg bg-gradient-to-br from-teal-600 to-teal-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-          >
-            {submitting ? t("login.signingIn") : t("login.signIn")}
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="mt-1 rounded-lg bg-gradient-to-br from-teal-600 to-teal-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                {submitting ? t("login.sendingCode") : t("login.signIn")}
+              </button>
+            </form>
+          </>
+        ) : (
+          <form onSubmit={handleSubmitCode} className="flex flex-col gap-4">
+            <p className="text-xs text-slate-500 dark:text-zinc-400">
+              {t("login.otpSentTo")} <span className="font-semibold">{email}</span>
+            </p>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-zinc-400">
+                {t("login.otpCode")}
+              </span>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                className="rounded-lg border border-slate-300 px-3.5 py-2.5 text-center text-lg tracking-[0.5em] outline-none focus:border-teal-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+                required
+                autoFocus
+              />
+            </label>
+
+            {error && <p className="text-xs text-red-600">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={submitting || code.length !== 6}
+              className="mt-1 rounded-lg bg-gradient-to-br from-teal-600 to-teal-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              {submitting ? t("login.signingIn") : t("login.verifyCode")}
+            </button>
+
+            <div className="flex items-center justify-between text-[11px]">
+              <button
+                type="button"
+                onClick={() => setStep("credentials")}
+                className="text-slate-500 hover:text-teal-600 dark:text-zinc-400"
+              >
+                {t("login.back")}
+              </button>
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={submitting}
+                className="text-teal-600 hover:underline disabled:opacity-50"
+              >
+                {t("login.resendCode")}
+              </button>
+            </div>
+          </form>
+        )}
 
         <Link
           href="/privacy"

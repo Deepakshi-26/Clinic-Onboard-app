@@ -421,3 +421,18 @@ model IncidentLog {
   occurredAt       DateTime?
   createdAt        DateTime  @default(now())
 }
+
+// A short-lived, single-use code emailed at login time as a second factor.
+// authorize() in src/auth.ts is the sole place that consumes a row — it
+// requires a matching, unexpired, unconsumed code for the email being
+// signed in, so knowing the password alone is never enough.
+model LoginOtp {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  consumed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
