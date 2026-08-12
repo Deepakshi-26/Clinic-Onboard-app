@@ -73,28 +73,29 @@ export type ClinicAddress = {
   email?: string;
 };
 
-// Sourced from the clinic's own contact page.
+// Placeholder contact details per location — not tied to any specific
+// business. Each clinic that deploys this product fills in their own real
+// name/address/phone here before going live.
 export const LOCATION_ADDRESSES: Partial<Record<Location, ClinicAddress>> = {
   PARC_EXTENSION: {
-    name: "Clinique Physioversal de Parc-Extension",
-    address: "6830 Avenue Du Parc, Suite 100 et 103 RDC, Montréal, Québec H3N 1W7, Canada",
-    phone: "514-531-9049",
+    name: "Parc-Extension Clinic",
+    address: "[Clinic address], Montréal, Québec, Canada",
+    phone: "[Clinic phone number]",
   },
   COTE_VERTU: {
-    name: "Clinique Physioversal de Côte-Vertu",
-    address: "1077 Bd Décarie, Suite 2, RDC, Saint-Laurent, Québec H4L 3M8, Canada",
-    phone: "(514) 447-9221",
+    name: "Côte-Vertu Clinic",
+    address: "[Clinic address], Saint-Laurent, Québec, Canada",
+    phone: "[Clinic phone number]",
   },
   MONTREAL_NORD: {
-    name: "Clinique Physioversal de Montréal-Nord",
-    address: "5879 Boulevard Henri-Bourassa Est, Local 307, 3e étage, Montréal-Nord, Québec H1G 2V1, Canada",
-    phone: "(514) 258-0343",
+    name: "Montréal-Nord Clinic",
+    address: "[Clinic address], Montréal-Nord, Québec, Canada",
+    phone: "[Clinic phone number]",
   },
   LACHINE: {
-    name: "Clinique Physioversal de Lachine",
-    address: "3130 Rue Remembrance, Suite 1, Lachine, Québec H8S 1X8, Canada",
-    phone: "(438) 819-2000",
-    email: "lachine@physioversal.ca",
+    name: "Lachine Clinic",
+    address: "[Clinic address], Lachine, Québec, Canada",
+    phone: "[Clinic phone number]",
   },
 };
 

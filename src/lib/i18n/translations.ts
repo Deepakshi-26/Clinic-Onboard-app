@@ -15,6 +15,8 @@ export const translations: Record<Locale, Dict> = {
     "nav.schedule": "Schedule",
     "nav.inactive": "Inactive",
     "nav.auditLog": "Audit Log",
+    "nav.incidents": "Incident Log",
+    "nav.settings": "Settings",
     "nav.home": "Home",
     "nav.myDocuments": "My Documents",
     "nav.training": "Training Materials",
@@ -53,6 +55,9 @@ export const translations: Record<Locale, Dict> = {
     "acceptInvite.passwordTooShort": "Password must be at least 8 characters.",
     "acceptInvite.setting": "Setting...",
     "acceptInvite.setPassword": "Set Password",
+    "acceptInvite.consentPrefix": "I have read and agree to the",
+    "acceptInvite.consentPolicyLink": "Privacy Policy",
+    "acceptInvite.consentRequired": "Please confirm you've read the Privacy Policy to continue.",
 
     "invite.emailSent": "Invitation email sent.",
     "invite.emailFailed":
@@ -400,6 +405,43 @@ export const translations: Record<Locale, Dict> = {
     "auditLog.actionView": "Viewed",
     "auditLog.actionEdit": "Edited",
     "auditLog.unknownEmployee": "(removed employee)",
+
+    "settings.title": "Organization Settings",
+    "settings.subtitle":
+      "This clinic's identity, shown on the Privacy Policy and other clinic-branded text.",
+    "settings.clinicName": "Clinic / business name",
+    "settings.clinicNameHint": "Shown on the Privacy Policy in place of a generic placeholder.",
+    "settings.privacyOfficerName": "Privacy officer name",
+    "settings.privacyOfficerNameHint":
+      "Under Quebec's Law 25, the person responsible for protecting employee data — usually the director or owner.",
+    "settings.privacyOfficerEmail": "Privacy officer email",
+    "settings.save": "Save Settings",
+    "settings.saving": "Saving…",
+    "settings.saved": "Saved.",
+    "settings.error": "Couldn't save. Please try again.",
+
+    "incidents.title": "Incident Log",
+    "incidents.subtitle":
+      "Quebec's Law 25 requires keeping an internal record of every privacy or security incident, even small ones that don't need to be reported.",
+    "incidents.guidanceTitle": "If you suspect a privacy or security incident",
+    "incidents.guidanceStep1":
+      "Contain it — change affected passwords, revoke access, fix the security gap.",
+    "incidents.guidanceStep2":
+      "Assess the risk — was sensitive info involved (SIN, health card)? How many people affected?",
+    "incidents.guidanceStep3":
+      "If there's a real risk of harm, notify Quebec's privacy regulator (the CAI) and the affected people without delay.",
+    "incidents.guidanceStep4": "Record it below.",
+    "incidents.guidanceStep5": "Fix the root cause so it can't happen again.",
+    "incidents.newEntry": "Log a New Entry",
+    "incidents.whatHappened": "What happened",
+    "incidents.whoAffected": "Who was affected",
+    "incidents.actionsTaken": "Actions taken",
+    "incidents.occurredAt": "Date it happened",
+    "incidents.logIt": "Log It",
+    "incidents.saving": "Saving…",
+    "incidents.error": "Couldn't save. Please fill in what happened and try again.",
+    "incidents.history": "History",
+    "incidents.empty": "No incidents logged yet.",
   },
   fr: {
     "nav.dashboard": "Tableau de bord",
@@ -412,6 +454,9 @@ export const translations: Record<Locale, Dict> = {
     "nav.messages": "Messages",
     "nav.schedule": "Horaire",
     "nav.inactive": "Inactifs",
+    "nav.auditLog": "Journal d'audit",
+    "nav.incidents": "Journal d'incidents",
+    "nav.settings": "Paramètres",
     "nav.home": "Accueil",
     "nav.myDocuments": "Mes documents",
     "nav.training": "Matériel de formation",
@@ -452,6 +497,10 @@ export const translations: Record<Locale, Dict> = {
     "acceptInvite.passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
     "acceptInvite.setting": "Configuration...",
     "acceptInvite.setPassword": "Configurer le mot de passe",
+    "acceptInvite.consentPrefix": "J'ai lu et j'accepte la",
+    "acceptInvite.consentPolicyLink": "politique de confidentialité",
+    "acceptInvite.consentRequired":
+      "Veuillez confirmer avoir lu la politique de confidentialité pour continuer.",
 
     "invite.emailSent": "Courriel d'invitation envoyé.",
     "invite.emailFailed":
@@ -803,5 +852,43 @@ export const translations: Record<Locale, Dict> = {
     "auditLog.actionView": "Consulté",
     "auditLog.actionEdit": "Modifié",
     "auditLog.unknownEmployee": "(employé retiré)",
+
+    "settings.title": "Paramètres de l'organisation",
+    "settings.subtitle":
+      "L'identité de cette clinique, affichée dans la politique de confidentialité et ailleurs.",
+    "settings.clinicName": "Nom de la clinique / entreprise",
+    "settings.clinicNameHint":
+      "Affiché dans la politique de confidentialité à la place d'un texte générique.",
+    "settings.privacyOfficerName": "Nom de la personne responsable de la confidentialité",
+    "settings.privacyOfficerNameHint":
+      "En vertu de la Loi 25 du Québec, la personne responsable de la protection des données des employés — habituellement le ou la directrice ou propriétaire.",
+    "settings.privacyOfficerEmail": "Courriel de la personne responsable",
+    "settings.save": "Enregistrer",
+    "settings.saving": "Enregistrement…",
+    "settings.saved": "Enregistré.",
+    "settings.error": "Impossible d'enregistrer. Réessayez.",
+
+    "incidents.title": "Journal d'incidents",
+    "incidents.subtitle":
+      "La Loi 25 du Québec exige de conserver un registre interne de tout incident de confidentialité ou de sécurité, même les incidents mineurs qui n'ont pas à être signalés.",
+    "incidents.guidanceTitle": "En cas d'incident de confidentialité ou de sécurité suspecté",
+    "incidents.guidanceStep1":
+      "Contenez-le — changez les mots de passe touchés, révoquez les accès, corrigez la faille.",
+    "incidents.guidanceStep2":
+      "Évaluez le risque — des renseignements sensibles étaient-ils impliqués (NAS, carte d'assurance maladie)? Combien de personnes touchées?",
+    "incidents.guidanceStep3":
+      "S'il y a un risque réel de préjudice, avisez sans délai la Commission d'accès à l'information (CAI) et les personnes touchées.",
+    "incidents.guidanceStep4": "Enregistrez-le ci-dessous.",
+    "incidents.guidanceStep5": "Corrigez la cause pour que ça ne se reproduise pas.",
+    "incidents.newEntry": "Enregistrer une nouvelle entrée",
+    "incidents.whatHappened": "Ce qui s'est passé",
+    "incidents.whoAffected": "Qui a été touché",
+    "incidents.actionsTaken": "Mesures prises",
+    "incidents.occurredAt": "Date de l'incident",
+    "incidents.logIt": "Enregistrer",
+    "incidents.saving": "Enregistrement…",
+    "incidents.error": "Impossible d'enregistrer. Remplissez ce qui s'est passé et réessayez.",
+    "incidents.history": "Historique",
+    "incidents.empty": "Aucun incident enregistré pour l'instant.",
   },
 };

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 import { setPassword, type SetPasswordState } from "@/app/accept-invite/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
@@ -19,7 +20,9 @@ export function AcceptInviteForm({ token }: { token: string }) {
         ? t("acceptInvite.passwordTooShort")
         : state?.error === "invalidToken"
           ? t("acceptInvite.invalidLink")
-          : null;
+          : state?.error === "consentRequired"
+            ? t("acceptInvite.consentRequired")
+            : null;
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -50,6 +53,26 @@ export function AcceptInviteForm({ token }: { token: string }) {
       </label>
 
       {errorText && <p className="text-xs text-red-600">{errorText}</p>}
+
+      <label className="flex items-start gap-2 text-xs text-slate-600 dark:text-zinc-400">
+        <input
+          type="checkbox"
+          name="privacyConsent"
+          required
+          className="mt-0.5 h-3.5 w-3.5 flex-shrink-0"
+        />
+        <span>
+          {t("acceptInvite.consentPrefix")}{" "}
+          <Link
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-teal-600 hover:underline"
+          >
+            {t("acceptInvite.consentPolicyLink")}
+          </Link>
+        </span>
+      </label>
 
       <SubmitButton />
     </form>

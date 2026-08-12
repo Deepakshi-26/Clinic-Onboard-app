@@ -10,6 +10,7 @@ const SetPasswordSchema = z
     token: z.string().min(1),
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
+    privacyConsent: z.literal("on"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "passwordMismatch",
@@ -26,6 +27,7 @@ export async function setPassword(
   if (!result.success) {
     const issue = result.error.issues[0];
     if (issue?.message === "passwordMismatch") return { error: "passwordMismatch" };
+    if (issue?.path[0] === "privacyConsent") return { error: "consentRequired" };
     return { error: "passwordTooShort" };
   }
   const { token, password } = result.data;

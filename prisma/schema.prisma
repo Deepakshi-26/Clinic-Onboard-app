@@ -70,13 +70,13 @@ enum AuditAction {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String?
-  passwordHash String
-  role         UserRole
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  role          UserRole
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   // Set once the user actually completes /accept-invite. Null means the
   // account was created (by an invite) but still has the unusable
   // placeholder password — distinguishes "Resend Invite" (first-time setup)
@@ -88,6 +88,7 @@ model User {
   sessions     Session[]
   chatMessages ChatMessage[]
   auditLogs    AuditLog[]
+  incidentLogs IncidentLog[]
 }
 
 // Standard Auth.js Prisma-adapter shape. Not exercised by the Credentials+JWT
@@ -389,4 +390,31 @@ model AuditLog {
 
   @@index([createdAt])
   @@index([targetEmployeeId])
+}
+
+// Single-row table (fixed id "singleton") holding this deployment's
+// clinic-specific identity for the Privacy Policy and other clinic-branded
+// text — each customer fills in their own values after buying, instead of
+// any one clinic's name being hardcoded into the product.
+model OrgSettings {
+  id                  String   @id @default(cuid())
+  clinicName          String?
+  privacyOfficerName  String?
+  privacyOfficerEmail String?
+  updatedAt           DateTime @updatedAt
+}
+
+// HR's internal record of privacy/security incidents — Law 25 requires
+// keeping a log of every incident, even ones too minor to report to the
+// regulator. This is that log, not a reporting mechanism itself.
+model IncidentLog {
+  id               String    @id @default(cuid())
+  reportedByUserId String
+  reportedBy       User      @relation(fields: [reportedByUserId], references: [id], onDelete: Cascade)
+  reportedByEmail  String
+  whatHappened     String
+  whoAffected      String?
+  actionsTaken     String?
+  occurredAt       DateTime?
+  createdAt        DateTime  @default(now())
 }

@@ -1,8 +1,17 @@
 import Link from "next/link";
 import { getServerLocale } from "@/lib/i18n/server";
+import { getOrgSettings } from "@/lib/orgSettings";
 
 export default async function PrivacyPolicyPage() {
   const locale = await getServerLocale();
+  const settings = await getOrgSettings();
+  const clinicName = settings.clinicName || (locale === "fr" ? "[nom de la clinique]" : "[clinic name not yet set]");
+  const officerContact =
+    settings.privacyOfficerName && settings.privacyOfficerEmail
+      ? `${settings.privacyOfficerName} (${settings.privacyOfficerEmail})`
+      : locale === "fr"
+        ? "[personne responsable non encore désignée — voir Paramètres]"
+        : "[privacy officer not yet designated — see Settings]";
 
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-10 dark:bg-zinc-950">
@@ -14,20 +23,30 @@ export default async function PrivacyPolicyPage() {
           {locale === "fr" ? "← Retour à la connexion" : "← Back to login"}
         </Link>
 
-        {locale === "fr" ? <FrenchPolicy /> : <EnglishPolicy />}
+        {locale === "fr" ? (
+          <FrenchPolicy clinicName={clinicName} officerContact={officerContact} />
+        ) : (
+          <EnglishPolicy clinicName={clinicName} officerContact={officerContact} />
+        )}
       </div>
     </div>
   );
 }
 
-function EnglishPolicy() {
+function EnglishPolicy({
+  clinicName,
+  officerContact,
+}: {
+  clinicName: string;
+  officerContact: string;
+}) {
   return (
     <div className="flex flex-col gap-5 text-sm leading-relaxed text-slate-700 dark:text-zinc-300">
       <div>
         <h1 className="text-xl font-bold text-slate-900 dark:text-zinc-50">Privacy Policy</h1>
         <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
           Last updated: August 2026 · Applies to the ClinicBoard staff onboarding portal, operated
-          by Clinique Physioversal.
+          by {clinicName}.
         </p>
       </div>
 
@@ -39,10 +58,9 @@ function EnglishPolicy() {
 
       <Section title="2. Person in charge of protecting your information">
         Under Quebec’s Act respecting the protection of personal information in the private sector
-        (Law 25), Clinique Physioversal has designated a person responsible for the protection of
+        (Law 25), {clinicName} has designated a person responsible for the protection of
         personal information collected through this portal. Privacy questions, access requests, or
-        complaints can be directed to:{" "}
-        <span className="font-semibold">[insert designated privacy contact name and email]</span>.
+        complaints can be directed to: <span className="font-semibold">{officerContact}</span>.
       </Section>
 
       <Section title="3. What information we collect">
@@ -129,7 +147,13 @@ function EnglishPolicy() {
   );
 }
 
-function FrenchPolicy() {
+function FrenchPolicy({
+  clinicName,
+  officerContact,
+}: {
+  clinicName: string;
+  officerContact: string;
+}) {
   return (
     <div className="flex flex-col gap-5 text-sm leading-relaxed text-slate-700 dark:text-zinc-300">
       <div>
@@ -138,7 +162,7 @@ function FrenchPolicy() {
         </h1>
         <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
           Dernière mise à jour : août 2026 · S’applique au portail d’intégration du personnel
-          ClinicBoard, exploité par la Clinique Physioversal.
+          ClinicBoard, exploité par {clinicName}.
         </p>
       </div>
 
@@ -151,13 +175,10 @@ function FrenchPolicy() {
 
       <Section title="2. Personne responsable de la protection de vos renseignements">
         En vertu de la Loi sur la protection des renseignements personnels dans le secteur privé
-        du Québec (Loi 25), la Clinique Physioversal a désigné une personne responsable de la
+        du Québec (Loi 25), {clinicName} a désigné une personne responsable de la
         protection des renseignements personnels recueillis via ce portail. Les questions,
         demandes d’accès ou plaintes peuvent être adressées à :{" "}
-        <span className="font-semibold">
-          [insérer le nom et le courriel de la personne responsable]
-        </span>
-        .
+        <span className="font-semibold">{officerContact}</span>.
       </Section>
 
       <Section title="3. Quels renseignements nous recueillons">
