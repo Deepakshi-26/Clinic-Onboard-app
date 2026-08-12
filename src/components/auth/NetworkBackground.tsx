@@ -119,6 +119,24 @@ const ACCENT_INDICES = NODES.reduce<number[]>((acc, n, i) => {
   return acc;
 }, []);
 
+// A handful of well-spaced edges get rendered as right-angle "circuit
+// trace" elbows instead of straight lines, and another handful get an
+// animated dot travelling along them — the two cues (PCB-style routing +
+// moving signal) are what reads as "tech" rather than generic decoration.
+const TRACE_EDGES: [number, number][] = [
+  [2, 4], [74, 80], [82, 84], [6, 20], [12, 29], [9, 16], [44, 52], [61, 70],
+];
+const PULSE_EDGES: [number, number][] = [
+  [15, 23], [24, 33], [76, 77], [37, 38], [49, 58], [35, 47], [41, 42], [72, 79],
+];
+
+function elbowPath(a: { x: number; y: number }, b: { x: number; y: number }, i: number) {
+  // Alternate which axis bends first so traces don't all read the same way.
+  return i % 2 === 0 ? `M${a.x},${a.y} L${b.x},${a.y} L${b.x},${b.y}` : `M${a.x},${a.y} L${a.x},${b.y} L${b.x},${b.y}`;
+}
+
+const GRID_SIZE = 42;
+
 export function NetworkBackground() {
   return (
     <svg
@@ -127,15 +145,61 @@ export function NetworkBackground() {
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
     >
+      <defs>
+        <pattern id="tech-grid" width={GRID_SIZE} height={GRID_SIZE} patternUnits="userSpaceOnUse">
+          <path
+            d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
+            fill="none"
+            stroke="white"
+            strokeOpacity={0.05}
+            strokeWidth={1}
+          />
+        </pattern>
+        <radialGradient id="tech-vignette" cx="50%" cy="42%" r="75%">
+          <stop offset="0%" stopColor="white" stopOpacity={0.05} />
+          <stop offset="100%" stopColor="white" stopOpacity={0} />
+        </radialGradient>
+      </defs>
+
       <style>{`
         @keyframes network-pulse {
           0%, 100% { opacity: var(--base-o); r: var(--base-r); }
           50% { opacity: calc(var(--base-o) + 0.35); r: calc(var(--base-r) + 1); }
         }
+        @keyframes network-ping {
+          0% { r: 3; stroke-opacity: 0.5; }
+          100% { r: 13; stroke-opacity: 0; }
+        }
         .network-accent {
           animation: network-pulse 4s ease-in-out infinite;
         }
+        .network-ping {
+          animation: network-ping 3s ease-out infinite;
+        }
+        .network-trace {
+          stroke-dasharray: 4 3;
+        }
       `}</style>
+
+      <rect width="800" height="600" fill="url(#tech-grid)" />
+      <rect width="800" height="600" fill="url(#tech-vignette)" />
+
+      {/* corner HUD brackets */}
+      {[
+        { x: 20, y: 20, dx: 1, dy: 1 },
+        { x: 780, y: 20, dx: -1, dy: 1 },
+        { x: 20, y: 580, dx: 1, dy: -1 },
+        { x: 780, y: 580, dx: -1, dy: -1 },
+      ].map((c, i) => (
+        <path
+          key={i}
+          d={`M${c.x},${c.y + 22 * c.dy} L${c.x},${c.y} L${c.x + 22 * c.dx},${c.y}`}
+          fill="none"
+          stroke="#5eead4"
+          strokeOpacity={0.35}
+          strokeWidth={1.5}
+        />
+      ))}
 
       {EDGES.map(([a, b], i) => (
         <line
@@ -150,6 +214,36 @@ export function NetworkBackground() {
         />
       ))}
 
+      {TRACE_EDGES.map(([a, b], i) => (
+        <path
+          key={i}
+          className="network-trace"
+          d={elbowPath(NODES[a], NODES[b], i)}
+          fill="none"
+          stroke="#5eead4"
+          strokeOpacity={0.3}
+          strokeWidth={1}
+        />
+      ))}
+
+      {PULSE_EDGES.map(([a, b], i) => {
+        const pathId = `pulse-path-${i}`;
+        const d = `M${NODES[a].x},${NODES[a].y} L${NODES[b].x},${NODES[b].y}`;
+        return (
+          <g key={i}>
+            <path id={pathId} d={d} fill="none" stroke="none" />
+            <circle r={2} fill="#5eead4">
+              <animateMotion
+                dur={`${3.5 + (i % 3)}s`}
+                repeatCount="indefinite"
+                begin={`${i * 0.7}s`}
+                path={d}
+              />
+            </circle>
+          </g>
+        );
+      })}
+
       {NODES.map((n, i) =>
         n.accent ? null : (
           <circle key={i} cx={n.x} cy={n.y} r={n.r} fill="white" fillOpacity={n.o} />
@@ -159,22 +253,35 @@ export function NetworkBackground() {
       {ACCENT_INDICES.map((i) => {
         const n = NODES[i];
         return (
-          <circle
-            key={i}
-            className="network-accent"
-            cx={n.x}
-            cy={n.y}
-            r={n.r}
-            fill="#5eead4"
-            fillOpacity={n.o}
-            style={
-              {
-                "--base-o": n.o,
-                "--base-r": n.r,
-                animationDelay: `${(i % 7) * 0.6}s`,
-              } as React.CSSProperties
-            }
-          />
+          <g key={i}>
+            {i % 3 === 0 && (
+              <circle
+                className="network-ping"
+                cx={n.x}
+                cy={n.y}
+                r={3}
+                fill="none"
+                stroke="#5eead4"
+                strokeWidth={1}
+                style={{ animationDelay: `${(i % 7) * 0.5}s` }}
+              />
+            )}
+            <circle
+              className="network-accent"
+              cx={n.x}
+              cy={n.y}
+              r={n.r}
+              fill="#5eead4"
+              fillOpacity={n.o}
+              style={
+                {
+                  "--base-o": n.o,
+                  "--base-r": n.r,
+                  animationDelay: `${(i % 7) * 0.6}s`,
+                } as React.CSSProperties
+              }
+            />
+          </g>
         );
       })}
     </svg>
