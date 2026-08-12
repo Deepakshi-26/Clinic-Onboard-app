@@ -77,7 +77,6 @@ export default async function EmployeeDocumentsPage() {
                     key={doc.id}
                     id={doc.id}
                     label={doc.label}
-                    fileUrl={doc.fileUrl}
                     uploadedAt={formatShortDate(doc.uploadedAt, locale)}
                   />
                 ))}

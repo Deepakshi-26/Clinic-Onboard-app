@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { updateEmployeeSensitiveInfo } from "@/lib/repositories/employee";
+import { encryptBuffer } from "@/lib/encryption";
 
 const UploadSchema = z.object({
   label: z.string().min(1),
@@ -42,9 +43,16 @@ export async function uploadPersonalDocument(
     return { error: "Please describe what this document is." };
   }
 
-  const blob = await put(`personal-documents/${Date.now()}-${file.name}`, file, {
+  const rawBytes = Buffer.from(await file.arrayBuffer());
+  const encrypted = encryptBuffer(rawBytes);
+
+  // Stored as opaque ciphertext — the blob's own content-type is deliberately
+  // generic since the real bytes aren't readable without ENCRYPTION_KEY. The
+  // original MIME type is kept in the DB for the decrypt-and-serve route.
+  const blob = await put(`personal-documents/${Date.now()}-${file.name}.enc`, encrypted, {
     access: "public",
     addRandomSuffix: true,
+    contentType: "application/octet-stream",
   });
 
   await prisma.personalDocument.create({
@@ -54,6 +62,7 @@ export async function uploadPersonalDocument(
       fileUrl: blob.url,
       fileName: file.name,
       fileSize: file.size,
+      contentType: file.type || "application/octet-stream",
     },
   });
 

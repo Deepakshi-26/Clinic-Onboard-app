@@ -266,10 +266,13 @@ model PersonalDocument {
   employeeId String
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  label    String
-  fileUrl  String
-  fileName String
-  fileSize Int
+  label       String
+  fileUrl     String
+  fileName    String
+  fileSize    Int
+  // MIME type of the original upload, kept so the decrypt-and-serve route
+  // can send the right Content-Type — the blob itself is encrypted bytes.
+  contentType String?
 
   uploadedAt DateTime @default(now())
 }

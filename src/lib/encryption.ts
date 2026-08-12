@@ -38,3 +38,26 @@ export function decryptField(payload: string): string {
     decipher.final(),
   ]).toString("utf8");
 }
+
+// Binary-safe variants for file uploads (void cheques, ID photos). Layout:
+// [12-byte iv][16-byte authTag][ciphertext] — kept as raw bytes rather than
+// hex so encrypted files stay roughly the same size as the originals.
+export function encryptBuffer(plaintext: Buffer): Buffer {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv(ALGO, getKey(), iv);
+  const encrypted = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+  return Buffer.concat([iv, authTag, encrypted]);
+}
+
+export function decryptBuffer(payload: Buffer): Buffer {
+  if (payload.length < 28) {
+    throw new Error("Malformed encrypted file payload.");
+  }
+  const iv = payload.subarray(0, 12);
+  const authTag = payload.subarray(12, 28);
+  const data = payload.subarray(28);
+  const decipher = createDecipheriv(ALGO, getKey(), iv);
+  decipher.setAuthTag(authTag);
+  return Buffer.concat([decipher.update(data), decipher.final()]);
+}

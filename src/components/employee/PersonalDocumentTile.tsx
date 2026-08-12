@@ -7,12 +7,10 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 export function PersonalDocumentTile({
   id,
   label,
-  fileUrl,
   uploadedAt,
 }: {
   id: string;
   label: string;
-  fileUrl: string;
   uploadedAt: string;
 }) {
   const { t } = useLocale();
@@ -30,7 +28,7 @@ export function PersonalDocumentTile({
         </div>
       </div>
       <a
-        href={fileUrl}
+        href={`/api/personal-documents/${id}`}
         target="_blank"
         rel="noopener noreferrer"
         className="flex-shrink-0 text-[11px] font-medium text-teal-600 hover:text-teal-700"

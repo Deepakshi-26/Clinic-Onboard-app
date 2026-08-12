@@ -140,7 +140,7 @@ export default async function NewHireInfoPage({
                     </div>
                   </div>
                   <a
-                    href={doc.fileUrl}
+                    href={`/api/personal-documents/${doc.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
