@@ -11,6 +11,13 @@ import { requestLoginOtp } from "./actions";
 type Role = "HR" | "EMPLOYEE";
 type Step = "credentials" | "otp";
 
+// See the matching REQUIRE_2FA check in src/auth.ts — this only decides
+// whether the login UI shows the code step; authorize() is the actual
+// enforcement point. Both must agree or the flow won't make sense, so they
+// share the same on/off intent (mirrored as NEXT_PUBLIC_ since this file
+// runs in the browser).
+const REQUIRE_2FA = process.env.NEXT_PUBLIC_REQUIRE_2FA === "true";
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,6 +40,19 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
+
+    if (!REQUIRE_2FA) {
+      const result = await signIn("credentials", { email, password, redirect: false });
+      setSubmitting(false);
+      if (result?.error) {
+        setError(t("login.invalidCredentials"));
+        return;
+      }
+      router.push(role === "HR" ? "/hr" : "/employee");
+      router.refresh();
+      return;
+    }
+
     const result = await requestLoginOtp(email, password);
     setSubmitting(false);
 
@@ -166,7 +186,11 @@ export default function LoginPage() {
                 disabled={submitting}
                 className="mt-1 rounded-lg bg-gradient-to-br from-teal-600 to-teal-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
               >
-                {submitting ? t("login.sendingCode") : t("login.signIn")}
+                {submitting
+                  ? REQUIRE_2FA
+                    ? t("login.sendingCode")
+                    : t("login.signingIn")
+                  : t("login.signIn")}
               </button>
             </form>
           </>
