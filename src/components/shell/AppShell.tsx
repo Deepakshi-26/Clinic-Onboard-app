@@ -8,7 +8,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { IdleLogout } from "./IdleLogout";
 import { Chatbot } from "@/components/chatbot/Chatbot";
-import { VoiceTourOverlay } from "@/components/shell/VoiceTourOverlay";
+import { VoiceTourOverlay, useActiveTourHref } from "@/components/shell/VoiceTourOverlay";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type NavItem = { href: string; labelKey: string; icon: string };
@@ -60,6 +60,35 @@ const TITLE_KEYS: Record<string, string> = {
   "/employee/schedule": "nav.mySchedule",
   "/employee/messages": "nav.messages",
 };
+
+function NavLink({
+  item,
+  active,
+  label,
+  onClick,
+}: {
+  item: NavItem;
+  active: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  const activeTourHref = useActiveTourHref();
+  const spotlighted = activeTourHref === item.href;
+  return (
+    <Link
+      href={item.href}
+      onClick={onClick}
+      className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3.5 py-2 text-xs font-medium transition-all ${
+        active
+          ? "bg-teal-600 text-white"
+          : "text-white/60 hover:bg-white/10 hover:text-white"
+      } ${spotlighted ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-slate-900 animate-pulse" : ""}`}
+    >
+      <span className="w-4 text-center text-sm">{item.icon}</span>
+      <span>{label}</span>
+    </Link>
+  );
+}
 
 export function AppShell({
   role,
@@ -115,24 +144,15 @@ export function AppShell({
         </div>
 
         <nav className="flex-1 px-1.5 py-3">
-          {nav.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setSidebarOpen(false)}
-                className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3.5 py-2 text-xs font-medium transition-colors ${
-                  active
-                    ? "bg-teal-600 text-white"
-                    : "text-white/60 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <span className="w-4 text-center text-sm">{item.icon}</span>
-                <span>{t(item.labelKey)}</span>
-              </Link>
-            );
-          })}
+          {nav.map((item) => (
+            <NavLink
+              key={item.href}
+              item={item}
+              active={pathname === item.href}
+              label={t(item.labelKey)}
+              onClick={() => setSidebarOpen(false)}
+            />
+          ))}
         </nav>
 
         <div className="border-t border-white/10 p-3.5">

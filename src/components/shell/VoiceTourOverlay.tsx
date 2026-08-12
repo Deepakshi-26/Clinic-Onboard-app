@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
@@ -15,12 +15,21 @@ type TourStepData = {
 
 type Status = "idle" | "loading" | "playing" | "paused" | "done" | "error";
 
-const VoiceTourContext = createContext<{ startTour: () => void } | null>(null);
+type VoiceTourContextValue = { startTour: () => void; activeStepHref: string | null };
+
+const VoiceTourContext = createContext<VoiceTourContextValue | null>(null);
 
 export function useVoiceTour() {
   const ctx = useContext(VoiceTourContext);
   if (!ctx) throw new Error("useVoiceTour must be used within VoiceTourOverlay");
   return ctx;
+}
+
+// Null-safe variant for components (like the sidebar nav) that render for
+// both roles — HR pages aren't wrapped in VoiceTourOverlay at all, so this
+// just quietly returns null there instead of throwing.
+export function useActiveTourHref(): string | null {
+  return useContext(VoiceTourContext)?.activeStepHref ?? null;
 }
 
 export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
@@ -111,9 +120,30 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
 
   const active = status !== "idle";
   const currentStep = steps[currentIndex];
+  const highlighting = status === "playing" || status === "paused";
+
+  // Glow the whole content area while a step is actively narrating — a
+  // reliable "spotlight" effect that works regardless of what page is
+  // currently shown, since <main> persists across the client-side
+  // navigation the tour drives (only its children swap).
+  useEffect(() => {
+    const main = document.querySelector("main");
+    if (!main) return;
+    const glowClasses = ["ring-4", "ring-teal-400", "ring-inset", "transition-shadow", "duration-300"];
+    if (highlighting) {
+      main.classList.add(...glowClasses);
+    } else {
+      main.classList.remove(...glowClasses);
+    }
+    return () => {
+      main.classList.remove(...glowClasses);
+    };
+  }, [highlighting]);
 
   return (
-    <VoiceTourContext.Provider value={{ startTour }}>
+    <VoiceTourContext.Provider
+      value={{ startTour, activeStepHref: highlighting ? (currentStep?.href ?? null) : null }}
+    >
       {children}
       {active && (
         <div className="fixed inset-x-3 bottom-20 z-40 sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px]">
