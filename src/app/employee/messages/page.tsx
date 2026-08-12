@@ -99,7 +99,11 @@ export default async function EmployeeMessagesPage({
                 <Link
                   key={c.id}
                   href={`/employee/messages?peerId=${c.id}`}
-                  className="flex items-center gap-2.5 py-2.5"
+                  className={`flex items-center gap-2.5 rounded-lg px-2 py-2.5 transition-colors ${
+                    selectedPeer?.id === c.id
+                      ? "bg-teal-50 dark:bg-teal-950/30"
+                      : "hover:bg-slate-50 dark:hover:bg-zinc-800/40"
+                  }`}
                 >
                   <Avatar name={c.fullName} size={32} />
                   <div>

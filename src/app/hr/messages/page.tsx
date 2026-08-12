@@ -77,8 +77,10 @@ export default async function HrMessagesPage({
               <Link
                 key={e.id}
                 href={`/hr/messages?employeeId=${e.id}`}
-                className={`flex items-center gap-2.5 py-2.5 ${
-                  selectedId === e.id ? "opacity-100" : "opacity-80 hover:opacity-100"
+                className={`flex items-center gap-2.5 rounded-lg px-2 py-2.5 transition-colors ${
+                  selectedId === e.id
+                    ? "bg-teal-50 dark:bg-teal-950/30"
+                    : "hover:bg-slate-50 dark:hover:bg-zinc-800/40"
                 }`}
               >
                 <Avatar name={e.fullName} size={32} />

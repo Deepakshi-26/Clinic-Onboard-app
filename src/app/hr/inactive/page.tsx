@@ -151,6 +151,14 @@ export default async function InactiveEmployeesPage({
                         {doc.docType}
                       </div>
                     </div>
+                    <a
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-shrink-0 rounded-md border border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-teal-600 hover:text-teal-600 dark:border-zinc-700 dark:text-zinc-300"
+                    >
+                      {t("newHire.view")}
+                    </a>
                   </div>
                 ))}
               </div>
