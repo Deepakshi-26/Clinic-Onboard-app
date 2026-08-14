@@ -43,13 +43,13 @@ export default async function EmployeeTrainingPage() {
       </div>
 
       {documents.length === 0 ? (
-        <Card>
+        <Card tourId="training-list">
           <p className="text-xs text-slate-500 dark:text-zinc-400">
             {t("training.noneAssigned")}
           </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3">
+        <div data-tour="training-list" className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3">
           {documents.map((doc) => (
             <div
               key={doc.id}

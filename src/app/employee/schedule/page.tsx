@@ -36,7 +36,7 @@ export default async function EmployeeSchedulePage() {
         {t("schedule.employeeHeading")}
       </h2>
 
-      <Card>
+      <Card tourId="schedule-list">
         {items.length === 0 ? (
           <p className="text-xs text-slate-500 dark:text-zinc-400">
             {t("schedule.employeeEmpty")}

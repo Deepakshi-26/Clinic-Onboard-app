@@ -9,6 +9,8 @@ export type TourStep = {
   title: string;
   narration: string;
   href: string;
+  /** Matches a Card's `tourId` / an element's `data-tour` to spotlight it. */
+  target?: string;
 };
 
 export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
@@ -27,13 +29,30 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         href: "/employee",
       },
       {
-        id: "home",
+        id: "home-welcome",
         icon: "🏠",
         title: "Ton tableau de bord",
-        narration: `Ceci est ta page d'accueil. En haut, tu vois ta progression globale — ça se remplit au fur et à mesure que tu avances. À côté, tes infos rapides: qui est ton formateur${
-          trainer ? `, ${trainer}` : ""
-        }, ton courriel de travail, et ton emplacement, ${location}. Plus bas, tes tâches du jour — coche-les au fur et à mesure. Vérifie ça.`,
+        narration: `Ceci est ta page d'accueil. En haut, tu vois ta progression globale — ça se remplit au fur et à mesure que tu avances.`,
         href: "/employee",
+        target: "home-welcome",
+      },
+      {
+        id: "home-quickinfo",
+        icon: "📌",
+        title: "Infos rapides",
+        narration: `Ici, tes infos rapides: qui est ton formateur${
+          trainer ? `, ${trainer}` : ""
+        }, ton courriel de travail, et ton emplacement, ${location}.`,
+        href: "/employee",
+        target: "home-quickinfo",
+      },
+      {
+        id: "home-tasks",
+        icon: "✅",
+        title: "Tâches du jour",
+        narration: `Et là, tes tâches du jour — coche-les au fur et à mesure que tu les termines. Vérifie ça.`,
+        href: "/employee",
+        target: "home-tasks",
       },
       {
         id: "training",
@@ -41,13 +60,31 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         title: "Matériel de formation",
         narration: `Ensuite, le matériel de formation. C'est là que les RH déposent les guides et documents dont tu as besoin pour ton poste de ${role}. Prends le temps de tout lire — c'est vraiment important pour bien démarrer. Vérifie ça.`,
         href: "/employee/training",
+        target: "training-list",
       },
       {
-        id: "access",
+        id: "access-codes",
         icon: "🔑",
-        title: "Infos d'accès",
-        narration: `Cette section contient tes accès pour ton emplacement, comme les codes de porte, le mot de passe Wi-Fi, et tes identifiants pour MEDEXA et Myle. Garde ces infos confidentielles. Vérifie ça.`,
+        title: "Codes d'accès",
+        narration: `Cette section contient tes accès pour ton emplacement — ton code de porte, le mot de passe Wi-Fi, et le code de l'immeuble. Garde ces infos confidentielles.`,
         href: "/employee/access",
+        target: "access-codes",
+      },
+      {
+        id: "access-medexa",
+        icon: "🔑",
+        title: "Identifiants MEDEXA",
+        narration: `Et ici, tes identifiants pour MEDEXA, le logiciel que tu utiliseras au quotidien.`,
+        href: "/employee/access",
+        target: "access-medexa",
+      },
+      {
+        id: "access-myle",
+        icon: "🔑",
+        title: "Identifiants Myle",
+        narration: `Enfin, tes identifiants Myle. Vérifie ça.`,
+        href: "/employee/access",
+        target: "access-myle",
       },
       {
         id: "documents",
@@ -55,6 +92,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         title: "Mes documents",
         narration: `Ici, tu peux téléverser tes documents personnels — comme un chèque spécimen ou une preuve d'identité — que les RH t'ont demandés. Vérifie ça.`,
         href: "/employee/documents",
+        target: "documents-upload",
       },
       {
         id: "schedule",
@@ -62,6 +100,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         title: "Mon horaire",
         narration: `Ta grille horaire d'intégration est ici — les RH y ajoutent tes rencontres et sessions de formation à venir. Vérifie ça.`,
         href: "/employee/schedule",
+        target: "schedule-list",
       },
       {
         id: "messages",
@@ -69,6 +108,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         title: "Messages",
         narration: `Besoin de parler aux RH ou à un collègue qui s'intègre en même temps que toi? C'est ici. Vérifie ça.`,
         href: "/employee/messages",
+        target: "messages-support",
       },
       {
         id: "done",
@@ -89,13 +129,30 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       href: "/employee",
     },
     {
-      id: "home",
+      id: "home-welcome",
       icon: "🏠",
       title: "Your Dashboard",
-      narration: `This is your home page. Up top, you'll see your overall progress — it fills in as you go. Next to it, your quick info: who your trainer is${
-        trainer ? `, ${trainer}` : ""
-      }, your work email, and your location, ${location}. Below that, your tasks for today — check them off as you complete them. Check this.`,
+      narration: `This is your home page. Up top, you'll see your overall progress — it fills in as you go.`,
       href: "/employee",
+      target: "home-welcome",
+    },
+    {
+      id: "home-quickinfo",
+      icon: "📌",
+      title: "Quick Info",
+      narration: `Over here, your quick info: who your trainer is${
+        trainer ? `, ${trainer}` : ""
+      }, your work email, and your location, ${location}.`,
+      href: "/employee",
+      target: "home-quickinfo",
+    },
+    {
+      id: "home-tasks",
+      icon: "✅",
+      title: "Today's Tasks",
+      narration: `And below that, your tasks for today — check them off as you complete them. Check this.`,
+      href: "/employee",
+      target: "home-tasks",
     },
     {
       id: "training",
@@ -103,13 +160,31 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       title: "Training Materials",
       narration: `Next up, Training Materials. This is where HR uploads the guides and documents you need for your role as a ${role}. Take the time to go through all of it — it really matters for a strong start. Check this.`,
       href: "/employee/training",
+      target: "training-list",
     },
     {
-      id: "access",
+      id: "access-codes",
       icon: "🔑",
-      title: "Access Info",
-      narration: `This section holds your access details for your location — things like door codes, Wi-Fi passwords, and your MEDEXA and Myle logins. Keep this information confidential. Check this.`,
+      title: "Access Codes",
+      narration: `This section holds your access details for your location — your door code, Wi-Fi password, and building passcode. Keep this information confidential.`,
       href: "/employee/access",
+      target: "access-codes",
+    },
+    {
+      id: "access-medexa",
+      icon: "🔑",
+      title: "MEDEXA Login",
+      narration: `And here's your MEDEXA login — the practice software you'll use day to day.`,
+      href: "/employee/access",
+      target: "access-medexa",
+    },
+    {
+      id: "access-myle",
+      icon: "🔑",
+      title: "Myle Login",
+      narration: `Last one on this page, your Myle login. Check this.`,
+      href: "/employee/access",
+      target: "access-myle",
     },
     {
       id: "documents",
@@ -117,6 +192,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       title: "My Documents",
       narration: `Here's where you upload your personal documents — like a void cheque or ID — that HR has asked you for. Check this.`,
       href: "/employee/documents",
+      target: "documents-upload",
     },
     {
       id: "schedule",
@@ -124,6 +200,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       title: "My Schedule",
       narration: `Your onboarding schedule lives here — HR adds your upcoming meetings and training sessions to it. Check this.`,
       href: "/employee/schedule",
+      target: "schedule-list",
     },
     {
       id: "messages",
@@ -131,6 +208,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       title: "Messages",
       narration: `Need to reach HR, or a coworker who's onboarding at the same time as you? This is the place. Check this.`,
       href: "/employee/messages",
+      target: "messages-support",
     },
     {
       id: "done",

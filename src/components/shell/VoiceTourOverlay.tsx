@@ -10,6 +10,7 @@ type TourStepData = {
   title: string;
   caption: string;
   href: string;
+  target?: string | null;
   audioBase64: string;
 };
 
@@ -122,23 +123,54 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
   const currentStep = steps[currentIndex];
   const highlighting = status === "playing" || status === "paused";
 
-  // Glow the whole content area while a step is actively narrating — a
-  // reliable "spotlight" effect that works regardless of what page is
-  // currently shown, since <main> persists across the client-side
-  // navigation the tour drives (only its children swap).
+  // Spotlight the specific card/element the current step is narrating about
+  // (matched via data-tour), falling back to glowing the whole content area
+  // for steps that aren't about one specific thing (welcome/done). Client-
+  // side navigation between steps is async, so the target may not exist in
+  // the DOM the instant this effect runs — poll briefly until it appears.
   useEffect(() => {
-    const main = document.querySelector("main");
-    if (!main) return;
-    const glowClasses = ["ring-4", "ring-teal-400", "ring-inset", "transition-shadow", "duration-300"];
-    if (highlighting) {
-      main.classList.add(...glowClasses);
-    } else {
-      main.classList.remove(...glowClasses);
+    if (!highlighting) return;
+
+    const mainGlowClasses = ["ring-4", "ring-teal-400", "ring-inset", "transition-shadow", "duration-300"];
+    const spotlightClasses = [
+      "ring-4",
+      "ring-teal-400",
+      "ring-offset-2",
+      "ring-offset-white",
+      "dark:ring-offset-zinc-950",
+      "transition-shadow",
+      "duration-300",
+    ];
+
+    const target = currentStep?.target;
+    if (!target) {
+      const main = document.querySelector("main");
+      main?.classList.add(...mainGlowClasses);
+      return () => main?.classList.remove(...mainGlowClasses);
     }
+
+    let cancelled = false;
+    let highlightedEl: Element | null = null;
+    let attempts = 0;
+
+    function tryHighlight() {
+      if (cancelled) return;
+      highlightedEl = document.querySelector(`[data-tour="${target}"]`);
+      if (highlightedEl) {
+        highlightedEl.classList.add(...spotlightClasses);
+        highlightedEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (attempts < 20) {
+        attempts += 1;
+        setTimeout(tryHighlight, 100);
+      }
+    }
+    tryHighlight();
+
     return () => {
-      main.classList.remove(...glowClasses);
+      cancelled = true;
+      highlightedEl?.classList.remove(...spotlightClasses);
     };
-  }, [highlighting]);
+  }, [highlighting, currentStep]);
 
   return (
     <VoiceTourContext.Provider

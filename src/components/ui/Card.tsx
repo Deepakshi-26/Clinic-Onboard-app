@@ -2,13 +2,17 @@ export function Card({
   title,
   children,
   className = "",
+  tourId,
 }: {
   title?: string;
   children: React.ReactNode;
   className?: string;
+  /** Matched against a voice-tour step's `target` to spotlight this card. */
+  tourId?: string;
 }) {
   return (
     <div
+      data-tour={tourId}
       className={`rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
     >
       {title && (

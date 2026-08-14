@@ -72,7 +72,7 @@ export default async function EmployeeHomePage() {
       )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card title={`👋 ${t("home.welcomeGreeting")}, ${firstName}!`}>
+        <Card tourId="home-welcome" title={`👋 ${t("home.welcomeGreeting")}, ${firstName}!`}>
           <p className="mb-3.5 text-xs leading-relaxed text-slate-600 dark:text-zinc-400">
             {employee.welcomeMessage ||
               `${t("home.welcomeMessagePrefix")} ${employee.onboardingDurationDays} ${t("home.welcomeMessageSuffix")}`}
@@ -90,7 +90,7 @@ export default async function EmployeeHomePage() {
           </div>
         </Card>
 
-        <Card title={`📌 ${t("home.quickInfo")}`}>
+        <Card tourId="home-quickinfo" title={`📌 ${t("home.quickInfo")}`}>
           <InfoRow
             label={t("home.yourTrainer")}
             value={employee.trainerName ?? t("home.notYetAssigned")}
@@ -103,7 +103,7 @@ export default async function EmployeeHomePage() {
         </Card>
       </div>
 
-      <Card title={`✅ ${t("home.todaysTasks")}`}>
+      <Card tourId="home-tasks" title={`✅ ${t("home.todaysTasks")}`}>
         {dailyGoals.length === 0 ? (
           <p className="text-xs text-slate-500 dark:text-zinc-400">
             {t("home.noTasksAssigned")}

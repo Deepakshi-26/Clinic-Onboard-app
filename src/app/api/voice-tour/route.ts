@@ -62,6 +62,7 @@ export async function POST() {
         title: step.title,
         caption: step.narration,
         href: step.href,
+        target: step.target ?? null,
         audioBase64: audio[i],
       })),
     });

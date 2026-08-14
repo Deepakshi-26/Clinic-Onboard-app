@@ -81,7 +81,7 @@ export default async function EmployeeMessagesPage({
       </h2>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card title={`🧑‍💼 ${t("messages.staffSupport")}`}>
+        <Card tourId="messages-support" title={`🧑‍💼 ${t("messages.staffSupport")}`}>
           <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
             {t("messages.staffSupportNote")}
           </p>

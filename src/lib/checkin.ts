@@ -2,9 +2,9 @@ import "server-only";
 import type { Employee } from "@prisma/client";
 import { computeDaysElapsed } from "@/lib/progress";
 
-export const CHECKIN_INTERVAL_DAYS = 3;
+export const CHECKIN_INTERVAL_DAYS = 1;
 
-// Returns the earliest onboarding day (3, 6, 9, ...) that's due but not yet
+// Returns the earliest onboarding day (1, 2, 3, ...) that's due but not yet
 // completed, capped at the employee's onboarding length. Catches up
 // sequentially rather than skipping ahead if they haven't logged in in a
 // while, so nothing gets silently missed.

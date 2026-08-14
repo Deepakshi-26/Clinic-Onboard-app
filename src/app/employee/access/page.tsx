@@ -65,46 +65,52 @@ export default async function EmployeeAccessPage({
           </p>
         ) : (
           <>
-            <Row label={t("home.workEmail")} value={credential.workEmail} />
-            <Row label={t("access.wifiPassword")} value={credential.wifiPassword} />
-            <Row label={t("access.doorPasscode")} value={credential.doorPasscode} />
-            <Row label={t("access.buildingPasscode")} value={credential.buildingPasscode} />
-            <Row label={t("access.medexaUsername")} value={credential.medexaUsername} />
-            <Row
-              label={t("access.medexaPassword")}
-              value={credential.medexaPassword ? "••••••••" : null}
-            />
-            {credential.medexaLink && (
-              <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-400">{t("access.medexaLink")}</span>
-                <a
-                  href={credential.medexaLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-teal-600 hover:text-teal-700"
-                >
-                  {t("access.openLink")}
-                </a>
-              </div>
-            )}
-            <Row label={t("access.myleUsername")} value={credential.myleUsername} />
-            <Row
-              label={t("access.mylePassword")}
-              value={credential.mylePassword ? "••••••••" : null}
-            />
-            {credential.myleLink && (
-              <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
-                <span className="text-slate-500 dark:text-zinc-400">{t("access.myleLink")}</span>
-                <a
-                  href={credential.myleLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-teal-600 hover:text-teal-700"
-                >
-                  {t("access.openLink")}
-                </a>
-              </div>
-            )}
+            <div data-tour="access-codes">
+              <Row label={t("home.workEmail")} value={credential.workEmail} />
+              <Row label={t("access.wifiPassword")} value={credential.wifiPassword} />
+              <Row label={t("access.doorPasscode")} value={credential.doorPasscode} />
+              <Row label={t("access.buildingPasscode")} value={credential.buildingPasscode} />
+            </div>
+            <div data-tour="access-medexa">
+              <Row label={t("access.medexaUsername")} value={credential.medexaUsername} />
+              <Row
+                label={t("access.medexaPassword")}
+                value={credential.medexaPassword ? "••••••••" : null}
+              />
+              {credential.medexaLink && (
+                <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400">{t("access.medexaLink")}</span>
+                  <a
+                    href={credential.medexaLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-teal-600 hover:text-teal-700"
+                  >
+                    {t("access.openLink")}
+                  </a>
+                </div>
+              )}
+            </div>
+            <div data-tour="access-myle">
+              <Row label={t("access.myleUsername")} value={credential.myleUsername} />
+              <Row
+                label={t("access.mylePassword")}
+                value={credential.mylePassword ? "••••••••" : null}
+              />
+              {credential.myleLink && (
+                <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400">{t("access.myleLink")}</span>
+                  <a
+                    href={credential.myleLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-teal-600 hover:text-teal-700"
+                  >
+                    {t("access.openLink")}
+                  </a>
+                </div>
+              )}
+            </div>
             <Row label={t("access.equipmentBox")} value={credential.equipmentBoxLocation} />
             <Row
               label={t("access.equipmentRequests")}

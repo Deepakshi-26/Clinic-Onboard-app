@@ -62,7 +62,7 @@ export default async function EmployeeDocumentsPage() {
           <div className="rounded-lg border-l-4 border-teal-500 bg-teal-50 p-3 text-xs text-teal-800 dark:bg-teal-950/30 dark:text-teal-300">
             {t("docs.uploadHint")}
           </div>
-          <Card title={`📤 ${t("docs.uploadDocument")}`}>
+          <Card tourId="documents-upload" title={`📤 ${t("docs.uploadDocument")}`}>
             <PersonalDocumentUploadForm />
           </Card>
           <Card title={`📋 ${t("docs.yourUploads")}`}>
