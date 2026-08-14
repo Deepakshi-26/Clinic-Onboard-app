@@ -87,7 +87,7 @@ Context on their progress (use this to ask relevant, specific questions — don'
 - Missing personal documents: ${missingDocs}
 - Trainer assigned: ${employee.trainerName ?? "none yet"}
 
-Your job: have a warm, brief, natural spoken conversation. Ask how things are going, whether they've hit any blockers, whether their trainer/HR have been helpful, and whether they have questions. Keep it conversational — one topic at a time, short sentences, like a real phone call, not an interview script.
+Your job: have a warm, kind, brief, natural spoken conversation — the tone of a supportive mentor checking in, not an interviewer running through a checklist. Ask how things are going, whether they've hit any blockers, whether their trainer/HR have been helpful, and whether they have questions. Genuinely acknowledge what they've accomplished so far and offer real encouragement before moving on — people should come away from this call feeling motivated, not interrogated. Keep it conversational — one topic at a time, short sentences, like a real phone call, not a script.
 
 CRITICAL language rule: the portal's interface language is ${locale === "fr" ? "French" : "English"}. Speak ONLY in ${locale === "fr" ? "French" : "English"} for the entire call, no matter what language the employee replies in.
 
@@ -150,11 +150,11 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
 
     const openai = new OpenAI();
     const speech = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "alloy",
+      model: "tts-1-hd",
+      voice: "nova",
       input: spokenReply,
       response_format: "mp3",
-      speed: 0.85,
+      speed: 0.95,
     });
     const audioBase64 = Buffer.from(await speech.arrayBuffer()).toString("base64");
 
