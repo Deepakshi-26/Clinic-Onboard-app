@@ -118,8 +118,11 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
     const claude = new Anthropic();
     const response = await claude.messages.create({
       model: "claude-sonnet-5",
-      max_tokens: 512,
-      system: systemPrompt,
+      max_tokens: 300,
+      // Cached across this call's turns — the system prompt is identical
+      // turn-to-turn within one check-in, so this cuts the "thinking" wait
+      // on every reply after the first instead of reprocessing it each time.
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: anthropicMessages,
     });
     const textBlock = response.content.find((block) => block.type === "text");
@@ -148,9 +151,13 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
       });
     }
 
+    // Plain tts-1 here, not the -hd variant: this is a live back-and-forth
+    // call where every turn pays this cost, so speed matters more than the
+    // small quality bump — unlike the voice tour, whose audio is generated
+    // once and cached, not synthesized live on every interaction.
     const openai = new OpenAI();
     const speech = await openai.audio.speech.create({
-      model: "tts-1-hd",
+      model: "tts-1",
       voice: "nova",
       input: spokenReply,
       response_format: "mp3",
