@@ -190,6 +190,7 @@ export async function LandingPage() {
                 width={2880}
                 height={1800}
                 className="h-auto w-full"
+                priority
               />
             </div>
             <p className="mt-3 text-sm text-slate-500 dark:text-zinc-400">{t("landing.demoHrCaption")}</p>
@@ -203,6 +204,7 @@ export async function LandingPage() {
                 width={2880}
                 height={1800}
                 className="h-auto w-full"
+                priority
               />
             </div>
             <p className="mt-3 text-sm text-slate-500 dark:text-zinc-400">{t("landing.demoEmployeeCaption")}</p>
