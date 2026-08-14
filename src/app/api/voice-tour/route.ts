@@ -14,11 +14,11 @@ async function synthesize(client: OpenAI, cacheKey: string, text: string) {
   if (audioCache.has(cacheKey)) return audioCache.get(cacheKey)!;
 
   const response = await client.audio.speech.create({
-    model: "tts-1",
-    voice: "alloy",
+    model: "tts-1-hd",
+    voice: "nova",
     input: text,
     response_format: "mp3",
-    speed: 0.85,
+    speed: 0.95,
   });
   const buffer = Buffer.from(await response.arrayBuffer());
   const base64 = buffer.toString("base64");
