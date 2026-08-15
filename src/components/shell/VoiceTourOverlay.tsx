@@ -41,8 +41,13 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function playStep(stepList: TourStepData[], index: number) {
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
     audioRef.current?.pause();
     const step = stepList[index];
     if (!step) {
@@ -55,8 +60,15 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
     audio.onended = () => {
       const next = index + 1;
       if (next < stepList.length) {
-        setCurrentIndex(next);
-        playStep(stepList, next);
+        // A beat of silence between steps, not an instant cut to the next
+        // clip — back-to-back narration with zero gap is what was reading
+        // as rushed every time the tour moved to a new topic or screen.
+        // This also gives the page navigation a moment to settle before the
+        // next line starts.
+        transitionTimeoutRef.current = setTimeout(() => {
+          setCurrentIndex(next);
+          playStep(stepList, next);
+        }, 550);
       } else {
         setStatus("done");
       }
@@ -112,6 +124,10 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
   }
 
   function exitTour() {
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
     audioRef.current?.pause();
     audioRef.current = null;
     setStatus("idle");
@@ -182,8 +198,8 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
           to sit directly on top of it for the whole tour, not just the
           step that mentions it. */}
       {active && (
-        <div className="fixed inset-x-3 bottom-20 z-40 sm:right-auto sm:bottom-6 sm:left-6 sm:w-[360px]">
-          <div className="rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
+        <div className="fixed inset-x-3 bottom-20 z-40 sm:right-auto sm:bottom-6 sm:left-6 sm:w-[260px]">
+          <div className="rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-2xl backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
             {status === "loading" && (
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 flex-shrink-0 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
@@ -219,44 +235,44 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
             )}
 
             {(status === "playing" || status === "paused") && currentStep && (
-              <div className="flex flex-col gap-2.5">
-                <div className="flex items-center gap-2.5">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
                   <div
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-xl ${
+                    className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-sm ${
                       status === "playing" ? "animate-pulse" : ""
                     }`}
                   >
                     {currentStep.icon}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-semibold tracking-wide text-teal-600 uppercase">
+                    <div className="text-[9px] font-semibold tracking-wide text-teal-600 uppercase">
                       {t("voiceTour.step")} {currentIndex + 1} {t("voiceTour.of")} {steps.length}
                     </div>
-                    <div className="truncate text-xs font-bold text-slate-900 dark:text-zinc-50">
+                    <div className="truncate text-[11px] font-bold text-slate-900 dark:text-zinc-50">
                       {currentStep.title}
                     </div>
                   </div>
                 </div>
-                <p className="max-h-20 overflow-y-auto text-[11px] leading-relaxed text-slate-600 dark:text-zinc-400">
+                <p className="max-h-14 overflow-y-auto text-[10px] leading-relaxed text-slate-600 dark:text-zinc-400">
                   {currentStep.caption}
                 </p>
-                <div className="flex items-center justify-between gap-1.5">
+                <div className="flex items-center justify-between gap-1">
                   <button
                     onClick={() => skip(-1)}
                     disabled={currentIndex === 0}
-                    className="rounded-full border border-slate-300 px-2.5 py-1.5 text-[11px] font-medium text-slate-600 disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300"
+                    className="rounded-full border border-slate-300 px-2 py-1 text-[10px] font-medium text-slate-600 disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300"
                   >
                     ⏮
                   </button>
                   <button
                     onClick={togglePause}
-                    className="flex-1 rounded-full bg-teal-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-teal-500"
+                    className="flex-1 rounded-full bg-teal-600 px-2 py-1 text-[10px] font-semibold text-white hover:bg-teal-500"
                   >
                     {status === "playing" ? `⏸ ${t("voiceTour.pause")}` : `▶ ${t("voiceTour.resume")}`}
                   </button>
                   <button
                     onClick={() => skip(1)}
-                    className="rounded-full border border-slate-300 px-2.5 py-1.5 text-[11px] font-medium text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
+                    className="rounded-full border border-slate-300 px-2 py-1 text-[10px] font-medium text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
                   >
                     ⏭
                   </button>
