@@ -40,6 +40,8 @@ export default async function EmployeeHomePage() {
   );
   const firstName = employee.fullName.split(" ")[0];
   const dailyGoals = employee.goals.filter((g) => g.type === "DAILY");
+  const weeklyGoals = employee.goals.filter((g) => g.type === "WEEKLY");
+  const monthlyGoals = employee.goals.filter((g) => g.type === "MONTHLY");
 
   const existingCheckIns = await prisma.checkIn.findMany({
     where: { employeeId: employee.id },
@@ -111,6 +113,46 @@ export default async function EmployeeHomePage() {
         ) : (
           <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
             {dailyGoals.map((goal) => (
+              <GoalCheck
+                key={goal.id}
+                goalId={goal.id}
+                title={goal.title}
+                description={goal.description}
+                done={goal.done}
+              />
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card tourId="home-weekly" title={`🗓️ ${t("home.weeklyTasks")}`}>
+        {weeklyGoals.length === 0 ? (
+          <p className="text-xs text-slate-500 dark:text-zinc-400">
+            {t("home.noTasksAssigned")}
+          </p>
+        ) : (
+          <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
+            {weeklyGoals.map((goal) => (
+              <GoalCheck
+                key={goal.id}
+                goalId={goal.id}
+                title={goal.title}
+                description={goal.description}
+                done={goal.done}
+              />
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card tourId="home-monthly" title={`📆 ${t("home.monthlyTasks")}`}>
+        {monthlyGoals.length === 0 ? (
+          <p className="text-xs text-slate-500 dark:text-zinc-400">
+            {t("home.noTasksAssigned")}
+          </p>
+        ) : (
+          <div className="flex flex-col divide-y divide-slate-100 dark:divide-zinc-800">
+            {monthlyGoals.map((goal) => (
               <GoalCheck
                 key={goal.id}
                 goalId={goal.id}

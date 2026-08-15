@@ -259,6 +259,8 @@ export const translations: Record<Locale, Dict> = {
     "home.notYetAssigned": "Not yet assigned",
     "home.workEmail": "Work Email",
     "home.todaysTasks": "Today's Tasks",
+    "home.weeklyTasks": "This Week's Tasks",
+    "home.monthlyTasks": "This Month's Tasks",
     "home.noTasksAssigned": "No tasks assigned yet.",
 
     "common.selectEllipsis": "Select...",
@@ -797,6 +799,8 @@ export const translations: Record<Locale, Dict> = {
     "home.notYetAssigned": "Pas encore assigné",
     "home.workEmail": "Courriel professionnel",
     "home.todaysTasks": "Tâches du jour",
+    "home.weeklyTasks": "Tâches de la semaine",
+    "home.monthlyTasks": "Tâches du mois",
     "home.noTasksAssigned": "Aucune tâche assignée pour le moment.",
 
     "common.selectEllipsis": "Sélectionner...",
