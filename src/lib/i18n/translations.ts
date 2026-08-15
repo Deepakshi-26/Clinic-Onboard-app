@@ -328,6 +328,12 @@ export const translations: Record<Locale, Dict> = {
     "access.noAccessAssigned":
       "No access details assigned for this location yet. Contact HR if needed.",
     "access.parking": "Parking",
+    "access.unlock": "Unlock",
+    "access.confirmPasswordPlaceholder": "Your portal password",
+    "access.revealError.forbidden": "You can't do that.",
+    "access.revealError.notFound": "Account not found.",
+    "access.revealError.incorrectPassword": "Incorrect password.",
+    "access.revealError.notSet": "Nothing saved here yet.",
     "access.privateNote":
       "This information is private to you. If anything is incorrect, contact HR.",
 
@@ -869,6 +875,12 @@ export const translations: Record<Locale, Dict> = {
     "access.noAccessAssigned":
       "Aucun détail d'accès assigné pour cet emplacement pour l'instant. Contactez les RH au besoin.",
     "access.parking": "Stationnement",
+    "access.unlock": "Déverrouiller",
+    "access.confirmPasswordPlaceholder": "Votre mot de passe du portail",
+    "access.revealError.forbidden": "Vous ne pouvez pas faire ça.",
+    "access.revealError.notFound": "Compte introuvable.",
+    "access.revealError.incorrectPassword": "Mot de passe incorrect.",
+    "access.revealError.notSet": "Rien n'a encore été enregistré ici.",
     "access.privateNote":
       "Cette information vous est privée. Si quelque chose est incorrect, contactez les RH.",
 

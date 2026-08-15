@@ -5,6 +5,7 @@ import { getAccessCredential } from "@/lib/repositories/access";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { LocationTabs } from "@/components/ui/LocationTabs";
+import { RevealPasswordRow } from "@/components/employee/RevealPasswordRow";
 import { locationLabel } from "@/lib/labels";
 import type { Location } from "@prisma/client";
 
@@ -73,9 +74,11 @@ export default async function EmployeeAccessPage({
             </div>
             <div data-tour="access-medexa">
               <Row label={t("access.medexaUsername")} value={credential.medexaUsername} />
-              <Row
+              <RevealPasswordRow
                 label={t("access.medexaPassword")}
-                value={credential.medexaPassword ? "••••••••" : null}
+                hasValue={!!credential.medexaPassword}
+                location={selectedLocation}
+                field="medexaPassword"
               />
               {credential.medexaLink && (
                 <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
@@ -93,9 +96,11 @@ export default async function EmployeeAccessPage({
             </div>
             <div data-tour="access-myle">
               <Row label={t("access.myleUsername")} value={credential.myleUsername} />
-              <Row
+              <RevealPasswordRow
                 label={t("access.mylePassword")}
-                value={credential.mylePassword ? "••••••••" : null}
+                hasValue={!!credential.mylePassword}
+                location={selectedLocation}
+                field="mylePassword"
               />
               {credential.myleLink && (
                 <div className="flex items-center justify-between border-b border-slate-50 py-2 text-xs last:border-0 dark:border-zinc-800">
