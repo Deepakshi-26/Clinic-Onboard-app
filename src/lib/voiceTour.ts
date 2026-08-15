@@ -82,6 +82,7 @@ export function buildTourSteps(
         title: "Suivis",
         narration: `Encore une chose: de temps en temps, tu auras un suivi, ici même dans le portail. Tu peux lui parler en français ou en anglais de comment ça se passe, ou lui poser des questions. Il essaie de t'aider directement, et si ce n'est pas possible, il contacte les RH pour toi.`,
         href: "/employee",
+        target: "checkin-banner",
       },
       {
         id: "training",
@@ -177,6 +178,7 @@ export function buildTourSteps(
         title: "C'est tout!",
         narration: `Et voilà, tu as fait le tour au complet! Si tu as d'autres questions en cours de route, le bouton de clavardage IA en bas à droite est toujours là pour toi. Bonne intégration, ${firstName}!`,
         href: "/employee",
+        target: "chatbot-button",
       },
     ];
   }
@@ -239,6 +241,7 @@ export function buildTourSteps(
       title: "Check-Ins",
       narration: `One more thing. Every so often, you'll get a check-in, right here in the portal. You can talk to it in English or French about how things are going, or ask it questions. It tries to help you directly, and if it can't, it reaches out to HR for you.`,
       href: "/employee",
+      target: "checkin-banner",
     },
     {
       id: "training",
@@ -334,6 +337,7 @@ export function buildTourSteps(
       title: "That's a wrap!",
       narration: `And that's the full tour! If anything comes up along the way, the AI chat button in the bottom-right corner is always there for you. Welcome aboard, ${firstName}!`,
       href: "/employee",
+      target: "chatbot-button",
     },
   ];
 }

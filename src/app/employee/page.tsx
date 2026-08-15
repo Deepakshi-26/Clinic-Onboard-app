@@ -59,6 +59,7 @@ export default async function EmployeeHomePage() {
       {dueCheckInDay !== null && (
         <Link
           href="/employee/check-in"
+          data-tour="checkin-banner"
           className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-400 px-5 py-4 text-white shadow-md transition-transform hover:scale-[1.01]"
         >
           <div>

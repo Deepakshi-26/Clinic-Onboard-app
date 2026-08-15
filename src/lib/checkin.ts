@@ -20,7 +20,10 @@ export function getDueCheckInDay(
     day <= employee.onboardingDurationDays;
     day += CHECKIN_INTERVAL_DAYS
   ) {
-    if (daysElapsed >= day && !completed.has(day)) {
+    // Day 1 is due as soon as someone starts, not after a full 24 hours —
+    // otherwise a brand-new hire sees no check-in at all on their first day,
+    // which defeats the point of it being daily.
+    if (daysElapsed >= day - CHECKIN_INTERVAL_DAYS && !completed.has(day)) {
       return day;
     }
   }

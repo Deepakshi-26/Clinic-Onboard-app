@@ -177,8 +177,12 @@ export function VoiceTourOverlay({ children }: { children: React.ReactNode }) {
       value={{ startTour, activeStepHref: highlighting ? (currentStep?.href ?? null) : null }}
     >
       {children}
+      {/* Anchored bottom-LEFT on larger screens, deliberately not sharing
+          the bottom-right corner with the floating chat button — it used
+          to sit directly on top of it for the whole tour, not just the
+          step that mentions it. */}
       {active && (
-        <div className="fixed inset-x-3 bottom-20 z-40 sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px]">
+        <div className="fixed inset-x-3 bottom-20 z-40 sm:right-auto sm:bottom-6 sm:left-6 sm:w-[360px]">
           <div className="rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
             {status === "loading" && (
               <div className="flex items-center gap-3">

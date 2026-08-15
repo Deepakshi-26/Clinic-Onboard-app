@@ -95,6 +95,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
       <button
         onClick={() => setOpen((o) => !o)}
         title={t("chatbot.title")}
+        data-tour="chatbot-button"
         className="fixed right-4 bottom-4 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-xl text-white shadow-lg transition-transform hover:scale-105 sm:right-6 sm:bottom-6"
         style={{ height: 52, width: 52 }}
       >
