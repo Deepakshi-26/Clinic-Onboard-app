@@ -90,7 +90,7 @@ export default async function EmployeeMessagesPage({
         </Card>
 
         {cohort.length > 0 && (
-          <Card title={`🤝 ${t("messages.onboardingPeers")}`}>
+          <Card tourId="messages-peers" title={`🤝 ${t("messages.onboardingPeers")}`}>
             <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
               {t("messages.onboardingPeersNote")}
             </p>

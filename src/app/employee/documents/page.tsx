@@ -44,7 +44,7 @@ export default async function EmployeeDocumentsPage() {
       </h2>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card title={`📝 ${t("docs.yourPersonalInfo")}`}>
+        <Card tourId="documents-info" title={`📝 ${t("docs.yourPersonalInfo")}`}>
           <PersonalInfoForm
             data={{
               fullName: info.fullName,
@@ -65,7 +65,7 @@ export default async function EmployeeDocumentsPage() {
           <Card tourId="documents-upload" title={`📤 ${t("docs.uploadDocument")}`}>
             <PersonalDocumentUploadForm />
           </Card>
-          <Card title={`📋 ${t("docs.yourUploads")}`}>
+          <Card tourId="documents-uploads" title={`📋 ${t("docs.yourUploads")}`}>
             {employee.personalDocuments.length === 0 ? (
               <p className="text-xs text-slate-500 dark:text-zinc-400">
                 {t("docs.nothingUploaded")}

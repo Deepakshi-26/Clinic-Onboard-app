@@ -111,15 +111,17 @@ export default async function EmployeeAccessPage({
                 </div>
               )}
             </div>
-            <Row label={t("access.equipmentBox")} value={credential.equipmentBoxLocation} />
-            <Row
-              label={t("access.equipmentRequests")}
-              value={credential.equipmentRequestEmail}
-            />
-            <Row label={t("access.trainer")} value={credential.trainerName} />
-            {credential.parkingEnabled && (
-              <Row label={`🅿️ ${t("access.parking")}`} value={credential.parkingNote} />
-            )}
+            <div data-tour="access-extra">
+              <Row label={t("access.equipmentBox")} value={credential.equipmentBoxLocation} />
+              <Row
+                label={t("access.equipmentRequests")}
+                value={credential.equipmentRequestEmail}
+              />
+              <Row label={t("access.trainer")} value={credential.trainerName} />
+              {credential.parkingEnabled && (
+                <Row label={`🅿️ ${t("access.parking")}`} value={credential.parkingNote} />
+              )}
+            </div>
             <div className="mt-3 rounded-lg bg-slate-100 p-3 text-[11px] text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
               🔒 {t("access.privateNote")}
             </div>
