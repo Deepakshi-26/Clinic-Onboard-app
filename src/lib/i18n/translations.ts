@@ -67,7 +67,7 @@ export const translations: Record<Locale, Dict> = {
 
     "landing.navLogin": "Log In",
     "landing.navWaitlist": "Join Waitlist",
-    "landing.heroBadge": "MVP — a real, working product",
+    "landing.heroBadge": "Now Live — a real, working product",
     "landing.heroHeadline": "Every New Hire, Ready From Day One",
     "landing.heroSubtitle":
       "One portal for paperwork, access, training and check-ins — with an AI guide that walks every new hire through their first 30 days.",
@@ -611,7 +611,7 @@ export const translations: Record<Locale, Dict> = {
 
     "landing.navLogin": "Connexion",
     "landing.navWaitlist": "Rejoindre la liste",
-    "landing.heroBadge": "MVP — un produit réel et fonctionnel",
+    "landing.heroBadge": "Maintenant en ligne — un produit réel et fonctionnel",
     "landing.heroHeadline": "Chaque nouvel employé, prêt dès le premier jour",
     "landing.heroSubtitle":
       "Un portail unique pour la paperasse, les accès, la formation et le suivi — avec un guide IA qui accompagne chaque nouvel employé pendant ses 30 premiers jours.",
