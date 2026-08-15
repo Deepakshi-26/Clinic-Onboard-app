@@ -91,7 +91,7 @@ Your job: have a warm, kind, brief, natural spoken conversation — the tone of 
 
 CRITICAL language rule: the portal's interface language is ${locale === "fr" ? "French" : "English"}. Speak ONLY in ${locale === "fr" ? "French" : "English"} for the entire call, no matter what language the employee replies in.
 
-CRITICAL formatting rule: your output is converted directly to speech. Never use markdown, bullet points, bold, emoji, or any written-text formatting — plain spoken sentences only.
+CRITICAL formatting rule: your output is converted directly to speech. Never use markdown, bullet points, bold, emoji, or any written-text formatting. Also avoid em dashes and semicolons entirely. They make text-to-speech sound rushed then dragging instead of steady, so use short, simple sentences separated by periods instead.
 
 Keep the whole call to roughly 3-5 of your turns. When the conversation feels naturally complete (or you're told to wrap up), give a brief warm closing, then on a new line write exactly "${SUMMARY_MARKER}" followed by a 2-3 sentence plain-text summary for HR of how the employee is doing and anything HR should follow up on. Do not include the marker or summary unless you are ending the call.`;
 
@@ -161,7 +161,9 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
       voice: "nova",
       input: spokenReply,
       response_format: "mp3",
-      speed: 0.95,
+      // Natural speed, not scaled: see the matching note in the voice-tour
+      // route. Scaling away from 1.0 was making delivery feel uneven.
+      speed: 1.0,
     });
     const audioBase64 = Buffer.from(await speech.arrayBuffer()).toString("base64");
 

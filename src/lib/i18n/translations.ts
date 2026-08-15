@@ -22,7 +22,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.training": "Training Materials",
     "nav.accessInfo": "Access Info",
     "nav.mySchedule": "My Schedule",
-    "nav.voiceTour": "AI Voice Tour",
+    "nav.voiceTour": "Onboarding Guide",
     "shell.myOnboarding": "My Onboarding",
     "shell.signOut": "Sign Out",
 
@@ -441,14 +441,15 @@ export const translations: Record<Locale, Dict> = {
     "inactive.reactivate": "Reactivate",
     "inactive.viewHistory": "View History",
 
-    "voiceTour.homeCardTitle": "🎙️ New here? Meet your AI guide",
+    "voiceTour.stepOneBadge": "STEP 1 — START HERE",
+    "voiceTour.homeCardTitle": "🎙️ New here? Meet your Onboarding Guide",
     "voiceTour.homeCardBody":
-      "Let our AI walk you through the whole portal, step by step — no need to wait for anyone.",
+      "It'll walk you through the whole portal, step by step. No need to wait for anyone.",
     "voiceTour.homeCardButton": "Start Voice Tour",
-    "voiceTour.pageTitle": "AI Voice Tour",
-    "voiceTour.preparing": "Preparing your AI guide…",
+    "voiceTour.pageTitle": "Onboarding Guide",
+    "voiceTour.preparing": "Preparing your Onboarding Guide…",
     "voiceTour.readySubtitle":
-      "Put your sound on — your AI guide is ready to walk you through everything.",
+      "Put your sound on. Your Onboarding Guide is ready to walk you through everything.",
     "voiceTour.startButton": "▶ Start My Tour",
     "voiceTour.step": "Step",
     "voiceTour.of": "of",
@@ -554,7 +555,7 @@ export const translations: Record<Locale, Dict> = {
     "nav.training": "Matériel de formation",
     "nav.accessInfo": "Infos d'accès",
     "nav.mySchedule": "Mon horaire",
-    "nav.voiceTour": "Visite vocale IA",
+    "nav.voiceTour": "Guide d'intégration",
     "shell.myOnboarding": "Mon intégration",
     "shell.signOut": "Déconnexion",
 
@@ -981,13 +982,14 @@ export const translations: Record<Locale, Dict> = {
     "inactive.reactivate": "Réactiver",
     "inactive.viewHistory": "Voir l'historique",
 
-    "voiceTour.homeCardTitle": "🎙️ Nouveau ici? Rencontre ton guide IA",
+    "voiceTour.stepOneBadge": "ÉTAPE 1 — COMMENCE ICI",
+    "voiceTour.homeCardTitle": "🎙️ Nouveau ici? Rencontre ton guide d'intégration",
     "voiceTour.homeCardBody":
-      "Laisse notre IA te faire visiter tout le portail, étape par étape — pas besoin d'attendre quelqu'un.",
+      "Il te fait visiter tout le portail, étape par étape. Pas besoin d'attendre quelqu'un.",
     "voiceTour.homeCardButton": "Démarrer la visite vocale",
-    "voiceTour.pageTitle": "Visite vocale IA",
-    "voiceTour.preparing": "Préparation de ton guide IA…",
-    "voiceTour.readySubtitle": "Mets le son — ton guide IA est prêt à tout te montrer.",
+    "voiceTour.pageTitle": "Guide d'intégration",
+    "voiceTour.preparing": "Préparation de ton guide d'intégration…",
+    "voiceTour.readySubtitle": "Mets le son. Ton guide d'intégration est prêt à tout te montrer.",
     "voiceTour.startButton": "▶ Démarrer ma visite",
     "voiceTour.step": "Étape",
     "voiceTour.of": "de",

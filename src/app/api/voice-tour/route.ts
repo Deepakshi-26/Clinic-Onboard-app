@@ -18,7 +18,10 @@ async function synthesize(client: OpenAI, cacheKey: string, text: string) {
     voice: "nova",
     input: text,
     response_format: "mp3",
-    speed: 0.95,
+    // Natural speed, not scaled: the model's pacing is calibrated for 1.0,
+    // and nudging it off that (even slightly) was producing uneven, rushed-
+    // then-dragging delivery instead of a steadier read.
+    speed: 1.0,
   });
   const buffer = Buffer.from(await response.arrayBuffer());
   const base64 = buffer.toString("base64");
