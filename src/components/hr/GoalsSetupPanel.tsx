@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addGoal, removeGoal } from "@/app/hr/goals/actions";
+import { addGoal, removeGoal, toggleGoalHr } from "@/app/hr/goals/actions";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Goal, GoalType } from "@prisma/client";
 
@@ -101,13 +101,17 @@ export function GoalsSetupPanel({
         ) : (
           activeGoals.map((goal) => (
             <div key={goal.id} className="flex items-center gap-2.5 py-2.5">
-              <div
-                className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[9px] ${
-                  goal.done ? "bg-emerald-500 text-white" : "border-2 border-slate-300"
+              <button
+                onClick={() => startTransition(() => toggleGoalHr(goal.id))}
+                disabled={isPending}
+                className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[9px] transition-colors disabled:opacity-50 ${
+                  goal.done
+                    ? "bg-emerald-500 text-white"
+                    : "border-2 border-slate-300 dark:border-zinc-600"
                 }`}
               >
                 {goal.done && "✓"}
-              </div>
+              </button>
               <div className="flex-1">
                 <div className="text-xs font-medium text-slate-900 dark:text-zinc-50">
                   {goal.title}

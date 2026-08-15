@@ -25,15 +25,18 @@ export default function LoginPage() {
   const justSetPassword = searchParams.get("passwordSet") === "1";
   const [step, setStep] = useState<Step>("credentials");
   const [role, setRole] = useState<Role>("HR");
-  const [email, setEmail] = useState("hr@clinic.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Deliberately does not prefill an email: it used to default to a stale
+  // seeded demo address on the Employee tab, which silently overwrote
+  // whatever a real employee's actual login email was and made it look
+  // like their account had no data.
   function selectRole(next: Role) {
     setRole(next);
-    setEmail(next === "HR" ? "hr@clinic.com" : "maria.s@example.com");
   }
 
   async function handleSubmitCredentials(e: React.FormEvent) {

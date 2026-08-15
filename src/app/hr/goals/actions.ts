@@ -48,3 +48,21 @@ export async function removeGoal(goalId: string) {
   revalidatePath("/employee");
   revalidatePath("/hr/employees");
 }
+
+export async function toggleGoalHr(goalId: string) {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  const goal = await prisma.goal.findUnique({ where: { id: goalId } });
+  if (!goal) throw new Error("Goal not found.");
+
+  await prisma.goal.update({
+    where: { id: goal.id },
+    data: { done: !goal.done, doneAt: !goal.done ? new Date() : null },
+  });
+
+  revalidatePath("/hr/goals");
+  revalidatePath("/employee");
+  revalidatePath("/hr");
+  revalidatePath("/hr/employees");
+}
