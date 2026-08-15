@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getServerLocale } from "@/lib/i18n/server";
 import { buildTourSteps } from "@/lib/voiceTour";
+import { getAccessCredential } from "@/lib/repositories/access";
 
 // Generated audio is deterministic for a given employee (their narration text
 // doesn't change between requests), so a per-warm-instance cache avoids
@@ -50,12 +51,16 @@ export async function POST() {
   }
 
   const locale = await getServerLocale();
-  const steps = buildTourSteps(employee, locale);
+  const credential = await getAccessCredential(employee.id, employee.location);
+  const parkingEnabled = credential?.parkingEnabled ?? false;
+  const steps = buildTourSteps(employee, locale, { parkingEnabled });
 
   try {
     const client = new OpenAI();
     const audio = await Promise.all(
-      steps.map((step) => synthesize(client, `${employee.id}:${locale}:${step.id}`, step.narration))
+      steps.map((step) =>
+        synthesize(client, `${employee.id}:${locale}:${parkingEnabled}:${step.id}`, step.narration)
+      )
     );
 
     return Response.json({

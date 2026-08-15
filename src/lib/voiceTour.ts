@@ -13,13 +13,19 @@ export type TourStep = {
   target?: string;
 };
 
-export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
+export function buildTourSteps(
+  employee: Employee,
+  locale: Locale,
+  options: { parkingEnabled?: boolean } = {}
+): TourStep[] {
   const firstName = employee.fullName.split(" ")[0];
   const role = titleLabel(employee.title, locale);
   const location = locationLabel(employee.location, locale);
   const trainer = employee.trainerName;
+  const { parkingEnabled = false } = options;
 
   if (locale === "fr") {
+    const parkingClauseFr = parkingEnabled ? ", et les infos de stationnement" : "";
     return [
       {
         id: "welcome",
@@ -53,6 +59,13 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         narration: `Et là, tes tâches du jour. Coche-les au fur et à mesure que tu les termines. Tu es sur la bonne voie.`,
         href: "/employee",
         target: "home-tasks",
+      },
+      {
+        id: "checkin-intro",
+        icon: "📞",
+        title: "Suivis",
+        narration: `Encore une chose: de temps en temps, tu auras un suivi, ici même dans le portail. Tu peux lui parler en français ou en anglais de comment ça se passe, ou lui poser des questions. Il essaie de t'aider directement, et si ce n'est pas possible, il contacte les RH pour toi.`,
+        href: "/employee",
       },
       {
         id: "training",
@@ -90,7 +103,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
         id: "access-extra",
         icon: "🔑",
         title: "Le reste",
-        narration: `Et pour finir cette page: où récupérer ton équipement, qui contacter pour des demandes, le nom de ton formateur, et les infos de stationnement si ça s'applique à toi. Une chose de moins à te soucier.`,
+        narration: `Et pour finir cette page: où récupérer ton équipement, qui contacter pour des demandes, le nom de ton formateur${parkingClauseFr}. Une chose de moins à te soucier.`,
         href: "/employee/access",
         target: "access-extra",
       },
@@ -152,6 +165,8 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
     ];
   }
 
+  const parkingClause = parkingEnabled ? ", and parking info" : "";
+
   return [
     {
       id: "welcome",
@@ -185,6 +200,13 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       narration: `And below that, your tasks for today. Check them off as you complete them. You've got this.`,
       href: "/employee",
       target: "home-tasks",
+    },
+    {
+      id: "checkin-intro",
+      icon: "📞",
+      title: "Check-Ins",
+      narration: `One more thing. Every so often, you'll get a check-in, right here in the portal. You can talk to it in English or French about how things are going, or ask it questions. It tries to help you directly, and if it can't, it reaches out to HR for you.`,
+      href: "/employee",
     },
     {
       id: "training",
@@ -222,7 +244,7 @@ export function buildTourSteps(employee: Employee, locale: Locale): TourStep[] {
       id: "access-extra",
       icon: "🔑",
       title: "A few more things",
-      narration: `Rounding out this page: where to pick up your equipment, who to contact for requests, your trainer's name, and parking info if that applies to you. One less thing to worry about.`,
+      narration: `Rounding out this page: where to pick up your equipment, who to contact for requests, your trainer's name${parkingClause}. One less thing to worry about.`,
       href: "/employee/access",
       target: "access-extra",
     },
