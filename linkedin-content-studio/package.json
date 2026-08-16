@@ -1,0 +1,20 @@
+{
+  "name": "linkedin-content-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A content generator + scheduler for authentic LinkedIn posts about building a business and a healthy money mindset.",
+  "bin": {
+    "lcs": "src/cli.js"
+  },
+  "scripts": {
+    "plan": "node src/cli.js plan",
+    "generate": "node src/cli.js generate",
+    "list": "node src/cli.js list"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.32.0"
+  }
+}

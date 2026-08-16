@@ -1,0 +1,11 @@
+{
+  "postingDays": ["Monday", "Wednesday", "Friday"],
+  "pillarRotation": [
+    "building-in-public",
+    "money-mindset",
+    "lessons-learned",
+    "wins-and-milestones",
+    "behind-the-scenes"
+  ],
+  "timezoneNote": "Dates are calendar dates only — this tool does not know your timezone or actually schedule/post anything."
+}

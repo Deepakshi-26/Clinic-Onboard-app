@@ -1,0 +1,123 @@
+{
+  "pillars": [
+    {
+      "id": "building-in-public",
+      "name": "Building in Public",
+      "description": "Share what you're actually building this week — progress, decisions, a screenshot-worthy moment.",
+      "notesPrompt": "What did you build, ship, or decide this week? Give 2-5 real bullets (a feature, a customer conversation, a hard call you made).",
+      "hooks": [
+        "I shipped something small this week that taught me something big.",
+        "Here's what building {topic} actually looked like this week — no highlight reel.",
+        "Nobody tells you this part of building a business:",
+        "A year ago I couldn't have done this. This week I did.",
+        "Progress update: {topic}."
+      ],
+      "structure": [
+        "Open with the hook",
+        "1-2 sentences of real context (what you were trying to do)",
+        "What actually happened — the specific, concrete detail from your notes",
+        "The lesson or shift in thinking it caused",
+        "One line inviting a reply or opinion from the reader"
+      ],
+      "ctas": [
+        "What are you building right now? Drop it below.",
+        "Curious how others are tackling this — thoughts?",
+        "Following along? I'll share the next step soon."
+      ]
+    },
+    {
+      "id": "money-mindset",
+      "name": "Money & Wealth Mindset",
+      "description": "A genuine lesson about how you think about money, risk, or wealth — grounded in something real, not a claim about results you haven't earned.",
+      "notesPrompt": "What real belief about money or risk did you test, confirm, or drop this week? Give 2-5 honest bullets — a decision, a fear you faced, a number you looked at.",
+      "hooks": [
+        "The way I think about money changed the day I did this:",
+        "Nobody talks about this side of chasing financial independence.",
+        "A mindset shift that cost me nothing and changed everything:",
+        "I used to think {topic}. I was wrong.",
+        "Wealth isn't just a number. Here's what I mean:"
+      ],
+      "structure": [
+        "Open with the hook",
+        "The specific moment or decision that prompted the reflection",
+        "What you believed before, and what changed it",
+        "The principle you're taking forward — stated plainly, without overpromising",
+        "One line inviting discussion"
+      ],
+      "ctas": [
+        "What's a money belief you've had to unlearn?",
+        "Agree or disagree? Genuinely curious.",
+        "What would you add to this?"
+      ]
+    },
+    {
+      "id": "lessons-learned",
+      "name": "Lessons Learned",
+      "description": "A specific mistake or hard-won lesson from the past week, told honestly.",
+      "notesPrompt": "What went wrong or harder than expected this week, and what did it teach you? Give 2-5 bullets.",
+      "hooks": [
+        "This mistake cost me time this week. Here's what I'd tell my past self:",
+        "I got this wrong. Here's the lesson.",
+        "The hard way I learned {topic}:",
+        "Three days ago I made a call I'd make differently today."
+      ],
+      "structure": [
+        "Open with the hook",
+        "What you attempted and what went wrong, stated plainly",
+        "The real cause, not the polished version",
+        "What you're changing because of it",
+        "One line inviting others to share their version"
+      ],
+      "ctas": [
+        "What's a lesson that cost you before it taught you?",
+        "Anyone else learn this one the hard way?"
+      ]
+    },
+    {
+      "id": "wins-and-milestones",
+      "name": "Wins & Milestones",
+      "description": "A real, specific win — sized honestly, credited to the work that produced it.",
+      "notesPrompt": "What actually went right this week? Give 2-5 bullets with real specifics (a number, a name, a date) — no rounding up.",
+      "hooks": [
+        "Small win, but I'm taking it: {topic}.",
+        "This took longer than I expected, but it happened.",
+        "Milestone update — here's exactly what got us here:",
+        "Not a huge win. Still a real one."
+      ],
+      "structure": [
+        "Open with the hook",
+        "The specific, verifiable detail of the win",
+        "The unglamorous work that actually produced it",
+        "Who or what helped along the way (credit generously)",
+        "One line inviting others to share their own wins"
+      ],
+      "ctas": [
+        "What's a win you're proud of this week, even a small one?",
+        "Tag someone who helped you get somewhere this month."
+      ]
+    },
+    {
+      "id": "behind-the-scenes",
+      "name": "Behind the Scenes",
+      "description": "The unglamorous, ordinary reality of a specific day or task — the opposite of a highlight reel.",
+      "notesPrompt": "What did an ordinary hour or task actually look like this week? Give 2-5 bullets of plain, specific detail.",
+      "hooks": [
+        "What building {topic} actually looks like on a Tuesday:",
+        "Here's the unfiltered version of this week:",
+        "No highlight reel today. Just what actually happened.",
+        "The boring part of the job, honestly:"
+      ],
+      "structure": [
+        "Open with the hook",
+        "A plain, specific walk-through of the real task or hour",
+        "Why the unglamorous part matters more than it looks",
+        "One honest takeaway",
+        "One line inviting others to share their 'boring' reality"
+      ],
+      "ctas": [
+        "What does your unfiltered Tuesday look like?",
+        "Anyone else find the boring part is where the real work happens?"
+      ]
+    }
+  ]
+}

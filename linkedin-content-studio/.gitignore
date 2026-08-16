@@ -1,0 +1,5 @@
+node_modules/
+content/calendar.json
+content/notes/*.md
+content/drafts/*.md
+content/posted/*.md
