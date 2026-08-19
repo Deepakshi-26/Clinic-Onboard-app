@@ -39,11 +39,9 @@ type Status = "idle" | "thinking" | "speaking" | "listening" | "done" | "error";
 export function CheckInConversation({
   dayOffset,
   firstName,
-  isTest = false,
 }: {
   dayOffset: number;
   firstName: string;
-  isTest?: boolean;
 }) {
   const { t, locale } = useLocale();
   const [status, setStatus] = useState<Status>("idle");
@@ -61,7 +59,7 @@ export function CheckInConversation({
       const res = await fetch("/api/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ turns: turnsSoFar, forceEnd, test: isTest }),
+        body: JSON.stringify({ turns: turnsSoFar, forceEnd }),
       });
       const rawText = await res.text();
       let body: { reply?: string; audioBase64?: string; done?: boolean; error?: string } | null = null;

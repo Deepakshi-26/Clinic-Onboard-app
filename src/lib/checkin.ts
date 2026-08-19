@@ -1,44 +1,19 @@
 import "server-only";
 import type { Employee } from "@prisma/client";
-import { computeDaysElapsed } from "@/lib/progress";
 
 export const CHECKIN_INTERVAL_DAYS = 1;
 
-// Returns the earliest onboarding day (1, 2, 3, ...) that's due but not yet
-// completed, capped at the employee's onboarding length. Catches up
-// sequentially rather than skipping ahead if they haven't logged in in a
-// while, so nothing gets silently missed.
-export function getDueCheckInDay(
-  employee: Pick<Employee, "startDate" | "onboardingDurationDays">,
-  completedDayOffsets: number[]
-): number | null {
-  const daysElapsed = computeDaysElapsed(employee.startDate);
-  const completed = new Set(completedDayOffsets);
-
-  for (
-    let day = CHECKIN_INTERVAL_DAYS;
-    day <= employee.onboardingDurationDays;
-    day += CHECKIN_INTERVAL_DAYS
-  ) {
-    // Day 1 is due as soon as someone starts, not after a full 24 hours —
-    // otherwise a brand-new hire sees no check-in at all on their first day,
-    // which defeats the point of it being daily.
-    if (daysElapsed >= day - CHECKIN_INTERVAL_DAYS && !completed.has(day)) {
-      return day;
-    }
-  }
-  return null;
-}
-
-// Same as getDueCheckInDay but ignores the elapsed-time gate — only reachable
-// via the explicit ?test=1 URL param (not linked anywhere in the UI), so HR
-// can try the feature without waiting for a real employee's schedule to
-// catch up.
-export function getNextIncompleteCheckInDay(
+// Returns the earliest onboarding day (1, 2, 3, ...) that hasn't been
+// completed yet, capped at the employee's onboarding length, or null once
+// every day is done. Check-ins are available any time — not gated by
+// elapsed calendar time — so a new hire can always start one, on day one or
+// any day after.
+export function getNextCheckInDay(
   employee: Pick<Employee, "onboardingDurationDays">,
   completedDayOffsets: number[]
 ): number | null {
   const completed = new Set(completedDayOffsets);
+
   for (
     let day = CHECKIN_INTERVAL_DAYS;
     day <= employee.onboardingDurationDays;

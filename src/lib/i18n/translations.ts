@@ -478,9 +478,6 @@ export const translations: Record<Locale, Dict> = {
     "voiceTour.error": "Couldn't prepare your voice tour. Please try again.",
 
     "checkin.pageTitle": "AI Check-in",
-    "checkin.noneDue": "No check-in is due right now — check back later.",
-    "checkin.nextCheckInPrefix": "Your next check-in (Day",
-    "checkin.nextCheckInUnlocks": ") unlocks on",
     "checkin.allCaughtUp": "You're all caught up — no more check-ins scheduled.",
     "checkin.historyTitle": "Your Check-ins",
     "checkin.noHistoryYet": "No check-ins completed yet.",
@@ -1035,9 +1032,6 @@ export const translations: Record<Locale, Dict> = {
     "voiceTour.error": "Impossible de préparer ta visite vocale. Réessaie.",
 
     "checkin.pageTitle": "Suivi IA",
-    "checkin.noneDue": "Aucun suivi n'est prévu pour le moment — reviens plus tard.",
-    "checkin.nextCheckInPrefix": "Ton prochain suivi (Jour",
-    "checkin.nextCheckInUnlocks": ") sera débloqué le",
     "checkin.allCaughtUp": "Tu es à jour — aucun autre suivi n'est prévu.",
     "checkin.historyTitle": "Tes suivis",
     "checkin.noHistoryYet": "Aucun suivi terminé pour l'instant.",

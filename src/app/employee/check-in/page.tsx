@@ -3,24 +3,14 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { formatShortDate } from "@/lib/progress";
 import { getServerLocale, getT } from "@/lib/i18n/server";
-import {
-  CHECKIN_INTERVAL_DAYS,
-  getDueCheckInDay,
-  getNextIncompleteCheckInDay,
-} from "@/lib/checkin";
+import { getNextCheckInDay } from "@/lib/checkin";
 import { Card } from "@/components/ui/Card";
 import { CheckInConversation } from "@/components/employee/CheckInConversation";
 
-export default async function CheckInPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ test?: string }>;
-}) {
+export default async function CheckInPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const { test } = await searchParams;
-  const isTest = test === "1";
   const locale = await getServerLocale();
   const t = getT(locale);
 
@@ -39,22 +29,7 @@ export default async function CheckInPage({
     where: { employeeId: employee.id },
     orderBy: { dayOffset: "desc" },
   });
-  const completedDayOffsets = pastCheckIns.map((c) => c.dayOffset);
-  const dueDay =
-    getDueCheckInDay(employee, completedDayOffsets) ??
-    (isTest ? getNextIncompleteCheckInDay(employee, completedDayOffsets) : null);
-
-  // Next incomplete day regardless of the elapsed-time gate, used only to
-  // tell the employee when it'll unlock — not to unlock it early.
-  const upcomingDay =
-    dueDay === null ? getNextIncompleteCheckInDay(employee, completedDayOffsets) : null;
-  const upcomingUnlockDate =
-    upcomingDay !== null
-      ? new Date(
-          new Date(employee.startDate).getTime() +
-            (upcomingDay - 1) * CHECKIN_INTERVAL_DAYS * 24 * 60 * 60 * 1000
-        )
-      : null;
+  const nextDay = getNextCheckInDay(employee, pastCheckIns.map((c) => c.dayOffset));
 
   return (
     <div className="flex flex-col gap-5">
@@ -62,19 +37,11 @@ export default async function CheckInPage({
         {t("checkin.pageTitle")}
       </h2>
 
-      {dueDay !== null ? (
-        <CheckInConversation
-          dayOffset={dueDay}
-          firstName={employee.fullName.split(" ")[0]}
-          isTest={isTest}
-        />
+      {nextDay !== null ? (
+        <CheckInConversation dayOffset={nextDay} firstName={employee.fullName.split(" ")[0]} />
       ) : (
         <Card>
-          <p className="text-sm text-slate-500 dark:text-zinc-400">
-            {upcomingDay !== null && upcomingUnlockDate
-              ? `${t("checkin.nextCheckInPrefix")} ${upcomingDay} ${t("checkin.nextCheckInUnlocks")} ${formatShortDate(upcomingUnlockDate, locale)}.`
-              : t("checkin.allCaughtUp")}
-          </p>
+          <p className="text-sm text-slate-500 dark:text-zinc-400">{t("checkin.allCaughtUp")}</p>
         </Card>
       )}
 

@@ -3,12 +3,8 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { locationLabel } from "@/lib/labels";
-import {
-  computeDaysRemaining,
-  computeOverallProgress,
-  formatShortDate,
-} from "@/lib/progress";
-import { CHECKIN_INTERVAL_DAYS, getDueCheckInDay, getNextIncompleteCheckInDay } from "@/lib/checkin";
+import { computeDaysRemaining, computeOverallProgress } from "@/lib/progress";
+import { getNextCheckInDay } from "@/lib/checkin";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -53,19 +49,7 @@ export default async function EmployeeHomePage() {
       select: { dayOffset: true },
     })
   ).map((c) => c.dayOffset);
-  const dueCheckInDay = getDueCheckInDay(employee, completedDayOffsets);
-
-  // When nothing's due yet, still show the banner (always visible on the
-  // dashboard) but with the next-unlock date instead of a "start now" CTA.
-  const upcomingDay =
-    dueCheckInDay === null ? getNextIncompleteCheckInDay(employee, completedDayOffsets) : null;
-  const upcomingUnlockDate =
-    upcomingDay !== null
-      ? new Date(
-          new Date(employee.startDate).getTime() +
-            (upcomingDay - 1) * CHECKIN_INTERVAL_DAYS * 24 * 60 * 60 * 1000
-        )
-      : null;
+  const nextCheckInDay = getNextCheckInDay(employee, completedDayOffsets);
 
   return (
     <div className="flex flex-col gap-5">
@@ -76,11 +60,11 @@ export default async function EmployeeHomePage() {
         data-tour="checkin-banner"
         className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-400 px-5 py-4 text-white shadow-md transition-transform hover:scale-[1.01]"
       >
-        {dueCheckInDay !== null ? (
+        {nextCheckInDay !== null ? (
           <>
             <div>
               <div className="text-sm font-bold">
-                {t("checkin.homeCardTitle")} {dueCheckInDay}
+                {t("checkin.homeCardTitle")} {nextCheckInDay}
               </div>
               <div className="mt-0.5 text-xs text-white/85">{t("checkin.homeCardBody")}</div>
             </div>
@@ -92,11 +76,7 @@ export default async function EmployeeHomePage() {
           <>
             <div>
               <div className="text-sm font-bold">{t("checkin.checkinWord")}</div>
-              <div className="mt-0.5 text-xs text-white/85">
-                {upcomingDay !== null && upcomingUnlockDate
-                  ? `${t("checkin.nextCheckInPrefix")} ${upcomingDay} ${t("checkin.nextCheckInUnlocks")} ${formatShortDate(upcomingUnlockDate, locale)}.`
-                  : t("checkin.allCaughtUp")}
-              </div>
+              <div className="mt-0.5 text-xs text-white/85">{t("checkin.allCaughtUp")}</div>
             </div>
             <span className="flex-shrink-0 rounded-full bg-white/20 px-3.5 py-2 text-xs font-semibold whitespace-nowrap">
               {t("checkin.historyTitle")} →
