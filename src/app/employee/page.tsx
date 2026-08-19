@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { locationLabel } from "@/lib/labels";
 import { computeDaysRemaining, computeOverallProgress } from "@/lib/progress";
-import { getNextCheckInDay } from "@/lib/checkin";
+import { getCurrentCheckInDay } from "@/lib/checkin";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -43,13 +43,7 @@ export default async function EmployeeHomePage() {
   const weeklyGoals = employee.goals.filter((g) => g.type === "WEEKLY");
   const monthlyGoals = employee.goals.filter((g) => g.type === "MONTHLY");
 
-  const completedDayOffsets = (
-    await prisma.checkIn.findMany({
-      where: { employeeId: employee.id },
-      select: { dayOffset: true },
-    })
-  ).map((c) => c.dayOffset);
-  const nextCheckInDay = getNextCheckInDay(employee, completedDayOffsets);
+  const todayCheckInDay = getCurrentCheckInDay(employee);
 
   return (
     <div className="flex flex-col gap-5">
@@ -60,11 +54,11 @@ export default async function EmployeeHomePage() {
         data-tour="checkin-banner"
         className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-400 px-5 py-4 text-white shadow-md transition-transform hover:scale-[1.01]"
       >
-        {nextCheckInDay !== null ? (
+        {todayCheckInDay !== null ? (
           <>
             <div>
               <div className="text-sm font-bold">
-                {t("checkin.homeCardTitle")} {nextCheckInDay}
+                {t("checkin.homeCardTitle")} {todayCheckInDay}
               </div>
               <div className="mt-0.5 text-xs text-white/85">{t("checkin.homeCardBody")}</div>
             </div>

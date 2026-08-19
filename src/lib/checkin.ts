@@ -1,25 +1,17 @@
 import "server-only";
 import type { Employee } from "@prisma/client";
+import { computeDaysElapsed } from "@/lib/progress";
 
-export const CHECKIN_INTERVAL_DAYS = 1;
-
-// Returns the earliest onboarding day (1, 2, 3, ...) that hasn't been
-// completed yet, capped at the employee's onboarding length, or null once
-// every day is done. Check-ins are available any time — not gated by
-// elapsed calendar time — so a new hire can always start one, on day one or
-// any day after.
-export function getNextCheckInDay(
-  employee: Pick<Employee, "onboardingDurationDays">,
-  completedDayOffsets: number[]
+// Which onboarding day (1, 2, 3, ...) "today" is for this employee, based on
+// real elapsed calendar time since their start date — not on how many
+// check-ins they've completed. This is what ties the day number to an
+// actual date: doing the check-in five times in one sitting still only
+// ever targets today's day, so it upserts the same row instead of minting
+// new "Day 2", "Day 3", ... rows all dated the same day. Returns null once
+// the onboarding period is over.
+export function getCurrentCheckInDay(
+  employee: Pick<Employee, "startDate" | "onboardingDurationDays">
 ): number | null {
-  const completed = new Set(completedDayOffsets);
-
-  for (
-    let day = CHECKIN_INTERVAL_DAYS;
-    day <= employee.onboardingDurationDays;
-    day += CHECKIN_INTERVAL_DAYS
-  ) {
-    if (!completed.has(day)) return day;
-  }
-  return null;
+  const day = computeDaysElapsed(employee.startDate) + 1;
+  return day <= employee.onboardingDurationDays ? day : null;
 }

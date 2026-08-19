@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { formatShortDate } from "@/lib/progress";
 import { getServerLocale, getT } from "@/lib/i18n/server";
-import { getNextCheckInDay } from "@/lib/checkin";
+import { getCurrentCheckInDay } from "@/lib/checkin";
 import { Card } from "@/components/ui/Card";
 import { CheckInConversation } from "@/components/employee/CheckInConversation";
 
@@ -29,7 +29,7 @@ export default async function CheckInPage() {
     where: { employeeId: employee.id },
     orderBy: { dayOffset: "desc" },
   });
-  const nextDay = getNextCheckInDay(employee, pastCheckIns.map((c) => c.dayOffset));
+  const todayDay = getCurrentCheckInDay(employee);
 
   return (
     <div className="flex flex-col gap-5">
@@ -37,8 +37,12 @@ export default async function CheckInPage() {
         {t("checkin.pageTitle")}
       </h2>
 
-      {nextDay !== null ? (
-        <CheckInConversation dayOffset={nextDay} firstName={employee.fullName.split(" ")[0]} />
+      {todayDay !== null ? (
+        <CheckInConversation
+          key={todayDay}
+          dayOffset={todayDay}
+          firstName={employee.fullName.split(" ")[0]}
+        />
       ) : (
         <Card>
           <p className="text-sm text-slate-500 dark:text-zinc-400">{t("checkin.allCaughtUp")}</p>

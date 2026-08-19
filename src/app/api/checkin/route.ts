@@ -5,7 +5,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getServerLocale } from "@/lib/i18n/server";
-import { getNextCheckInDay } from "@/lib/checkin";
+import { getCurrentCheckInDay } from "@/lib/checkin";
 import {
   computeDaysElapsed,
   computeGoalsProgress,
@@ -55,12 +55,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "No employee record found." }, { status: 404 });
   }
 
-  const existingCheckIns = await prisma.checkIn.findMany({
-    where: { employeeId: employee.id },
-    select: { dayOffset: true },
-  });
-  const completedDayOffsets = existingCheckIns.map((c) => c.dayOffset);
-  const dueDay = getNextCheckInDay(employee, completedDayOffsets);
+  const dueDay = getCurrentCheckInDay(employee);
   if (dueDay === null) {
     return Response.json({ error: "No check-in is due right now." }, { status: 400 });
   }
