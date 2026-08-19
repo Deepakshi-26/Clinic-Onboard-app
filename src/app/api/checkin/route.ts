@@ -113,7 +113,12 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
     const claude = new Anthropic();
     const response = await claude.messages.create({
       model: "claude-sonnet-5",
-      max_tokens: 300,
+      // Ordinary turns are capped tight — generation time scales with tokens
+      // produced, and this is a live call where every extra second here is
+      // a silent, awkward pause. The closing turn gets more room since it
+      // also has to fit the HR summary after the closing line, and cutting
+      // that off mid-sentence would be worse than a slightly longer pause.
+      max_tokens: forceEnd ? 300 : 150,
       // Cached across this call's turns — the system prompt is identical
       // turn-to-turn within one check-in, so this cuts the "thinking" wait
       // on every reply after the first instead of reprocessing it each time.

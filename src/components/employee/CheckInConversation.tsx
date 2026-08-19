@@ -52,8 +52,15 @@ export function CheckInConversation({
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const finalTranscriptRef = useRef("");
   const pendingTurnsRef = useRef<Turn[]>([]);
+  // Guards against a request already in flight — without this, mashing
+  // "End Check-in" while a reply is still being generated fires multiple
+  // overlapping fetches, each with its own audio, all playing at once.
+  const isSubmittingRef = useRef(false);
 
   async function postTurn(turnsSoFar: Turn[], forceEnd = false) {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    audioRef.current?.pause();
     setStatus("thinking");
     try {
       const res = await fetch("/api/checkin", {
@@ -94,6 +101,8 @@ export function CheckInConversation({
     } catch (err) {
       setErrorMessage(`[network] ${err instanceof Error ? err.message : String(err)}`);
       setStatus("error");
+    } finally {
+      isSubmittingRef.current = false;
     }
   }
 
@@ -137,6 +146,7 @@ export function CheckInConversation({
   }
 
   function finishTurn() {
+    if (isSubmittingRef.current) return;
     recognitionRef.current?.stop();
     recognitionRef.current = null;
     const spoken = finalTranscriptRef.current.trim();
@@ -150,6 +160,7 @@ export function CheckInConversation({
   }
 
   function endCheckIn() {
+    if (isSubmittingRef.current) return;
     audioRef.current?.pause();
     recognitionRef.current?.stop();
     recognitionRef.current = null;
@@ -246,7 +257,8 @@ export function CheckInConversation({
 
         <button
           onClick={endCheckIn}
-          className="mt-1 text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300"
+          disabled={status === "thinking"}
+          className="mt-1 text-[11px] text-slate-400 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:text-zinc-300"
         >
           {t("checkin.endCall")}
         </button>
