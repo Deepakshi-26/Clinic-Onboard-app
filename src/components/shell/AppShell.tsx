@@ -32,6 +32,7 @@ const HR_NAV: NavItem[] = [
 
 const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee", labelKey: "nav.home", icon: "🏠" },
+  { href: "/employee/check-in", labelKey: "nav.checkIn", icon: "📞" },
   { href: "/employee/documents", labelKey: "nav.myDocuments", icon: "📋" },
   { href: "/employee/training", labelKey: "nav.training", icon: "📚" },
   { href: "/employee/access", labelKey: "nav.accessInfo", icon: "🔑" },
