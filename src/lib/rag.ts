@@ -8,6 +8,10 @@ import { embedTexts } from "@/lib/embeddings";
 const CHUNK_SIZE = 1200;
 const CHUNK_OVERLAP = 150;
 const TOP_K = 6;
+// Cosine distance cutoff (0 = identical, higher = less related) for a chunk
+// to count as an actual match, not just "closest of whatever exists" — a
+// small document set otherwise means everything gets returned every time.
+const MAX_RELEVANT_DISTANCE = 0.45;
 
 function chunkText(text: string): string[] {
   const chunks: string[] = [];
@@ -62,7 +66,7 @@ export async function indexTrainingDocument(doc: {
   }
 }
 
-type RetrievedChunk = { documentId: string; documentName: string; content: string };
+type RetrievedChunk = { documentId: string; documentName: string; content: string; distance: number };
 
 async function searchDocumentChunks(
   query: string,
@@ -74,7 +78,8 @@ async function searchDocumentChunks(
   const vectorLiteral = `[${queryEmbedding.join(",")}]`;
 
   return prisma.$queryRaw<RetrievedChunk[]>`
-    SELECT dc."documentId" as "documentId", td.name as "documentName", dc.content as "content"
+    SELECT dc."documentId" as "documentId", td.name as "documentName", dc.content as "content",
+           (dc.embedding <=> ${vectorLiteral}::vector) as "distance"
     FROM "DocumentChunk" dc
     JOIN "TrainingDocument" td ON td.id = dc."documentId"
     WHERE dc."documentId" IN (${Prisma.join(documentIds)})
@@ -106,11 +111,20 @@ export async function buildRagContext(
     };
   }
 
-  const chunks = await searchDocumentChunks(query, documents.map((d) => d.id));
-  if (chunks.length === 0) {
+  const allChunks = await searchDocumentChunks(query, documents.map((d) => d.id));
+  if (allChunks.length === 0) {
     return {
       context:
         "The assigned training documents haven't been indexed for search yet — an HR admin needs to click \"Index for AI search\" on the Documents page. Answer from general portal knowledge and mention this if relevant.",
+      sources: [],
+    };
+  }
+
+  const chunks = allChunks.filter((c) => c.distance < MAX_RELEVANT_DISTANCE);
+  if (chunks.length === 0) {
+    return {
+      context:
+        "None of the training documents closely match this question — treat it as out of scope for the training material and answer from general portal knowledge only. Do not mention or cite a training document for this answer.",
       sources: [],
     };
   }
