@@ -106,7 +106,23 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
 
   try {
     const claude = new Anthropic();
-    const response = await claude.messages.create({
+    const openai = new OpenAI();
+
+    const synthesize = (text: string) =>
+      openai.audio.speech
+        .create({
+          model: "tts-1",
+          voice: "nova",
+          input: text,
+          response_format: "mp3",
+          // Natural speed, not scaled: see the matching note in the
+          // voice-tour route. Scaling away from 1.0 was making delivery
+          // feel uneven.
+          speed: 1.0,
+        })
+        .then((speech) => speech.arrayBuffer());
+
+    const stream = claude.messages.stream({
       model: "claude-sonnet-5",
       // Ordinary turns are capped tight — generation time scales with tokens
       // produced, and this is a live call where every extra second here is
@@ -120,13 +136,38 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
       system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: anthropicMessages,
     });
-    const textBlock = response.content.find((block) => block.type === "text");
-    const rawReply = textBlock?.text ?? "";
 
-    const markerIndex = rawReply.indexOf(SUMMARY_MARKER);
+    // Streamed instead of a single blocking call so that on the closing
+    // turn — where the model writes a spoken goodbye *and then* a
+    // written-only HR summary in the same response — we can start speech
+    // synthesis the moment the spoken part is fully known, instead of
+    // waiting for the (unspoken, purely internal) summary to finish
+    // generating too. That trailing summary text was the extra delay users
+    // felt specifically when ending the call.
+    let accumulated = "";
+    let spokenReply = "";
+    let ttsPromise: Promise<ArrayBuffer> | null = null;
+
+    for await (const event of stream) {
+      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+        accumulated += event.delta.text;
+        if (!ttsPromise) {
+          const liveMarkerIndex = accumulated.indexOf(SUMMARY_MARKER);
+          if (liveMarkerIndex !== -1) {
+            spokenReply = accumulated.slice(0, liveMarkerIndex).trim();
+            ttsPromise = synthesize(spokenReply);
+          }
+        }
+      }
+    }
+    await stream.finalMessage();
+
+    const markerIndex = accumulated.indexOf(SUMMARY_MARKER);
     const done = markerIndex !== -1;
-    const spokenReply = (done ? rawReply.slice(0, markerIndex) : rawReply).trim();
-    const summary = done ? rawReply.slice(markerIndex + SUMMARY_MARKER.length).trim() : null;
+    if (!done) {
+      spokenReply = accumulated.trim();
+    }
+    const summary = done ? accumulated.slice(markerIndex + SUMMARY_MARKER.length).trim() : null;
 
     if (done) {
       const fullTurns = [...turns, { role: "assistant" as const, content: spokenReply }];
@@ -146,21 +187,12 @@ Keep the whole call to roughly 3-5 of your turns. When the conversation feels na
       });
     }
 
-    // Plain tts-1 here, not the -hd variant: this is a live back-and-forth
-    // call where every turn pays this cost, so speed matters more than the
-    // small quality bump — unlike the voice tour, whose audio is generated
-    // once and cached, not synthesized live on every interaction.
-    const openai = new OpenAI();
-    const speech = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "nova",
-      input: spokenReply,
-      response_format: "mp3",
-      // Natural speed, not scaled: see the matching note in the voice-tour
-      // route. Scaling away from 1.0 was making delivery feel uneven.
-      speed: 1.0,
-    });
-    const audioBase64 = Buffer.from(await speech.arrayBuffer()).toString("base64");
+    // Normal (non-final) turns never contain the marker, so synthesis
+    // couldn't start early above — do it now, same as before.
+    if (!ttsPromise) {
+      ttsPromise = synthesize(spokenReply);
+    }
+    const audioBase64 = Buffer.from(await ttsPromise).toString("base64");
 
     return Response.json({ reply: spokenReply, audioBase64, done, dayOffset: dueDay });
   } catch (err) {
