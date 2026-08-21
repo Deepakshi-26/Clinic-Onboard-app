@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card } from "@/components/ui/Card";
 
@@ -44,6 +45,7 @@ export function CheckInConversation({
   firstName: string;
 }) {
   const { t, locale } = useLocale();
+  const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [lastReply, setLastReply] = useState("");
@@ -92,6 +94,11 @@ export function CheckInConversation({
       audio.onended = () => {
         if (body?.done) {
           setStatus("done");
+          // The "Your Check-ins" history list below is server-rendered once
+          // when the page loads — without this, a completed call saves
+          // fine but the list on screen keeps showing yesterday's state
+          // until the next full page load.
+          router.refresh();
         } else {
           startListening(newTurns);
         }
