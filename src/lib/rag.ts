@@ -8,10 +8,15 @@ import { embedTexts } from "@/lib/embeddings";
 const CHUNK_SIZE = 1200;
 const CHUNK_OVERLAP = 150;
 const TOP_K = 6;
-// Cosine distance cutoff (0 = identical, higher = less related) for a chunk
-// to count as an actual match, not just "closest of whatever exists" — a
-// small document set otherwise means everything gets returned every time.
-const MAX_RELEVANT_DISTANCE = 0.45;
+// A chunk only counts as an actual match if it's at least remotely
+// plausible (below this absolute ceiling)...
+const MAX_PLAUSIBLE_DISTANCE = 0.6;
+// ...AND close to the single best match for this question, not just
+// "somewhere in the top K." A fixed absolute cutoff alone doesn't work well
+// with a small set of short, topically-similar documents — their distances
+// all sit close together regardless of real relevance, so a relative gap
+// from the best hit is a more reliable signal than any single number.
+const RELEVANCE_MARGIN = 0.06;
 
 function chunkText(text: string): string[] {
   const chunks: string[] = [];
@@ -120,7 +125,11 @@ export async function buildRagContext(
     };
   }
 
-  const chunks = allChunks.filter((c) => c.distance < MAX_RELEVANT_DISTANCE);
+  const bestDistance = Math.min(...allChunks.map((c) => c.distance));
+  const chunks =
+    bestDistance > MAX_PLAUSIBLE_DISTANCE
+      ? []
+      : allChunks.filter((c) => c.distance <= bestDistance + RELEVANCE_MARGIN);
   if (chunks.length === 0) {
     return {
       context:
