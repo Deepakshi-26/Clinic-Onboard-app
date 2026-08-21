@@ -56,9 +56,37 @@ export function daysAgoDate(days: number): Date {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 }
 
+// The clinic operates in Quebec (Eastern Time), but the server's clock runs
+// in UTC — several hours ahead. Counting elapsed days from raw millisecond
+// math means the day count silently advances a day early every evening,
+// the moment UTC's calendar date turns over even though it's still
+// "today" in Quebec. Compare clinic-local calendar dates instead.
+const CLINIC_TIMEZONE = "America/Toronto"; // Eastern Time — same rules as Montreal/Quebec
+
+function toClinicCalendarDate(date: Date): Date {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: CLINIC_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const y = parts.find((p) => p.type === "year")!.value;
+  const m = parts.find((p) => p.type === "month")!.value;
+  const d = parts.find((p) => p.type === "day")!.value;
+  return new Date(`${y}-${m}-${d}T00:00:00Z`);
+}
+
 export function computeDaysElapsed(startDate: Date): number {
-  const ms = Date.now() - new Date(startDate).getTime();
-  return Math.max(0, Math.floor(ms / (1000 * 60 * 60 * 24)));
+  // startDate comes from a plain "YYYY-MM-DD" form field, stored as UTC
+  // midnight — its UTC calendar-date fields are exactly what was typed, so
+  // pull those back out rather than re-interpreting the instant through
+  // another timezone (which would shift it by the UTC offset instead).
+  const start = new Date(startDate);
+  const startDateOnly = new Date(
+    Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate())
+  );
+  const ms = toClinicCalendarDate(new Date()).getTime() - startDateOnly.getTime();
+  return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)));
 }
 
 export function computeDaysRemaining(startDate: Date, durationDays: number): number {
