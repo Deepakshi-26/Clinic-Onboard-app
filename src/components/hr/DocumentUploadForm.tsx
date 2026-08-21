@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { uploadDocument, type UploadActionState } from "@/app/hr/documents/actions";
-import { DOC_TYPES, jobTitleLabels } from "@/lib/labels";
+import { DOC_TYPES, jobTitleLabels, locationLabels } from "@/lib/labels";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 const inputClasses =
@@ -39,6 +39,17 @@ export function DocumentUploadForm({
           {DOC_TYPES.map((docType) => (
             <option key={docType} value={docType}>
               {docType}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label={t("documents.location")}>
+        <select name="location" defaultValue="" className={inputClasses}>
+          <option value="">{t("documents.allLocations")}</option>
+          {Object.entries(locationLabels(locale)).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </select>

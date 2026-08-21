@@ -6,11 +6,12 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { indexTrainingDocument } from "@/lib/rag";
-import type { JobTitle } from "@prisma/client";
+import type { JobTitle, Location } from "@prisma/client";
 
 const UploadSchema = z.object({
   name: z.string().min(1),
   docType: z.string().min(1),
+  location: z.string().optional(),
   roles: z.array(z.string()).default([]),
   employeeIds: z.array(z.string()).default([]),
 });
@@ -37,6 +38,7 @@ export async function uploadDocument(
   const result = UploadSchema.safeParse({
     name: formData.get("name"),
     docType: formData.get("docType"),
+    location: formData.get("location") || undefined,
     roles: formData.getAll("roles"),
     employeeIds: formData.getAll("employeeIds"),
   });
@@ -54,6 +56,7 @@ export async function uploadDocument(
     data: {
       name: parsed.name,
       docType: parsed.docType,
+      location: (parsed.location as Location | undefined) ?? null,
       fileUrl: blob.url,
       fileName: file.name,
       fileSize: file.size,
@@ -77,6 +80,7 @@ export async function uploadDocument(
 
 const UpdateAssignmentSchema = z.object({
   documentId: z.string().min(1),
+  location: z.string().optional(),
   roles: z.array(z.string()).default([]),
   employeeIds: z.array(z.string()).default([]),
 });
@@ -87,6 +91,7 @@ export async function updateDocumentAssignment(formData: FormData) {
 
   const parsed = UpdateAssignmentSchema.parse({
     documentId: formData.get("documentId"),
+    location: formData.get("location") || undefined,
     roles: formData.getAll("roles"),
     employeeIds: formData.getAll("employeeIds"),
   });
@@ -94,6 +99,7 @@ export async function updateDocumentAssignment(formData: FormData) {
   await prisma.trainingDocument.update({
     where: { id: parsed.documentId },
     data: {
+      location: (parsed.location as Location | undefined) ?? null,
       roles: parsed.roles as JobTitle[],
       assignedEmployees: { set: parsed.employeeIds.map((id) => ({ id })) },
     },

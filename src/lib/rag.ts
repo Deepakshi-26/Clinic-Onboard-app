@@ -83,29 +83,47 @@ async function searchDocumentChunks(
   `;
 }
 
+export type RagSource = { documentId: string; documentName: string };
+export type RagResult = { context: string; sources: RagSource[] };
+
 // Retrieval-augmented context for the chatbot: embeds the employee/HR's
 // actual question and pulls only the most relevant chunks across the
 // documents they're allowed to see, instead of stuffing whole documents in
-// regardless of relevance.
+// regardless of relevance. Also returns which documents were actually used,
+// so the UI can show real citations instead of relying on the model to name
+// them in prose.
 export async function buildRagContext(
   query: string,
   documents: { id: string; name: string }[]
-): Promise<string> {
+): Promise<RagResult> {
   if (documents.length === 0) {
-    return "No training documents are available.";
+    return { context: "No training documents are available.", sources: [] };
   }
   if (!process.env.OPENAI_API_KEY) {
-    return "Document search is not configured — answer from general portal knowledge only.";
+    return {
+      context: "Document search is not configured — answer from general portal knowledge only.",
+      sources: [],
+    };
   }
 
   const chunks = await searchDocumentChunks(query, documents.map((d) => d.id));
   if (chunks.length === 0) {
-    return "The assigned training documents haven't been indexed for search yet — an HR admin needs to click \"Index for AI search\" on the Documents page. Answer from general portal knowledge and mention this if relevant.";
+    return {
+      context:
+        "The assigned training documents haven't been indexed for search yet — an HR admin needs to click \"Index for AI search\" on the Documents page. Answer from general portal knowledge and mention this if relevant.",
+      sources: [],
+    };
   }
 
   const sections = chunks.map((c) => `### ${c.documentName}\n${c.content}`);
-  return [
-    "Relevant excerpts retrieved from the training documents, based on the question just asked. Use their content to answer, and mention the document name when you do:",
+  const context = [
+    "Relevant excerpts retrieved from the training documents, based on the question just asked. Use their content to answer:",
     ...sections,
   ].join("\n\n");
+
+  const seen = new Map<string, string>();
+  for (const c of chunks) seen.set(c.documentId, c.documentName);
+  const sources = [...seen].map(([documentId, documentName]) => ({ documentId, documentName }));
+
+  return { context, sources };
 }

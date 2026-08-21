@@ -3,8 +3,15 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { MermaidDiagram } from "@/components/chatbot/MermaidDiagram";
+import { sendMessageToHr } from "@/app/employee/messages/actions";
 
-type ChatMessage = { role: "user" | "assistant"; content: string };
+type Escalate = { draftQuestion: string; opsLeadName: string; opsLeadEmail: string | null };
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+  sources?: string[];
+  escalate?: Escalate | null;
+};
 
 type ContentPart = { type: "text"; text: string } | { type: "mermaid"; chart: string };
 
@@ -40,6 +47,7 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [escalateSentAt, setEscalateSentAt] = useState<Set<number>>(new Set());
   const hasFetchedHistory = useRef(false);
 
   useEffect(() => {
@@ -79,7 +87,15 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
       const reply: string = res.ok
         ? body.reply
         : (body.error ?? t("chatbot.error"));
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: reply,
+          sources: res.ok ? body.sources : undefined,
+          escalate: res.ok ? body.escalate : undefined,
+        },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -140,6 +156,34 @@ export function Chatbot({ role }: { role: "HR" | "EMPLOYEE" }) {
                       {renderBoldSegments(part.text)}
                     </div>
                   )
+                )}
+
+                {!!m.sources?.length && (
+                  <div className="mt-1.5 border-t border-slate-200 pt-1.5 text-[10px] text-slate-500 dark:border-zinc-700 dark:text-zinc-400">
+                    {t("chatbot.sourcesLabel")} {m.sources.join(", ")}
+                  </div>
+                )}
+
+                {m.escalate && role === "EMPLOYEE" && (
+                  <div className="mt-2 border-t border-slate-200 pt-2 dark:border-zinc-700">
+                    {escalateSentAt.has(i) ? (
+                      <span className="text-[11px] text-emerald-600">
+                        ✓ {t("chatbot.escalateSent")} {m.escalate.opsLeadName}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          const formData = new FormData();
+                          formData.set("body", m.escalate!.draftQuestion);
+                          await sendMessageToHr(formData);
+                          setEscalateSentAt((prev) => new Set(prev).add(i));
+                        }}
+                        className="rounded-full bg-teal-600 px-3 py-1 text-[11px] font-semibold text-white hover:bg-teal-500"
+                      >
+                        {t("chatbot.askPrefix")} {m.escalate.opsLeadName}
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             ))}

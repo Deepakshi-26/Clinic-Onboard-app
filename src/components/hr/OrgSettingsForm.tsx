@@ -12,10 +12,14 @@ export function OrgSettingsForm({
   clinicName,
   privacyOfficerName,
   privacyOfficerEmail,
+  opsLeadName,
+  opsLeadEmail,
 }: {
   clinicName: string;
   privacyOfficerName: string;
   privacyOfficerEmail: string;
+  opsLeadName: string;
+  opsLeadEmail: string;
 }) {
   const { t } = useLocale();
   const [state, formAction] = useActionState<SettingsActionState, FormData>(
@@ -43,6 +47,17 @@ export function OrgSettingsForm({
           type="email"
           name="privacyOfficerEmail"
           defaultValue={privacyOfficerEmail}
+          className={inputClasses}
+        />
+      </Field>
+      <Field label={t("settings.opsLeadName")} hint={t("settings.opsLeadNameHint")}>
+        <input name="opsLeadName" defaultValue={opsLeadName} className={inputClasses} />
+      </Field>
+      <Field label={t("settings.opsLeadEmail")}>
+        <input
+          type="email"
+          name="opsLeadEmail"
+          defaultValue={opsLeadEmail}
           className={inputClasses}
         />
       </Field>

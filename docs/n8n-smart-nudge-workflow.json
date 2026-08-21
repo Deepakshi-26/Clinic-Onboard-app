@@ -1,0 +1,108 @@
+{
+  "name": "Clinic Onboard — Smart Nudge",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Clinic Onboard — Smart Nudge\n\nReceives a webhook from the onboarding app (fired from the HR dashboard's \"Send Reminder\" button — see `src/app/hr/actions.ts`), drafts a short nudge message with AI, and emails it to the clinic's Ops Lead so a human decides how to follow up with the employee.\n\n**Setup after importing:**\n1. Open the Webhook node → copy its Production URL → set `N8N_NUDGE_WEBHOOK_URL` in the app's environment to that URL.\n2. Webhook node → Authentication → Header Auth → create a credential named `Clinic Webhook Secret` with header name `X-Webhook-Secret` and a value matching the app's `N8N_WEBHOOK_SECRET` env var.\n3. Draft Nudge node → attach your own OpenAI (or Anthropic) credential.\n4. Notify Ops node → attach your own SMTP credential.",
+        "height": 380,
+        "width": 460
+      },
+      "id": "note-readme",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-360, -180]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "clinic-smart-nudge",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Nudge Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-120, 0],
+      "webhookId": "clinic-smart-nudge",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Clinic Webhook Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body ?? $input.first().json;\nconst opsLeadName = b.opsLeadName || 'the Ops Lead';\n\nconst prompt = `Write a short, friendly Slack-style nudge (2-3 sentences max) to ${opsLeadName}, the onboarding Ops Lead at a physiotherapy clinic. ${b.employeeName} (${b.title} at ${b.location}) has ${b.missingDocCount} outstanding onboarding document(s). Ask ${opsLeadName} to follow up with ${b.employeeName} directly. Do not use markdown formatting.`;\n\nreturn [{ json: { ...b, prompt } }];"
+      },
+      "id": "node-prepare",
+      "name": "Prepare Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [120, 0]
+    },
+    {
+      "parameters": {
+        "modelId": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-draft",
+      "name": "Draft Nudge",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.3,
+      "position": [360, 0],
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "onboarding@clinic.example",
+        "toEmail": "={{ $('Prepare Prompt').item.json.opsLeadEmail }}",
+        "subject": "=Onboarding nudge: {{ $('Prepare Prompt').item.json.employeeName }}",
+        "text": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "node-notify",
+      "name": "Notify Ops",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [600, 0],
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "Clinic SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Nudge Trigger": {
+      "main": [[{ "node": "Prepare Prompt", "type": "main", "index": 0 }]]
+    },
+    "Prepare Prompt": {
+      "main": [[{ "node": "Draft Nudge", "type": "main", "index": 0 }]]
+    },
+    "Draft Nudge": {
+      "main": [[{ "node": "Notify Ops", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "clinic-onboard-app"
+  }
+}

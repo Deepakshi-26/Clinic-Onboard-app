@@ -20,6 +20,7 @@ export const translations: Record<Locale, Dict> = {
     "waitlistAdmin.signups": "signups",
     "waitlistAdmin.empty": "No one has joined the waitlist yet.",
     "nav.settings": "Settings",
+    "nav.chatInsights": "Chat Insights",
     "nav.home": "Home",
     "nav.checkIn": "Check-in",
     "nav.myDocuments": "My Documents",
@@ -38,6 +39,15 @@ export const translations: Record<Locale, Dict> = {
     "chatbot.scopedAccess": "Role-scoped answers",
     "chatbot.typing": "Typing…",
     "chatbot.placeholder": "Ask about your portal or goals…",
+    "chatbot.sourcesLabel": "Sources:",
+    "chatbot.askPrefix": "Ask",
+    "chatbot.escalateSent": "Sent to",
+
+    "chatInsights.title": "Chat Insights",
+    "chatInsights.subtitle":
+      "Questions the AI assistant couldn't confidently answer — a signal for gaps in your training documents.",
+    "chatInsights.empty": "No escalated questions yet.",
+    "chatInsights.askedBy": "Asked by",
 
     "login.subtitle": "Staff Onboarding Portal",
     "login.roleHr": "HR / Director",
@@ -290,6 +300,8 @@ export const translations: Record<Locale, Dict> = {
     "documents.documentType": "Document Type",
     "documents.assignRoles": "Assign to Roles (optional)",
     "documents.assignSpecific": "Also Assign to Specific People (optional)",
+    "documents.location": "Clinic Location (optional)",
+    "documents.allLocations": "All locations",
     "documents.noEmployeesYet": "No employees yet.",
     "documents.filePdfDocx": "File (PDF, DOCX — up to 20MB)",
     "documents.uploadAndAssign": "Upload & Assign",
@@ -522,6 +534,10 @@ export const translations: Record<Locale, Dict> = {
     "settings.privacyOfficerNameHint":
       "Under Quebec's Law 25, the person responsible for protecting employee data — usually the director or owner.",
     "settings.privacyOfficerEmail": "Privacy officer email",
+    "settings.opsLeadName": "Ops Lead name",
+    "settings.opsLeadNameHint":
+      "Who the AI assistant hands off to when it can't confidently answer an employee's question.",
+    "settings.opsLeadEmail": "Ops Lead email",
     "settings.save": "Save Settings",
     "settings.saving": "Saving…",
     "settings.saved": "Saved.",
@@ -567,6 +583,7 @@ export const translations: Record<Locale, Dict> = {
     "waitlistAdmin.signups": "inscriptions",
     "waitlistAdmin.empty": "Personne ne s'est encore inscrit à la liste d'attente.",
     "nav.settings": "Paramètres",
+    "nav.chatInsights": "Aperçu des questions",
     "nav.home": "Accueil",
     "nav.checkIn": "Suivi",
     "nav.myDocuments": "Mes documents",
@@ -587,6 +604,15 @@ export const translations: Record<Locale, Dict> = {
     "chatbot.scopedAccess": "Réponses selon votre rôle",
     "chatbot.typing": "En train d'écrire…",
     "chatbot.placeholder": "Posez une question sur votre portail ou vos objectifs…",
+    "chatbot.sourcesLabel": "Sources :",
+    "chatbot.askPrefix": "Demander à",
+    "chatbot.escalateSent": "Envoyé à",
+
+    "chatInsights.title": "Aperçu des questions",
+    "chatInsights.subtitle":
+      "Questions auxquelles l'assistant IA n'a pas pu répondre avec confiance — un signal des lacunes dans vos documents de formation.",
+    "chatInsights.empty": "Aucune question escaladée pour le moment.",
+    "chatInsights.askedBy": "Demandé par",
 
     "login.subtitle": "Portail d'intégration du personnel",
     "login.roleHr": "RH / Direction",
@@ -842,6 +868,8 @@ export const translations: Record<Locale, Dict> = {
     "documents.documentType": "Type de document",
     "documents.assignRoles": "Assigner à des rôles (optionnel)",
     "documents.assignSpecific": "Assigner aussi à des personnes spécifiques (optionnel)",
+    "documents.location": "Emplacement de la clinique (optionnel)",
+    "documents.allLocations": "Tous les emplacements",
     "documents.noEmployeesYet": "Aucun employé pour l'instant.",
     "documents.filePdfDocx": "Fichier (PDF, DOCX — jusqu'à 20 Mo)",
     "documents.uploadAndAssign": "Téléverser et assigner",
@@ -1078,6 +1106,10 @@ export const translations: Record<Locale, Dict> = {
     "settings.privacyOfficerNameHint":
       "En vertu de la Loi 25 du Québec, la personne responsable de la protection des données des employés — habituellement le ou la directrice ou propriétaire.",
     "settings.privacyOfficerEmail": "Courriel de la personne responsable",
+    "settings.opsLeadName": "Nom du responsable des opérations",
+    "settings.opsLeadNameHint":
+      "La personne à qui l'assistant IA transfère la question quand il ne peut pas répondre avec confiance.",
+    "settings.opsLeadEmail": "Courriel du responsable des opérations",
     "settings.save": "Enregistrer",
     "settings.saving": "Enregistrement…",
     "settings.saved": "Enregistré.",

@@ -2,9 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { deleteDocument, updateDocumentAssignment } from "@/app/hr/documents/actions";
-import { jobTitleLabels, titleLabel } from "@/lib/labels";
+import { jobTitleLabels, titleLabel, locationLabels, locationLabel } from "@/lib/labels";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import type { JobTitle } from "@prisma/client";
+import type { JobTitle, Location } from "@prisma/client";
 
 type Employee = { id: string; fullName: string };
 
@@ -12,6 +12,7 @@ export function DocumentTile({
   id,
   name,
   docType,
+  location,
   roles,
   assignedEmployees,
   allEmployees,
@@ -19,6 +20,7 @@ export function DocumentTile({
   id: string;
   name: string;
   docType: string;
+  location: Location | null;
   roles: JobTitle[];
   assignedEmployees: Employee[];
   allEmployees: Employee[];
@@ -28,7 +30,11 @@ export function DocumentTile({
   const [isPending, startTransition] = useTransition();
 
   const assignedNames = assignedEmployees.map((e) => e.fullName);
-  const scopeParts = [...roles.map((r) => titleLabel(r, locale)), ...assignedNames];
+  const scopeParts = [
+    ...(location ? [`📍 ${locationLabel(location, locale)}`] : []),
+    ...roles.map((r) => titleLabel(r, locale)),
+    ...assignedNames,
+  ];
   const scope = scopeParts.length > 0 ? scopeParts.join(", ") : t("documents.nobodyYet");
 
   if (editing) {
@@ -45,6 +51,24 @@ export function DocumentTile({
         <input type="hidden" name="documentId" value={id} />
         <div className="mb-2.5 text-xs font-semibold text-slate-900 dark:text-zinc-50">
           {t("documents.editingPrefix")} {name}
+        </div>
+
+        <div className="mb-2.5">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
+            {t("documents.location")}
+          </span>
+          <select
+            name="location"
+            defaultValue={location ?? ""}
+            className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-[11px] dark:border-zinc-700 dark:bg-zinc-950"
+          >
+            <option value="">{t("documents.allLocations")}</option>
+            {Object.entries(locationLabels(locale)).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-2.5">

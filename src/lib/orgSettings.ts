@@ -15,6 +15,8 @@ export async function updateOrgSettings(data: {
   clinicName?: string;
   privacyOfficerName?: string;
   privacyOfficerEmail?: string;
+  opsLeadName?: string;
+  opsLeadEmail?: string;
 }) {
   return prisma.orgSettings.upsert({
     where: { id: SINGLETON_ID },

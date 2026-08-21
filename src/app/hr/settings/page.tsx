@@ -19,6 +19,8 @@ export default async function OrgSettingsPage() {
           clinicName={settings.clinicName ?? ""}
           privacyOfficerName={settings.privacyOfficerName ?? ""}
           privacyOfficerEmail={settings.privacyOfficerEmail ?? ""}
+          opsLeadName={settings.opsLeadName ?? ""}
+          opsLeadEmail={settings.opsLeadEmail ?? ""}
         />
       </Card>
     </div>

@@ -25,9 +25,14 @@ export default async function EmployeeTrainingPage() {
 
   const documents = await prisma.trainingDocument.findMany({
     where: {
-      OR: [
-        { assignedEmployees: { some: { id: employee.id } } },
-        { roles: { has: employee.title } },
+      AND: [
+        {
+          OR: [
+            { assignedEmployees: { some: { id: employee.id } } },
+            { roles: { has: employee.title } },
+          ],
+        },
+        { OR: [{ location: null }, { location: employee.location }] },
       ],
     },
     orderBy: { uploadedAt: "desc" },

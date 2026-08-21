@@ -3,10 +3,13 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { buildRagContext } from "@/lib/rag";
+import { buildRagContext, type RagSource } from "@/lib/rag";
 import { getServerLocale } from "@/lib/i18n/server";
+import { computeDaysElapsed } from "@/lib/progress";
+import { getOrgSettings } from "@/lib/orgSettings";
 
 const MAX_HISTORY = 20;
+const ESCALATE_MARKER = "---ESCALATE---";
 
 const ChatSchema = z.object({
   message: z.string().min(1).max(2000),
@@ -58,9 +61,13 @@ export async function POST(request: Request) {
     role === "EMPLOYEE"
       ? await prisma.employee.findUnique({ where: { userId: session.user.id } })
       : null;
+  const orgSettings = await getOrgSettings();
+  const opsLeadName = orgSettings.opsLeadName?.trim() || "HR";
 
   let accessNote: string;
   let trainingContext = "";
+  let sources: RagSource[] = [];
+  let escalateInstruction = "";
 
   if (role === "HR") {
     accessNote = "The user is HR and has full access to all portal information.";
@@ -68,25 +75,40 @@ export async function POST(request: Request) {
       select: { id: true, name: true },
       orderBy: { uploadedAt: "desc" },
     });
-    trainingContext = await buildRagContext(userMessage, documents);
+    const rag = await buildRagContext(userMessage, documents);
+    trainingContext = rag.context;
+    sources = rag.sources;
   } else {
+    const daysElapsed = employee ? computeDaysElapsed(employee.startDate) : null;
+    const durationDays = employee?.onboardingDurationDays ?? 30;
     accessNote = `The user is an onboarding employee (${employee?.title ?? "role unknown"} at ${
       employee?.location ?? "an unassigned location"
-    }). They have role-scoped access — only answer using the training document content provided below or general portal knowledge; for anything else, tell them to contact HR.`;
+    })${
+      daysElapsed !== null ? `, currently on day ${daysElapsed} of a ${durationDays}-day onboarding` : ""
+    }. Calibrate answers to how far along they are (e.g. don't assume Month 3 context in Week 1). They have role-scoped access — only answer using the training document content provided below or general portal knowledge; for anything else, tell them to contact HR.`;
 
     if (employee) {
       const documents = await prisma.trainingDocument.findMany({
         where: {
-          OR: [
-            { assignedEmployees: { some: { id: employee.id } } },
-            { roles: { has: employee.title } },
+          AND: [
+            {
+              OR: [
+                { assignedEmployees: { some: { id: employee.id } } },
+                { roles: { has: employee.title } },
+              ],
+            },
+            { OR: [{ location: null }, { location: employee.location }] },
           ],
         },
         select: { id: true, name: true },
         orderBy: { uploadedAt: "desc" },
       });
-      trainingContext = await buildRagContext(userMessage, documents);
+      const rag = await buildRagContext(userMessage, documents);
+      trainingContext = rag.context;
+      sources = rag.sources;
     }
+
+    escalateInstruction = `\n- If you cannot answer confidently from the training document excerpts above or general portal knowledge, don't guess. End your reply with a new line containing exactly "${ESCALATE_MARKER}" followed by a short, one-sentence draft question addressed to ${opsLeadName} that captures what they're asking.`;
   }
 
   const systemPrompt = `You are ClinicBoard's onboarding assistant for a medical clinic in Montreal, Quebec.
@@ -108,7 +130,7 @@ Formatting rules — follow these strictly, answers that ignore them are conside
 - Default to 1-3 short bullet points or 1-2 short sentences. Never write more than that unless the user asks for detail.
 - Default to no bold at all. The one exception: a bullet list naming multiple parallel terms (e.g. "X – definition", "Y – definition") may bold just the term at the start of each bullet — but then do it for every bullet in that list, never only some of them.
 - When (and only when) the answer is a process, workflow, decision path, or relationship between steps/roles, replace the prose with a small Mermaid diagram in its own \`\`\`mermaid fenced code block (a handful of nodes, no styling), plus at most one short sentence — don't also describe the diagram in words.
-- If you name the source document, do it in passing (e.g. "per the confidentiality toolkit"), never as a formal citation line.`;
+- Don't cite source documents inline (e.g. no "per the confidentiality toolkit") — the app shows the source documents separately, so naming them in your prose would be redundant.${escalateInstruction}`;
 
   const historyRows = await prisma.chatMessage.findMany({
     where: { userId: session.user.id },
@@ -135,16 +157,29 @@ Formatting rules — follow these strictly, answers that ignore them are conside
     });
 
     const textBlock = response.content.find((block) => block.type === "text");
-    const replyText = textBlock?.text ?? "";
+    const rawReply = textBlock?.text ?? "";
+
+    const markerIndex = rawReply.indexOf(ESCALATE_MARKER);
+    const escalated = markerIndex !== -1;
+    const replyText = (escalated ? rawReply.slice(0, markerIndex) : rawReply).trim();
+    const draftQuestion = escalated
+      ? rawReply.slice(markerIndex + ESCALATE_MARKER.length).trim()
+      : null;
 
     await prisma.chatMessage.createMany({
       data: [
         { userId: session.user.id, role: "USER", content: userMessage },
-        { userId: session.user.id, role: "ASSISTANT", content: replyText },
+        { userId: session.user.id, role: "ASSISTANT", content: replyText, escalated },
       ],
     });
 
-    return Response.json({ reply: replyText });
+    return Response.json({
+      reply: replyText,
+      sources: sources.map((s) => s.documentName),
+      escalate: escalated
+        ? { draftQuestion, opsLeadName, opsLeadEmail: orgSettings.opsLeadEmail }
+        : null,
+    });
   } catch (err) {
     console.error("Chat request failed:", err);
     return Response.json(

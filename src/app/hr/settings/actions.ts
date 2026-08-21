@@ -9,6 +9,8 @@ const SettingsSchema = z.object({
   clinicName: z.string().optional(),
   privacyOfficerName: z.string().optional(),
   privacyOfficerEmail: z.string().email().optional().or(z.literal("")),
+  opsLeadName: z.string().optional(),
+  opsLeadEmail: z.string().email().optional().or(z.literal("")),
 });
 
 export type SettingsActionState = { error: string } | { ok: true } | null;
@@ -27,6 +29,8 @@ export async function saveOrgSettings(
     clinicName: parsed.data.clinicName || undefined,
     privacyOfficerName: parsed.data.privacyOfficerName || undefined,
     privacyOfficerEmail: parsed.data.privacyOfficerEmail || undefined,
+    opsLeadName: parsed.data.opsLeadName || undefined,
+    opsLeadEmail: parsed.data.opsLeadEmail || undefined,
   });
 
   revalidatePath("/hr/settings");

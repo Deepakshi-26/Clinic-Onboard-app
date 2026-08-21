@@ -219,6 +219,10 @@ model TrainingDocument {
   fileName String
   fileSize Int
 
+  // Null means visible at every clinic location; set it to restrict a
+  // document (and its RAG retrieval) to a single site.
+  location Location?
+
   roles             JobTitle[]
   assignedEmployees Employee[]
   chunks            DocumentChunk[]
@@ -372,6 +376,9 @@ model ChatMessage {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   role      ChatRole
   content   String
+  // Set on an ASSISTANT row when the model couldn't answer confidently and
+  // handed off to the Ops Lead instead — powers the HR "content gaps" view.
+  escalated Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
@@ -421,6 +428,9 @@ model OrgSettings {
   clinicName          String?
   privacyOfficerName  String?
   privacyOfficerEmail String?
+  // Who the chatbot hands off to when it can't answer confidently.
+  opsLeadName         String?
+  opsLeadEmail        String?
   updatedAt           DateTime @updatedAt
 }
 

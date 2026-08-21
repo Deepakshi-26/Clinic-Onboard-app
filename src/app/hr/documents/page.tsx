@@ -45,6 +45,7 @@ export default async function HrDocumentsPage() {
                   id={doc.id}
                   name={doc.name}
                   docType={doc.docType}
+                  location={doc.location}
                   roles={doc.roles}
                   assignedEmployees={doc.assignedEmployees}
                   allEmployees={employees}
