@@ -57,6 +57,7 @@ export async function submitNewHire(
     },
   });
 
+  revalidatePath("/owner/new-hire");
   revalidatePath("/owner");
   revalidatePath("/hr");
   return { ok: true };

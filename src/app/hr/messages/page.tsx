@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getHrEmployeeThread, markHrEmployeeThreadRead } from "@/lib/repositories/messages";
+import { getOwnerThread, markOwnerThreadRead } from "@/lib/repositories/ownerMessages";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { MessageBubbleList } from "@/components/messages/MessageBubbleList";
 import { HrReplyForm } from "@/components/hr/HrReplyForm";
+import { OwnerReplyForm } from "@/components/hr/OwnerReplyForm";
 
 export default async function HrMessagesPage({
   searchParams,
@@ -35,6 +37,30 @@ export default async function HrMessagesPage({
     attachmentName: m.attachmentName,
     read: m.readAt !== null,
   }));
+
+  const owners = await prisma.user.findMany({
+    where: { role: "OWNER" },
+    select: { id: true, name: true, email: true },
+    orderBy: { createdAt: "asc" },
+  });
+  const ownerThreads = await Promise.all(
+    owners.map(async (owner) => {
+      await markOwnerThreadRead(owner.id, "HR");
+      const thread = await getOwnerThread(owner.id);
+      return {
+        owner,
+        bubbles: thread.map((m) => ({
+          id: m.id,
+          body: m.body,
+          createdAt: m.createdAt,
+          alignRight: m.senderRole === "HR",
+          attachmentUrl: m.attachmentUrl,
+          attachmentName: m.attachmentName,
+          read: m.readAt !== null,
+        })),
+      };
+    })
+  );
 
   const peerMessages = await prisma.message.findMany({
     where: { channel: "PEER" },
@@ -107,6 +133,25 @@ export default async function HrMessagesPage({
           )}
         </Card>
       </div>
+
+      {ownerThreads.length > 0 && (
+        <Card title={`👔 ${t("messages.ownerHeading")}`}>
+          <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">
+            {t("messages.ownerNote")}
+          </p>
+          <div className="flex flex-col gap-4">
+            {ownerThreads.map(({ owner, bubbles: ownerBubbles }) => (
+              <div key={owner.id}>
+                <div className="mb-2 text-xs font-semibold text-slate-900 dark:text-zinc-50">
+                  {owner.name || owner.email}
+                </div>
+                <MessageBubbleList messages={ownerBubbles} />
+                <OwnerReplyForm ownerId={owner.id} />
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card title={`🕵️ ${t("messages.peerConversationsTitle")}`}>
         <p className="mb-2.5 text-[11px] text-slate-500 dark:text-zinc-400">

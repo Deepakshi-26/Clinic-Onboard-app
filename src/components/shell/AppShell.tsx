@@ -42,7 +42,9 @@ const EMPLOYEE_NAV: NavItem[] = [
 ];
 
 const OWNER_NAV: NavItem[] = [
-  { href: "/owner", labelKey: "nav.addNewHire", icon: "➕" },
+  { href: "/owner", labelKey: "nav.dashboard", icon: "📊" },
+  { href: "/owner/new-hire", labelKey: "nav.addNewHire", icon: "➕" },
+  { href: "/owner/messages", labelKey: "nav.messages", icon: "💬" },
 ];
 
 const TITLE_KEYS: Record<string, string> = {
@@ -68,7 +70,9 @@ const TITLE_KEYS: Record<string, string> = {
   "/employee/access": "nav.accessInfo",
   "/employee/schedule": "nav.mySchedule",
   "/employee/messages": "nav.messages",
-  "/owner": "nav.addNewHire",
+  "/owner": "nav.dashboard",
+  "/owner/new-hire": "nav.addNewHire",
+  "/owner/messages": "nav.messages",
 };
 
 function NavLink({

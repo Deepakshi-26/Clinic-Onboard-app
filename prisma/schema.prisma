@@ -97,6 +97,7 @@ model User {
   auditLogs    AuditLog[]
   incidentLogs IncidentLog[]
   pendingHires PendingHire[]
+  ownerMessages OwnerMessage[]
 }
 
 // A lightweight "new hire is happening" trigger the Owner submits — HR sees
@@ -117,6 +118,25 @@ model PendingHire {
   convertedEmployeeId String?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
+}
+
+// A single shared thread between one Owner and the HR inbox — same shape as
+// Message's HR_EMPLOYEE channel, but Owners have no Employee record to key
+// off, so this is its own small table rather than overloading Message.
+model OwnerMessage {
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  senderRole UserRole // OWNER | HR
+  body       String
+
+  attachmentUrl  String?
+  attachmentName String?
+  attachmentSize Int?
+
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
 }
 
 // Standard Auth.js Prisma-adapter shape. Not exercised by the Credentials+JWT

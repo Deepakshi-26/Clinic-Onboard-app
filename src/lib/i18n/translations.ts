@@ -416,6 +416,8 @@ export const translations: Record<Locale, Dict> = {
       "Visible to HR for oversight, same as your other portal messages.",
     "messages.typeYourMessage": "Type your message…",
     "messages.messageYourPeer": "Message your peer…",
+    "messages.ownerHeading": "Owner",
+    "messages.ownerNote": "Direct messages with the clinic owner.",
 
     "training.heading": "Training Materials",
     "training.hint":
@@ -475,6 +477,9 @@ export const translations: Record<Locale, Dict> = {
     "owner.statusPENDING": "Pending",
     "owner.statusCONVERTED": "Invited",
     "owner.statusDISMISSED": "Dismissed",
+    "owner.awaitingHrReview": "Awaiting HR review",
+    "owner.messagesHeading": "Message HR",
+    "owner.messagesNote": "Message the HR team directly — type or send a quick voice note.",
 
     "schedule.date": "Date",
     "schedule.time": "Time (optional)",
@@ -1011,6 +1016,8 @@ export const translations: Record<Locale, Dict> = {
       "Visible par les RH à des fins de supervision, comme vos autres messages du portail.",
     "messages.typeYourMessage": "Écrivez votre message…",
     "messages.messageYourPeer": "Écrivez à votre pair…",
+    "messages.ownerHeading": "Propriétaire",
+    "messages.ownerNote": "Messages directs avec le propriétaire de la clinique.",
 
     "training.heading": "Matériel de formation",
     "training.hint":
@@ -1071,6 +1078,9 @@ export const translations: Record<Locale, Dict> = {
     "owner.statusPENDING": "En attente",
     "owner.statusCONVERTED": "Invité",
     "owner.statusDISMISSED": "Ignoré",
+    "owner.awaitingHrReview": "En attente d'examen par les RH",
+    "owner.messagesHeading": "Écrire aux RH",
+    "owner.messagesNote": "Envoyez un message directement à l'équipe RH — texte ou note vocale.",
 
     "schedule.date": "Date",
     "schedule.time": "Heure (optionnel)",

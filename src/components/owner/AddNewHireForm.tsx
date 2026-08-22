@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { submitNewHire, type SubmitNewHireState } from "@/app/owner/actions";
+import { submitNewHire, type SubmitNewHireState } from "@/app/owner/new-hire/actions";
 import { jobTitleLabels, locationLabels } from "@/lib/labels";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
