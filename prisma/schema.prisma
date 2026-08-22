@@ -113,6 +113,9 @@ model PendingHire {
   title         JobTitle
   location      Location
   personalEmail String?
+  // Nullable so pre-existing PendingHire rows (submitted before this field
+  // existed) don't need a backfill — new submissions always set it.
+  proposedStartDate DateTime?
   notes         String?
   status        PendingHireStatus @default(PENDING)
   convertedEmployeeId String?

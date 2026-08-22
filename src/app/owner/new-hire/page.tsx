@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { titleLabel, locationLabel } from "@/lib/labels";
+import { formatShortDate } from "@/lib/progress";
 import { getServerLocale, getT } from "@/lib/i18n/server";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
@@ -44,6 +45,9 @@ export default async function OwnerPage() {
                     </div>
                     <div className="truncate text-[11px] text-slate-500 dark:text-zinc-400">
                       {titleLabel(s.title, locale)} · {locationLabel(s.location, locale)}
+                      {s.proposedStartDate && (
+                        <> · {t("owner.startDate")}: {formatShortDate(s.proposedStartDate, locale)}</>
+                      )}
                     </div>
                   </div>
                   <StatusPill

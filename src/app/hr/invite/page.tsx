@@ -35,6 +35,9 @@ export default async function InvitePage({
                   title: pendingHire.title,
                   location: pendingHire.location,
                   personalEmail: pendingHire.personalEmail ?? "",
+                  proposedStartDate: pendingHire.proposedStartDate
+                    ? pendingHire.proposedStartDate.toISOString().slice(0, 10)
+                    : "",
                 }
               : undefined
           }

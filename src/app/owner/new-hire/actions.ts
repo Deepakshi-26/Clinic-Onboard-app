@@ -25,6 +25,7 @@ const NewHireSchema = z.object({
   ]),
   location: z.enum(["PARC_EXTENSION", "MONTREAL_NORD", "COTE_VERTU", "LACHINE"]),
   personalEmail: z.string().email().optional().or(z.literal("")),
+  proposedStartDate: z.string().min(1),
   notes: z.string().optional(),
 });
 
@@ -53,6 +54,7 @@ export async function submitNewHire(
       title: data.title as JobTitle,
       location: data.location as Location,
       personalEmail: data.personalEmail || null,
+      proposedStartDate: new Date(data.proposedStartDate),
       notes: data.notes || null,
     },
   });

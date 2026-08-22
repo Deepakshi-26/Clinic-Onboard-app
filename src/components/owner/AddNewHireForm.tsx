@@ -54,14 +54,19 @@ export function AddNewHireForm() {
         </Field>
       </div>
 
-      <Field label={t("owner.personalEmail")} hint={t("owner.personalEmailHint")}>
-        <input
-          type="email"
-          name="personalEmail"
-          className={inputClasses}
-          placeholder="jordan@example.com"
-        />
-      </Field>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label={t("owner.personalEmail")} hint={t("owner.personalEmailHint")}>
+          <input
+            type="email"
+            name="personalEmail"
+            className={inputClasses}
+            placeholder="jordan@example.com"
+          />
+        </Field>
+        <Field label={t("owner.startDate")}>
+          <input type="date" name="proposedStartDate" required className={inputClasses} />
+        </Field>
+      </div>
 
       <Field label={t("owner.notes")}>
         <textarea name="notes" rows={2} className={inputClasses} />

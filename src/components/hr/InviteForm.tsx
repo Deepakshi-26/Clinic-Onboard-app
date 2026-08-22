@@ -17,6 +17,7 @@ type InviteDefaults = {
   title: string;
   location: string;
   personalEmail: string;
+  proposedStartDate: string;
 };
 
 export function InviteForm({ defaults }: { defaults?: InviteDefaults }) {
@@ -112,7 +113,13 @@ export function InviteForm({ defaults }: { defaults?: InviteDefaults }) {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.startDate")}>
-          <input type="date" name="startDate" required className={inputClasses} />
+          <input
+            type="date"
+            name="startDate"
+            required
+            defaultValue={defaults?.proposedStartDate}
+            className={inputClasses}
+          />
         </Field>
         <Field label={t("invite.onboardingDuration")}>
           <select

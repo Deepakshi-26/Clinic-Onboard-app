@@ -116,6 +116,9 @@ export default async function HrDashboardPage() {
                 <div>
                   <strong>{hire.fullName}</strong> — {titleLabel(hire.title, locale)} ·{" "}
                   {locationLabel(hire.location, locale)}
+                  {hire.proposedStartDate && (
+                    <> · {t("dashboard.proposedStart")} {formatShortDate(hire.proposedStartDate, locale)}</>
+                  )}
                   {hire.notes && (
                     <div className="mt-0.5 text-[11px] text-slate-500 dark:text-zinc-400">
                       {hire.notes}
