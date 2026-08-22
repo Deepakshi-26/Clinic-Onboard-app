@@ -8,7 +8,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { NetworkBackground } from "@/components/auth/NetworkBackground";
 import { requestLoginOtp } from "./actions";
 
-type Role = "HR" | "EMPLOYEE";
+type Role = "OWNER" | "HR" | "EMPLOYEE";
 type Step = "credentials" | "otp";
 
 // See the matching REQUIRE_2FA check in src/auth.ts — this only decides
@@ -51,7 +51,7 @@ export default function LoginPage() {
         setError(t("login.invalidCredentials"));
         return;
       }
-      router.push(role === "HR" ? "/hr" : "/employee");
+      router.push(role === "HR" ? "/hr" : role === "OWNER" ? "/owner" : "/employee");
       router.refresh();
       return;
     }
@@ -87,7 +87,7 @@ export default function LoginPage() {
       setError(t("login.invalidCode"));
       return;
     }
-    router.push(role === "HR" ? "/hr" : "/employee");
+    router.push(role === "HR" ? "/hr" : role === "OWNER" ? "/owner" : "/employee");
     router.refresh();
   }
 
@@ -131,11 +131,22 @@ export default function LoginPage() {
 
         {step === "credentials" ? (
           <>
-            <div className="mb-6 flex gap-2">
+            <div className="mb-6 flex gap-1.5">
+              <button
+                type="button"
+                onClick={() => selectRole("OWNER")}
+                className={`flex-1 rounded-lg border-2 px-2 py-2.5 text-[13px] font-medium transition-colors ${
+                  role === "OWNER"
+                    ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
+                    : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
+                }`}
+              >
+                {t("login.roleOwner")}
+              </button>
               <button
                 type="button"
                 onClick={() => selectRole("HR")}
-                className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-lg border-2 px-2 py-2.5 text-[13px] font-medium transition-colors ${
                   role === "HR"
                     ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
                     : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"
@@ -146,7 +157,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => selectRole("EMPLOYEE")}
-                className={`flex-1 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-lg border-2 px-2 py-2.5 text-[13px] font-medium transition-colors ${
                   role === "EMPLOYEE"
                     ? "border-teal-600 bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
                     : "border-slate-200 text-slate-600 dark:border-zinc-700 dark:text-zinc-300"

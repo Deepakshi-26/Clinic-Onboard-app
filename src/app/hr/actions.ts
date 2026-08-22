@@ -83,3 +83,18 @@ export async function sendReminder(employeeId: string): Promise<{ ok: boolean }>
 
   return { ok: nudgedViaN8n || emailResult.ok };
 }
+
+// Owner submitted this by mistake, it's a duplicate, or HR decided not to
+// pursue it — removes it from the dashboard without touching anything else.
+export async function dismissPendingHire(pendingHireId: string): Promise<{ ok: boolean }> {
+  const session = await auth();
+  if (session?.user?.role !== "HR") throw new Error("Forbidden");
+
+  await prisma.pendingHire.update({
+    where: { id: pendingHireId },
+    data: { status: "DISMISSED" },
+  });
+
+  revalidatePath("/hr");
+  return { ok: true };
+}

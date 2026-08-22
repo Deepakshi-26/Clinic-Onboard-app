@@ -35,6 +35,7 @@ const InviteSchema = z.object({
   onboardingDurationDays: z.coerce.number().int().positive(),
   trainerName: z.string().optional(),
   welcomeMessage: z.string().optional(),
+  pendingHireId: z.string().optional(),
 });
 
 export type InviteActionState = { error: string } | null;
@@ -123,6 +124,13 @@ export async function createInvite(
       employeeId: user.employee!.id,
     },
   });
+
+  if (parsed.pendingHireId) {
+    await prisma.pendingHire.update({
+      where: { id: parsed.pendingHireId },
+      data: { status: "CONVERTED", convertedEmployeeId: user.employee!.id },
+    });
+  }
 
   revalidatePath("/hr/employees");
   revalidatePath("/hr");

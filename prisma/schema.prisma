@@ -11,6 +11,13 @@ datasource db {
 enum UserRole {
   HR
   EMPLOYEE
+  OWNER
+}
+
+enum PendingHireStatus {
+  PENDING
+  CONVERTED
+  DISMISSED
 }
 
 enum JobTitle {
@@ -89,6 +96,27 @@ model User {
   chatMessages ChatMessage[]
   auditLogs    AuditLog[]
   incidentLogs IncidentLog[]
+  pendingHires PendingHire[]
+}
+
+// A lightweight "new hire is happening" trigger the Owner submits — HR sees
+// it as a pending request and turns it into a real onboarding invite (see
+// PendingHire.status / TrainingDocument-style HR review flow). Not itself
+// an Employee record; that's only created once HR actually sends the
+// invite from src/app/hr/invite.
+model PendingHire {
+  id            String            @id @default(cuid())
+  submittedById String
+  submittedBy   User              @relation(fields: [submittedById], references: [id])
+  fullName      String
+  title         JobTitle
+  location      Location
+  personalEmail String?
+  notes         String?
+  status        PendingHireStatus @default(PENDING)
+  convertedEmployeeId String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 }
 
 // Standard Auth.js Prisma-adapter shape. Not exercised by the Credentials+JWT

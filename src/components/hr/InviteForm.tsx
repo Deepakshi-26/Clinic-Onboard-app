@@ -11,20 +11,37 @@ const inputClasses =
 
 const TRAINERS = ["Dr. Leila Nouri", "Sarah Mitchell (HR)", "Tom Bergeron"];
 
-export function InviteForm() {
+type InviteDefaults = {
+  pendingHireId: string;
+  fullName: string;
+  title: string;
+  location: string;
+  personalEmail: string;
+};
+
+export function InviteForm({ defaults }: { defaults?: InviteDefaults }) {
   const { t, locale } = useLocale();
   const [state, formAction] = useActionState<InviteActionState, FormData>(
     createInvite,
     null
   );
 
+  // PendingHire only stores one full name field — split it into a
+  // first/last guess HR can still correct before sending.
+  const [defaultFirst, ...defaultLastParts] = defaults?.fullName.trim().split(/\s+/) ?? [""];
+  const defaultLast = defaultLastParts.join(" ");
+
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-4">
+      {defaults && (
+        <input type="hidden" name="pendingHireId" value={defaults.pendingHireId} />
+      )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.firstName")}>
           <input
             name="firstName"
             required
+            defaultValue={defaultFirst}
             className={inputClasses}
             placeholder={t("invite.firstNamePlaceholder")}
           />
@@ -33,6 +50,7 @@ export function InviteForm() {
           <input
             name="lastName"
             required
+            defaultValue={defaultLast}
             className={inputClasses}
             placeholder={t("invite.lastNamePlaceholder")}
           />
@@ -48,6 +66,7 @@ export function InviteForm() {
             type="email"
             name="personalEmail"
             required
+            defaultValue={defaults?.personalEmail}
             className={inputClasses}
             placeholder="jordan@example.com"
           />
@@ -56,7 +75,12 @@ export function InviteForm() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t("invite.titleRole")}>
-          <select name="title" required defaultValue="" className={inputClasses}>
+          <select
+            name="title"
+            required
+            defaultValue={defaults?.title ?? ""}
+            className={inputClasses}
+          >
             <option value="" disabled>
               {t("common.selectEllipsis")}
             </option>
@@ -68,7 +92,12 @@ export function InviteForm() {
           </select>
         </Field>
         <Field label={t("invite.primaryLocation")}>
-          <select name="location" required defaultValue="" className={inputClasses}>
+          <select
+            name="location"
+            required
+            defaultValue={defaults?.location ?? ""}
+            className={inputClasses}
+          >
             <option value="" disabled>
               {t("common.selectEllipsis")}
             </option>

@@ -41,6 +41,10 @@ const EMPLOYEE_NAV: NavItem[] = [
   { href: "/employee/messages", labelKey: "nav.messages", icon: "💬" },
 ];
 
+const OWNER_NAV: NavItem[] = [
+  { href: "/owner", labelKey: "nav.addNewHire", icon: "➕" },
+];
+
 const TITLE_KEYS: Record<string, string> = {
   "/hr": "nav.dashboard",
   "/hr/employees": "nav.employees",
@@ -64,6 +68,7 @@ const TITLE_KEYS: Record<string, string> = {
   "/employee/access": "nav.accessInfo",
   "/employee/schedule": "nav.mySchedule",
   "/employee/messages": "nav.messages",
+  "/owner": "nav.addNewHire",
 };
 
 function NavLink({
@@ -101,7 +106,7 @@ export function AppShell({
   userSubLabel,
   children,
 }: {
-  role: "HR" | "EMPLOYEE";
+  role: "HR" | "EMPLOYEE" | "OWNER";
   userLabel: string;
   userSubLabel: string;
   children: React.ReactNode;
@@ -109,7 +114,7 @@ export function AppShell({
   const pathname = usePathname();
   const { t } = useLocale();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const nav = role === "HR" ? HR_NAV : EMPLOYEE_NAV;
+  const nav = role === "HR" ? HR_NAV : role === "OWNER" ? OWNER_NAV : EMPLOYEE_NAV;
   const title = TITLE_KEYS[pathname] ? t(TITLE_KEYS[pathname]) : "";
 
   const shell = (
@@ -188,7 +193,7 @@ export function AppShell({
         </main>
       </div>
 
-      <Chatbot role={role} />
+      {role !== "OWNER" && <Chatbot role={role} />}
       <IdleLogout />
     </div>
   );

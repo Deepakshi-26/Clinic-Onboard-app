@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { SendReminderButton } from "@/components/hr/SendReminderButton";
+import { DismissPendingHireButton } from "@/components/hr/DismissPendingHireButton";
 
 // Missing docs are treated as "overdue" once the employee is past the
 // halfway point of their onboarding window — a simple, explainable heuristic
@@ -30,6 +31,11 @@ export default async function HrDashboardPage() {
     where: { status: "ACTIVE" },
     include: { goals: true },
     orderBy: { startDate: "desc" },
+  });
+
+  const pendingHires = await prisma.pendingHire.findMany({
+    where: { status: "PENDING" },
+    orderBy: { createdAt: "desc" },
   });
 
   const completedLast30d = await prisma.employee.count({
@@ -98,6 +104,38 @@ export default async function HrDashboardPage() {
           tone="green"
         />
       </div>
+
+      {pendingHires.length > 0 && (
+        <Card title={`🆕 ${t("dashboard.newHireRequests")}`}>
+          <div className="flex flex-col gap-2.5">
+            {pendingHires.map((hire) => (
+              <div
+                key={hire.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border-l-4 border-teal-500 bg-teal-50 p-3 text-xs dark:bg-teal-950/20"
+              >
+                <div>
+                  <strong>{hire.fullName}</strong> — {titleLabel(hire.title, locale)} ·{" "}
+                  {locationLabel(hire.location, locale)}
+                  {hire.notes && (
+                    <div className="mt-0.5 text-[11px] text-slate-500 dark:text-zinc-400">
+                      {hire.notes}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-shrink-0 gap-1.5">
+                  <Link
+                    href={`/hr/invite?pendingHireId=${hire.id}`}
+                    className="rounded-md bg-teal-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-teal-500"
+                  >
+                    {t("dashboard.reviewAndInvite")}
+                  </Link>
+                  <DismissPendingHireButton pendingHireId={hire.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card title={`🚨 ${t("dashboard.urgentActionRequired")}`}>
